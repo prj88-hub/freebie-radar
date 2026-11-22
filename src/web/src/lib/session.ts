@@ -168,7 +168,7 @@ export async function importGuestToAccount(s: GuestState): Promise<{ ok: boolean
   });
   if (!res.ok) {
     const err = (await res.json().catch(() => ({}))) as { error?: string };
-    return { ok: false, imported: 0, error: err.error ?? "合并失败" };
+    return { ok: false, imported: 0, error: err.error ?? "Gộp thất bại" };
   }
   const data = (await res.json()) as { imported: number };
   clearGuest();

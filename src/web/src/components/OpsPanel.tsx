@@ -13,27 +13,27 @@ import { DEFAULT_FIXED_CATEGORIES } from "../../../shared/source-classification.
 import { ClassificationPanel } from "./ClassificationPanel.tsx";
 
 const INTERVAL_OPTIONS = [
-  { label: "60 秒", sec: 60 },
-  { label: "90 秒", sec: 90 },
-  { label: "2 分钟", sec: 120 },
-  { label: "5 分钟", sec: 300 },
-  { label: "15 分钟", sec: 900 },
-  { label: "30 分钟", sec: 1800 },
-  { label: "1 小时", sec: 3600 },
-  { label: "6 小时", sec: 21600 },
+  { label: "60 giây", sec: 60 },
+  { label: "90 giây", sec: 90 },
+  { label: "2 phút", sec: 120 },
+  { label: "5 phút", sec: 300 },
+  { label: "15 phút", sec: 900 },
+  { label: "30 phút", sec: 1800 },
+  { label: "1 giờ", sec: 3600 },
+  { label: "6 giờ", sec: 21600 },
 ];
 
 /** 用途（kind）下拉：来自 shared/taxonomy.ts，与推送/主页同一份 */
 const KIND_HINT_OPTIONS = [
-  { value: "", label: "用途：自动识别" },
-  ...KIND_ORDER.map((key) => ({ value: key, label: `用途：${KIND_LABEL[key]}` })),
+  { value: "", label: "mục đích: tự nhận diện" },
+  ...KIND_ORDER.map((key) => ({ value: key, label: `mục đích: ${KIND_LABEL[key]}` })),
 ];
 
 /** 分类下拉按大类分组，覆盖全部分类（以前这里只列了 13 个，网盘/网课/拼车等选不到） */
 const CATEGORY_HINT_GROUPS = categoryOptionGroups();
 
 function categoryHintLabel(value: string): string {
-  return value ? (CATEGORY_LABEL[value as keyof typeof CATEGORY_LABEL] ?? value) : "自动识别";
+  return value ? (CATEGORY_LABEL[value as keyof typeof CATEGORY_LABEL] ?? value) : "tự nhận diện";
 }
 
 /**
@@ -59,7 +59,7 @@ function sourceHints(source: Source): { category: string; kind: string } {
     return `${labelOf(unique[0]!)} +${unique.length - 1}`;
   };
   const fixed = typeof cfg.fixedCategory === "string" ? cfg.fixedCategory : DEFAULT_FIXED_CATEGORIES[source.id];
-  return { category: fixed ? `固定 · ${categoryHintLabel(fixed)}` : pick("categoryHint"), kind: pick("kindHint") };
+  return { category: fixed ? `cố định · ${categoryHintLabel(fixed)}` : pick("categoryHint"), kind: pick("kindHint") };
 }
 
 type OpsTab = "sources" | "runs" | "quality" | "retention";
@@ -101,7 +101,7 @@ function CategoryHintSelect({
   value,
   onChange,
   className,
-  emptyLabel = "分类：自动识别",
+  emptyLabel = "phân loại: tự nhận diện",
   ariaLabel,
 }: {
   value: string;
@@ -114,7 +114,7 @@ function CategoryHintSelect({
   return (
     <select value={value} onChange={(e) => onChange(e.target.value)} className={className} aria-label={ariaLabel}>
       <option value="">{emptyLabel}</option>
-      {value && !known && <option value={value}>{value}（未知分类）</option>}
+      {value && !known && <option value={value}>{value}（phân loại chưa biết）</option>}
       {CATEGORY_HINT_GROUPS.map((group) => (
         <optgroup key={group.label} label={group.label}>
           {group.options.map((opt) => (
@@ -165,12 +165,12 @@ function SourceInlineEditor({
       try {
         const parsed = JSON.parse(rawJson);
         if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
-          setJsonErr("JSON 必须是对象 {}");
+          setJsonErr("JSON phải là object {}");
           return null;
         }
         base = parsed as Record<string, unknown>;
       } catch (e) {
-        setJsonErr(e instanceof Error ? e.message : "JSON 语法错误");
+        setJsonErr(e instanceof Error ? e.message : "lỗi cú pháp JSON");
         return null;
       }
     } else {
@@ -238,7 +238,7 @@ function SourceInlineEditor({
     <div className="space-y-3 rounded-lg border border-ink-200 bg-surface p-3.5 text-[12.5px]">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div className="font-medium text-ink-950">
-          编辑数据源 <span className="font-mono text-[11px] text-ink-400">{source.id}</span>
+          sửa nguồn dữ liệu <span className="font-mono text-[11px] text-ink-400">{source.id}</span>
         </div>
         <button
           type="button"
@@ -251,13 +251,13 @@ function SourceInlineEditor({
           }}
           className="text-[11.5px] font-medium text-brand hover:underline"
         >
-          {showJson ? "切回表单编辑" : "高级 JSON 配置"}
+          {showJson ? "quay lại sửa bằng form" : "cấu hình JSON nâng cao"}
         </button>
       </div>
 
       <div className="grid gap-2.5 sm:grid-cols-12">
         <label className="space-y-1 sm:col-span-4">
-          <span className="text-[11px] text-ink-500">显示名称</span>
+          <span className="text-[11px] text-ink-500">tên hiển thị</span>
           <input
             value={name}
             onChange={(e) => setName(e.target.value)}
@@ -265,7 +265,7 @@ function SourceInlineEditor({
           />
         </label>
         <label className="space-y-1 sm:col-span-2">
-          <span className="text-[11px] text-ink-500">采集周期</span>
+          <span className="text-[11px] text-ink-500">chu kỳ thu thập</span>
           <select
             value={intervalSec}
             onChange={(e) => setIntervalSec(Number(e.target.value))}
@@ -282,7 +282,7 @@ function SourceInlineEditor({
           </select>
         </label>
         <label className="space-y-1 sm:col-span-3">
-          <span className="text-[11px] text-ink-500">源级兜底用途（feed 未指定时生效）</span>
+          <span className="text-[11px] text-ink-500">mục đích dự phòng cấp nguồn (hiệu lực khi feed không chỉ định)</span>
           <select
             value={kindHint}
             onChange={(e) => setKindHint(e.target.value)}
@@ -296,7 +296,7 @@ function SourceInlineEditor({
           </select>
         </label>
         <label className="space-y-1 sm:col-span-3">
-          <span className="text-[11px] text-ink-500">兜底分类（内容识别不出时采用）</span>
+          <span className="text-[11px] text-ink-500">phân loại dự phòng (khi không nhận diện được)</span>
           <CategoryHintSelect
             value={categoryHint}
             onChange={setCategoryHint}
@@ -307,13 +307,13 @@ function SourceInlineEditor({
 
       <div className="grid gap-3 rounded-lg border border-brand-border bg-brand-subtle/40 p-3 sm:grid-cols-[minmax(0,1fr)_minmax(220px,0.8fr)]">
         <div>
-          <div className="flex items-center gap-1.5 text-[12.5px] font-semibold text-accent"><ShieldCheck size={14} /> 固定分类（硬规则）</div>
-          <p className="mt-1 text-[11.5px] leading-relaxed text-ink-600">选定后，该源资源固定归入此类，优先于关键词、RSS 提示和 AI（单条人工纠正除外）；保存时同步重整历史条目，不触发 AI 或推送。启停和收藏不受影响。取消固定后，新条目恢复自动分类，已有条目保持原分类。</p>
+          <div className="flex items-center gap-1.5 text-[12.5px] font-semibold text-accent"><ShieldCheck size={14} /> phân loại cố định (rule cứng)</div>
+          <p className="mt-1 text-[11.5px] leading-relaxed text-ink-600">sau khi chọn, tài nguyên nguồn này cố định vào phân loại đó, ưu tiên hơn từ khoá, gợi ý RSS và AI (trừ sửa thủ công từng mục); khi lưu đồng thời chỉnh lại mục lịch sử, không kích AI hay push. bật/tắt và lưu không bị ảnh hưởng. huỷ cố định xong, mục mới về phân loại tự động, mục đã có giữ nguyên phân loại cũ.</p>
         </div>
         <label className="space-y-1">
-          <span className="text-[12px] font-medium text-ink-700">固定分类</span>
-          <CategoryHintSelect value={fixedCategory} onChange={setFixedCategory} emptyLabel="不固定 · 按内容自动分类" ariaLabel="固定分类" className="w-full rounded-lg border border-ink-200 bg-surface px-2 py-2 text-[12px] text-ink-800 outline-none focus:border-brand" />
-          {source.id === "linuxdo-resource" && <span className="block text-[11px] text-ink-500">资源荟萃推荐：网盘资源；不会再混进真福利。</span>}
+          <span className="text-[12px] font-medium text-ink-700">phân loại cố định</span>
+          <CategoryHintSelect value={fixedCategory} onChange={setFixedCategory} emptyLabel="không cố định · tự phân loại theo nội dung" ariaLabel="phân loại cố định" className="w-full rounded-lg border border-ink-200 bg-surface px-2 py-2 text-[12px] text-ink-800 outline-none focus:border-brand" />
+          {source.id === "linuxdo-resource" && <span className="block text-[11px] text-ink-500">gợi ý tổng hợp tài nguyên: cloud drive; sẽ không còn lẫn vào freebie thật.</span>}
         </label>
       </div>
 
@@ -321,21 +321,21 @@ function SourceInlineEditor({
         <div className="space-y-2">
           <div className="flex flex-wrap items-center justify-between gap-2">
             <span className="text-[11px] text-ink-500">
-              订阅地址（{feedRows.length} 条）· 每条可单独指定分类/用途，留空则用源级兜底
+              địa chỉ đăng ký ({feedRows.length} mục) · mỗi mục chỉ định riêng phân loại/mục đích, để trống thì dùng dự phòng cấp nguồn
             </span>
             <button
               type="button"
               onClick={() => setFeedRows((rows) => [...rows, { ...EMPTY_FEED_ROW }])}
               className="inline-flex items-center gap-1 rounded-lg border border-ink-200 bg-surface px-2 py-1 text-[11.5px] font-medium text-ink-700 hover:border-brand-border hover:text-brand"
             >
-              <Plus size={11} /> 添加订阅地址
+              <Plus size={11} /> thêm địa chỉ đăng ký
             </button>
           </div>
           {feedRows.map((row, i) => (
             <div key={i} className="space-y-2 rounded-lg border border-ink-200 bg-surface-hover p-2.5">
               <div className="grid gap-2 sm:grid-cols-12">
                 <label className="space-y-1 sm:col-span-6">
-                  <span className="text-[11px] text-ink-500">RSS / Atom 地址 #{i + 1}</span>
+                  <span className="text-[11px] text-ink-500">địa chỉ RSS / Atom #{i + 1}</span>
                   <input
                     value={row.url}
                     onChange={(e) => updateFeed(i, { url: e.target.value })}
@@ -344,7 +344,7 @@ function SourceInlineEditor({
                   />
                 </label>
                 <label className="space-y-1 sm:col-span-2">
-                  <span className="text-[11px] text-ink-500">每次条数</span>
+                  <span className="text-[11px] text-ink-500">số tin mỗi lần</span>
                   <input
                     type="number"
                     min={1}
@@ -355,7 +355,7 @@ function SourceInlineEditor({
                   />
                 </label>
                 <div className="space-y-1 sm:col-span-2">
-                  <span className="text-[11px] text-ink-500">分类</span>
+                  <span className="text-[11px] text-ink-500">Phân loại</span>
                   <CategoryHintSelect
                     value={row.categoryHint}
                     onChange={(v) => updateFeed(i, { categoryHint: v })}
@@ -363,7 +363,7 @@ function SourceInlineEditor({
                   />
                 </div>
                 <label className="space-y-1 sm:col-span-2">
-                  <span className="text-[11px] text-ink-500">用途</span>
+                  <span className="text-[11px] text-ink-500">mục đích</span>
                   <select
                     value={row.kindHint}
                     onChange={(e) => updateFeed(i, { kindHint: e.target.value })}
@@ -379,11 +379,11 @@ function SourceInlineEditor({
               </div>
               <div className="flex flex-wrap items-end gap-2">
                 <label className="min-w-[200px] flex-1 space-y-1">
-                  <span className="text-[11px] text-ink-500">标题必含关键词（逗号分隔，留空全收）</span>
+                  <span className="text-[11px] text-ink-500">tiêu đề bắt buộc chứa từ khoá (phẩy, trống=thu hết)</span>
                   <input
                     value={row.titleKeywords}
                     onChange={(e) => updateFeed(i, { titleKeywords: e.target.value })}
-                    placeholder="如：免费, 限免, free"
+                    placeholder="vd: miễn phí, tặng giới hạn, free"
                     className="w-full rounded-lg border border-ink-200 bg-surface px-2.5 py-1.5 text-[12px] text-ink-950 outline-none focus:border-brand"
                   />
                 </label>
@@ -393,21 +393,21 @@ function SourceInlineEditor({
                     onClick={() => setFeedRows((rows) => rows.filter((_, x) => x !== i))}
                     className="inline-flex items-center gap-1 rounded-lg border border-ink-200 bg-surface px-2.5 py-1.5 text-[11.5px] font-medium text-alert hover:border-alert/40 hover:bg-alert-subtle"
                   >
-                    <Trash2 size={11} /> 删除这条
+                    <Trash2 size={11} /> xoá mục này
                   </button>
                 )}
               </div>
               <div className="grid gap-2 sm:grid-cols-3">
                 {[
-                  { key: "includeCategories" as const, label: "只采这些 RSS 栏目", placeholder: "info, promotion" },
-                  { key: "excludeCategories" as const, label: "排除这些 RSS 栏目", placeholder: "trade, discussion" },
-                  { key: "excludeTitleKeywords" as const, label: "标题排除词", placeholder: "求助, 广告, 招募" },
+                  { key: "includeCategories" as const, label: "chỉ thu các mục RSS này", placeholder: "info, promotion" },
+                  { key: "excludeCategories" as const, label: "loại trừ các mục RSS này", placeholder: "trade, discussion" },
+                  { key: "excludeTitleKeywords" as const, label: "từ loại trừ trong tiêu đề", placeholder: "cầu cứu, quảng cáo, tuyển dụng" },
                 ].map((field) => <label key={field.key} className="space-y-1">
                   <span className="text-[11px] text-ink-500">{field.label}</span>
                   <input value={row[field.key]} onChange={(event) => updateFeed(i, { [field.key]: event.target.value })} placeholder={field.placeholder} className="w-full rounded-lg border border-ink-200 bg-surface px-2.5 py-1.5 text-[12px] text-ink-950 outline-none focus:border-brand" />
                 </label>)}
               </div>
-              <p className="text-[11px] leading-relaxed text-ink-500">逗号分隔，排除优先。这些栏目是原站 RSS 标签，不是本站分类；采集过滤从下次采集起生效，不删除历史资源。</p>
+              <p className="text-[11px] leading-relaxed text-ink-500">phân cách bằng phẩy, loại trừ ưu tiên. các mục này là tag RSS của site gốc chứ không phải phân loại của site này; lọc khi thu có hiệu lực từ lần thu sau, không xoá tài nguyên lịch sử.</p>
             </div>
           ))}
         </div>
@@ -415,7 +415,7 @@ function SourceInlineEditor({
 
       {!showJson && source.kind === "telegram" && (
         <label className="block space-y-1">
-          <span className="text-[11px] text-ink-500">Telegram 公开频道名（逗号或空格分隔）</span>
+          <span className="text-[11px] text-ink-500">tên kênh Telegram công khai (phẩy hoặc khoảng trắng)</span>
           <input
             value={tgChannels}
             onChange={(e) => setTgChannels(e.target.value)}
@@ -427,7 +427,7 @@ function SourceInlineEditor({
 
       {showJson && (
         <div className="space-y-1">
-          <span className="text-[11px] text-ink-500">源 config JSON（可直接增删栏目 / feeds / 过滤参数）</span>
+          <span className="text-[11px] text-ink-500">config JSON của nguồn (thêm/xoá mục / feeds / tham số lọc trực tiếp)</span>
           <textarea
             rows={5}
             value={rawJson}
@@ -458,7 +458,7 @@ function SourceInlineEditor({
                   : "border-ink-200 bg-surface text-alert hover:border-alert/40 hover:bg-alert-subtle")
               }
             >
-              <Trash2 size={12} /> {confirmDel ? "再点一次确认删除" : "删除自定义源"}
+              <Trash2 size={12} /> {confirmDel ? "bấm lần nữa để xác nhận xoá" : "xoá nguồn tuỳ chọn"}
             </button>
           )}
         </div>
@@ -468,7 +468,7 @@ function SourceInlineEditor({
             onClick={onCancel}
             className="inline-flex items-center gap-1 rounded-lg border border-ink-200 bg-surface px-3 py-1 text-[12px] text-ink-600 hover:bg-ink-100"
           >
-            <X size={12} /> 取消
+            <X size={12} /> huỷ
           </button>
           <button
             type="button"
@@ -476,7 +476,7 @@ function SourceInlineEditor({
             onClick={() => void handleSave()}
             className="inline-flex items-center gap-1 rounded-lg bg-brand px-3 py-1 text-[12px] font-medium text-white hover:bg-brand-hover disabled:opacity-40"
           >
-            {saving ? <Loader2 size={12} className="animate-spin" /> : <Check size={12} />} 保存配置
+            {saving ? <Loader2 size={12} className="animate-spin" /> : <Check size={12} />} lưu cấu hình
           </button>
         </div>
       </div>
@@ -586,14 +586,14 @@ export function OpsPanel({
       });
       const d = (await r.json().catch(() => ({}))) as NonNullable<typeof cookieStatus> & { error?: string };
       if (!r.ok) {
-        onNotify?.(d.error ?? "保存失败");
+        onNotify?.(d.error ?? "Lưu thất bại");
         return false;
       }
       setCookieStatus(d);
       setRunnerUrlInput(d.runnerUrl || "");
       setXhsProxyInput(d.xhsProxy || "");
       if (clearKey) setCookieInputs((prev) => ({ ...prev, [clearKey]: "" }));
-      onNotify?.("Cookie 托管配置已保存");
+      onNotify?.("đã lưu cấu hình uỷ thác Cookie");
       return true;
     } finally {
       setCookieBusy(null);
@@ -610,7 +610,7 @@ export function OpsPanel({
       });
       const d = (await r.json().catch(() => ({}))) as NonNullable<typeof runnerTest>;
       setRunnerTest(d);
-      onNotify?.(d.ok ? "VPS Cookie 执行器在线且已就绪" : "执行器未连接：" + (d.error ?? "检查端口/服务"));
+      onNotify?.(d.ok ? "executor Cookie trên VPS đang online và sẵn sàng" : "executor chưa kết nối:" + (d.error ?? "kiểm tra cổng/dịch vụ"));
     } finally {
       setCookieBusy(null);
     }
@@ -634,7 +634,7 @@ export function OpsPanel({
       if (!probe.ok) throw new Error("not ok");
     } catch {
       setShowIngestGuide(true);
-      onNotify?.("未检测到本机回环助手（请按下方指引先启动，Cookie 绝不上传）");
+      onNotify?.("chưa phát hiện loopback helper (hãy khởi động theo hướng dẫn dưới, Cookie tuyệt đối không upload)");
       return;
     }
     const target = new URL(base + "/login");
@@ -647,7 +647,7 @@ export function OpsPanel({
 
   const buildUserscript = () => {
     const origin = typeof window !== "undefined" ? window.location.origin : "http://127.0.0.1:8788";
-    const tok = ingestTokenInput.trim() || "请替换为你的 INGEST_TOKEN";
+    const tok = ingestTokenInput.trim() || "hãy thay bằng INGEST_TOKEN của bạn";
     return `// ==UserScript==
 // @name         Freebie Radar 零 Cookie 上传采集助手
 // @namespace    https://github.com/ZiChuanLan/freebie-radar
@@ -747,9 +747,9 @@ export function OpsPanel({
       const j = (await r.json()) as { settings: RetentionSettings; counts: typeof retCounts };
       setRetention(j.settings);
       setRetCounts(j.counts);
-      onNotify?.("保留策略已保存");
+      onNotify?.("đã lưu chính sách giữ");
     } else {
-      onNotify?.("保存失败");
+      onNotify?.("Lưu thất bại");
     }
   };
 
@@ -766,7 +766,7 @@ export function OpsPanel({
         const j = (await r.json()) as { deleted: Record<string, number>; counts: typeof retCounts };
         setCleanPreview(j.deleted);
         setRetCounts(j.counts);
-        onNotify?.("清理完成");
+        onNotify?.("Dọn xong");
       }
     } finally {
       setCleaning(false);
@@ -779,10 +779,10 @@ export function OpsPanel({
       <div className="panel flex flex-wrap items-center justify-between gap-3 px-4 py-3">
         <div className="flex flex-wrap items-center gap-1.5">
           {[
-            { key: "sources" as OpsTab, label: `数据源 (${enabledCount}/${sources.length})`, icon: Rss },
-            { key: "runs" as OpsTab, label: `采集记录 (${runs.length})`, icon: Activity },
-            { key: "quality" as OpsTab, label: "来源质量榜", icon: Gauge },
-            { key: "retention" as OpsTab, label: "数据保留与清理", icon: Database },
+            { key: "sources" as OpsTab, label: `nguồn dữ liệu (${enabledCount}/${sources.length})`, icon: Rss },
+            { key: "runs" as OpsTab, label: `bản ghi thu thập (${runs.length})`, icon: Activity },
+            { key: "quality" as OpsTab, label: "bảng chất lượng nguồn", icon: Gauge },
+            { key: "retention" as OpsTab, label: "giữ & dọn dữ liệu", icon: Database },
           ].map((t) => (
             <button
               key={t.key}
@@ -800,12 +800,12 @@ export function OpsPanel({
         </div>
         <div className="flex items-center gap-3 text-[12px] text-ink-500">
           <span>
-            异常源{" "}
+            nguồn lỗi{" "}
             <span className={`font-mono font-semibold ${errorCount > 0 ? "text-alert" : "text-deal"}`}>{errorCount}</span>
           </span>
           {retCounts && (
             <span>
-              在库 <span className="font-mono font-semibold text-ink-800">{retCounts.total}</span>
+              trong kho <span className="font-mono font-semibold text-ink-800">{retCounts.total}</span>
             </span>
           )}
         </div>
@@ -819,7 +819,7 @@ export function OpsPanel({
                 <input
                   value={filterText}
                   onChange={(e) => setFilterText(e.target.value)}
-                  placeholder="搜源名称 / 类型…"
+                  placeholder="tìm tên/loại nguồn…"
                   className="rounded-lg border border-ink-200 bg-surface px-2.5 py-1.5 text-[12px] text-ink-900 outline-none focus:border-brand"
                 />
                 {(["all", "ok", "error", "disabled"] as const).map((k) => (
@@ -832,7 +832,7 @@ export function OpsPanel({
                       (statusFilter === k ? "bg-brand-subtle text-brand" : "text-ink-600 hover:bg-ink-100")
                     }
                   >
-                    {k === "all" ? `全部 (${sources.length})` : k === "ok" ? "正常" : k === "error" ? `异常 (${errorCount})` : "已禁用"}
+                    {k === "all" ? `tất cả (${sources.length})` : k === "ok" ? "bình thường" : k === "error" ? `lỗi (${errorCount})` : "đã tắt"}
                   </button>
                 ))}
               </div>
@@ -842,14 +842,14 @@ export function OpsPanel({
                   onClick={() => setShowIngestGuide((v) => !v)}
                   className="inline-flex items-center gap-1 rounded-lg border border-ink-200 bg-surface px-3 py-1.5 text-[12px] font-medium text-ink-700 hover:border-brand-border hover:text-brand"
                 >
-                  <KeyRound size={13} /> {showIngestGuide ? "收起 Cookie 托管" : "Cookie 托管（知乎/小红书/小黑盒/NGA）"}
+                  <KeyRound size={13} /> {showIngestGuide ? "thu gọn phần uỷ thác Cookie" : "uỷ thác Cookie (Zhihu/Xiaohongshu/XiaoHeiHe/NGA)"}
                 </button>
               <button
                 type="button"
                 onClick={() => setShowAddRss((v) => !v)}
                 className="inline-flex items-center gap-1 rounded-lg border border-brand-border bg-brand-subtle px-3 py-1.5 text-[12px] font-medium text-brand hover:bg-ink-200/70"
               >
-                <Plus size={13} /> {showAddRss ? "收起" : "添加 RSS / Atom"}
+                <Plus size={13} /> {showAddRss ? "Thu gọn" : "Thêm RSS / Atom"}
               </button>
             </div>
               </div>
@@ -859,7 +859,7 @@ export function OpsPanel({
                 <div className="flex flex-wrap items-center justify-between gap-2">
                   <div className="flex items-center gap-1.5 font-medium text-ink-950">
                     <KeyRound size={14} className="text-brand" />
-                    VPS Cookie 托管采集（按需拉起无头 Chrome，抓完立即释放，平时 0 MB 内存）
+                    thu qua uỷ thác Cookie trên VPS (kéo headless Chrome khi cần, giải phóng ngay sau khi tải xong, thường 0 MB RAM)
                   </div>
                   {runnerTest && (
                     <span
@@ -868,7 +868,7 @@ export function OpsPanel({
                         (runnerTest.ok ? "bg-deal-subtle text-deal" : "bg-alert-subtle text-alert")
                       }
                     >
-                      {runnerTest.ok ? `执行器在线${runnerTest.chrome ? " · Chrome 就绪" : ""}` : `未连通：${runnerTest.error ?? "离线"}`}
+                      {runnerTest.ok ? `executor online${runnerTest.chrome ? " · Chrome sẵn sàng" : ""}` : `chưa kết nối: ${runnerTest.error ?? "offline"}`}
                     </span>
                   )}
                 </div>
@@ -876,7 +876,7 @@ export function OpsPanel({
                 {/* 执行器地址与小红书代理 */}
                 <div className="grid gap-2 sm:grid-cols-12">
                   <label className="space-y-1 sm:col-span-5">
-                    <span className="text-[11px] text-ink-500">VPS 执行器地址（仅内网/Docker 网桥监听）</span>
+                    <span className="text-[11px] text-ink-500">địa chỉ executor VPS (chỉ nghe nội mạng/bridge Docker)</span>
                     <input
                       value={runnerUrlInput}
                       onChange={(e) => setRunnerUrlInput(e.target.value)}
@@ -885,7 +885,7 @@ export function OpsPanel({
                     />
                   </label>
                   <label className="space-y-1 sm:col-span-4">
-                    <span className="text-[11px] text-ink-500">小红书国内代理出口（海外 VPS 必填，如 http://47.110.65.20:8888）</span>
+                    <span className="text-[11px] text-ink-500">đầu ra proxy nội địa cho Xiaohongshu (VPS nước ngoài bắt buộc, vd http://47.110.65.20:8888)</span>
                     <input
                       value={xhsProxyInput}
                       onChange={(e) => setXhsProxyInput(e.target.value)}
@@ -900,7 +900,7 @@ export function OpsPanel({
                       onClick={() => void saveCookiePatch({ runnerUrl: runnerUrlInput, xhsProxy: xhsProxyInput }, "save-net")}
                       className="inline-flex h-8 flex-1 items-center justify-center rounded-lg bg-ink-950 px-2.5 text-[12px] font-medium text-white hover:bg-ink-800 disabled:opacity-40"
                     >
-                      {cookieBusy === "save-net" ? <Loader2 size={12} className="animate-spin" /> : "保存线路"}
+                      {cookieBusy === "save-net" ? <Loader2 size={12} className="animate-spin" /> : "Lưu route"}
                     </button>
                     <button
                       type="button"
@@ -908,7 +908,7 @@ export function OpsPanel({
                       onClick={() => void testCookieRunner()}
                       className="inline-flex h-8 items-center justify-center rounded-lg border border-ink-200 bg-surface px-2.5 text-[12px] font-medium text-ink-700 hover:border-brand-border hover:text-brand disabled:opacity-40"
                     >
-                      {cookieBusy === "test-runner" ? <Loader2 size={12} className="animate-spin" /> : "测连通"}
+                      {cookieBusy === "test-runner" ? <Loader2 size={12} className="animate-spin" /> : "test kết nối"}
                     </button>
                   </div>
                 </div>
@@ -917,20 +917,20 @@ export function OpsPanel({
                 <div className="grid gap-2.5 lg:grid-cols-2">
                   {(
                     [
-{ key: "zhihu" as const, sourceId: "zhihu-search", title: "知乎（zhihu.com）", hint: "关键字段：z_c0 / d_c0" },
-                      { key: "xhs" as const, sourceId: "xhs-search", title: "小红书（xiaohongshu.com）", hint: "关键字段：web_session / a1" },
-                      { key: "xiaoheihe" as const, sourceId: "xiaoheihe-search", title: "小黑盒（xiaoheihe.cn）", hint: "关键字段：user_token / x_app_id" },
+{ key: "zhihu" as const, sourceId: "zhihu-search", title: "Zhihu (zhihu.com)", hint: "trường chính: z_c0 / d_c0" },
+                      { key: "xhs" as const, sourceId: "xhs-search", title: "Xiaohongshu (xiaohongshu.com)", hint: "trường chính: web_session / a1" },
+                      { key: "xiaoheihe" as const, sourceId: "xiaoheihe-search", title: "XiaoHeiHe (xiaoheihe.cn)", hint: "trường chính: user_token / x_app_id" },
                       {
                         key: "nga" as const,
                         sourceId: "nga-deals",
                         title: "NGA（bbs.nga.cn）",
-                        hint: "关键字段：ngaPassportUid / ngaPassportCid（HTTP 直连，无需执行器）",
+                        hint: "trường chính: ngaPassportUid / ngaPassportCid (HTTP gọi thẳng, không cần executor)",
                       },
                       {
                         key: "weibo" as const,
                         sourceId: "weibo-freebies",
-                        title: "微博（weibo.com）",
-                        hint: "关键字段：SUB / SUBP（PC 端 ajax 直连，无需执行器）",
+                        title: "Weibo (weibo.com)",
+                        hint: "trường chính: SUB / SUBP (ajax trên PC gọi thẳng, không cần executor)",
                       },
                     ] as const
                   ).map((site) => {
@@ -946,22 +946,22 @@ export function OpsPanel({
                                 "rounded px-1.5 py-0.5 text-[10.5px] font-medium " +
                                 (st.hasAuthHint ? "bg-deal-subtle text-deal" : "bg-code-subtle text-amber-800")
                               }
-                              title={`已保存字段：${st.keyNames.join(", ")}`}
+                              title={`trường đã lưu: ${st.keyNames.join(", ")}`}
                             >
-                              已托管 {st.count} 项{st.hasAuthHint ? " · 含登录态" : " · 待核对"}
+                              đã uỷ thác {st.count} mục{st.hasAuthHint ? " · kèm phiên đăng nhập" : " · chờ đối chiếu"}
                             </span>
                           ) : (
-                            <span className="rounded bg-ink-100 px-1.5 py-0.5 text-[10.5px] text-ink-500">未配置</span>
+                            <span className="rounded bg-ink-100 px-1.5 py-0.5 text-[10.5px] text-ink-500">chưa cấu hình</span>
                           )}
                         </div>
                         <div className="text-[11px] text-ink-400">
-                          {st?.configured && st.updatedAt ? `更新于 ${timeAgo(st.updatedAt)} · ${st.keyNames.slice(0, 4).join(", ")}` : site.hint}
+                          {st?.configured && st.updatedAt ? `cập nhật ${timeAgo(st.updatedAt)} · ${st.keyNames.slice(0, 4).join(", ")}` : site.hint}
                         </div>
                         <textarea
                           rows={2}
                           value={draft}
                           onChange={(e) => setCookieInputs((prev) => ({ ...prev, [site.key]: e.target.value }))}
-                          placeholder="粘贴 Request Cookie 字符串（a=1; b=2）或 Cookie-Editor 导出的 JSON 数组（保存后不回显明文）"
+                          placeholder="dán chuỗi Request Cookie (a=1; b=2) hoặc mảng JSON xuất từ Cookie-Editor (sau lưu không hiện lại dạng thường)"
                           className="w-full rounded-md border border-ink-200 bg-canvas/50 p-2 font-mono text-[11px] text-ink-900 outline-none focus:border-brand"
                         />
                         <div className="flex flex-wrap items-center justify-between gap-1.5">
@@ -972,7 +972,7 @@ export function OpsPanel({
                               onClick={() => void saveCookiePatch({ cookies: { [site.key]: draft } }, `save-${site.key}`, site.key)}
                               className="inline-flex h-7 items-center gap-1 rounded-md bg-brand px-2.5 text-[11.5px] font-medium text-white hover:bg-brand-hover disabled:opacity-40"
                             >
-                              {cookieBusy === `save-${site.key}` ? <Loader2 size={11} className="animate-spin" /> : "保存"}
+                              {cookieBusy === `save-${site.key}` ? <Loader2 size={11} className="animate-spin" /> : "Lưu"}
                             </button>
                             <button
                               type="button"
@@ -987,7 +987,7 @@ export function OpsPanel({
                               className="inline-flex h-7 items-center gap-1 rounded-md border border-ink-200 bg-surface px-2.5 text-[11.5px] font-medium text-ink-800 hover:border-brand-border hover:text-brand disabled:opacity-40"
                             >
                               {isRunning(site.sourceId) ? <Loader2 size={11} className="animate-spin" /> : <Play size={10} />}
-                              立即采集
+                              thu ngay
                             </button>
                           </div>
                           {st?.configured && (
@@ -997,7 +997,7 @@ export function OpsPanel({
                               onClick={() => void saveCookiePatch({ cookies: { [site.key]: "" } }, `del-${site.key}`, site.key)}
                               className="text-[11px] text-alert hover:underline"
                             >
-                              清空
+                              xoá hết
                             </button>
                           )}
                         </div>
@@ -1008,12 +1008,12 @@ export function OpsPanel({
 
                 <details className="rounded-lg border border-ink-200/80 bg-surface/80 px-3 py-2 text-[11.5px] text-ink-600">
                   <summary className="cursor-pointer font-medium text-ink-700">
-                    备用：本机回环助手 / 油猴脚本（Cookie 留在本机时使用）
+                    dự phòng: loopback helper nội bộ / script Tampermonkey (dùng khi Cookie chỉ lưu trên máy)
                   </summary>
                   <div className="mt-2 space-y-2">
                 <div className="grid gap-2 sm:grid-cols-2">
                   <label className="space-y-1">
-                    <span className="text-[11.5px] text-ink-500">本机回环助手地址</span>
+                    <span className="text-[11.5px] text-ink-500">địa chỉ loopback helper</span>
                     <input
                       value={helperUrl}
                       onChange={(e) => {
@@ -1026,18 +1026,18 @@ export function OpsPanel({
                     />
                   </label>
                   <label className="space-y-1">
-                    <span className="text-[11.5px] text-ink-500">可选回传 INGEST_TOKEN（留空则用本机助手 .env）</span>
+                    <span className="text-[11.5px] text-ink-500">INGEST_TOKEN gửi ngược tuỳ chọn (trống = dùng .env của helper nội bộ)</span>
                     <input
                       type="password"
                       value={ingestTokenInput}
                       onChange={(e) => setIngestTokenInput(e.target.value)}
-                      placeholder="若本机 .env 已配 INGEST_TOKEN 可留空"
+                      placeholder="nếu .env trên máy đã có INGEST_TOKEN thì để trống"
                       className="w-full rounded-lg border border-ink-200 bg-surface px-2.5 py-1.5 font-mono text-[12px] text-ink-900 outline-none focus:border-brand"
                     />
                   </label>
                 </div>
                 <div className="flex flex-wrap items-center gap-2 text-[12px]">
-                  <span className="text-ink-500">方式 A（本机回环服务，平时无常驻浏览器）：</span>
+                  <span className="text-ink-500">cách A (dịch vụ loopback nội bộ, thường không có browser chạy sẵn):</span>
                   <code className="rounded bg-surface px-2 py-1 font-mono text-[11.5px] text-ink-900">
                     SERVER_URL={typeof window !== "undefined" ? window.location.origin : "http://127.0.0.1:8788"} node scripts/pw-collect.mjs serve
                   </code>
@@ -1047,21 +1047,21 @@ export function OpsPanel({
                       void navigator.clipboard?.writeText(
                         `SERVER_URL=${window.location.origin} node scripts/pw-collect.mjs serve`,
                       );
-                      onNotify?.("已复制回环助手启动命令");
+                      onNotify?.("đã sao chép lệnh khởi động loopback helper");
                     }}
                     className="inline-flex items-center gap-1 rounded-lg border border-ink-200 bg-surface px-2 py-1 text-[11.5px] hover:border-brand-border hover:text-brand"
                   >
-                    <Copy size={11} /> 复制命令
+                    <Copy size={11} /> sao chép lệnh
                   </button>
                   <button
                     type="button"
                     onClick={() => {
                       void navigator.clipboard?.writeText(buildUserscript());
-                      onNotify?.("已复制 Tampermonkey 油猴脚本（免装 Playwright）");
+                      onNotify?.("đã sao chép script Tampermonkey (không cần cài Playwright)");
                     }}
                     className="inline-flex items-center gap-1 rounded-lg border border-brand-border bg-surface px-2 py-1 text-[11.5px] text-brand hover:bg-brand-subtle"
                   >
-                    <Copy size={11} /> 复制油猴脚本（方式 B · 免装 Node）
+                    <Copy size={11} /> sao chép script Tampermonkey (cách B · khỏi cài Node)
                   </button>
                 </div>
                   </div>
@@ -1074,7 +1074,7 @@ export function OpsPanel({
                   <input
                     value={rssName}
                     onChange={(e) => setRssName(e.target.value)}
-                    placeholder="源名称（如 财联社电报 / 某博客）"
+                    placeholder="tên nguồn (vd telegram CLS / blog nào đó)"
                     className="rounded-lg border border-ink-200 bg-surface px-3 py-2 text-[12.5px] text-ink-950 outline-none focus:border-brand sm:col-span-3"
                   />
                   <input
@@ -1103,13 +1103,13 @@ export function OpsPanel({
                   </div>
                 </div>
                 <label className="flex flex-wrap items-center gap-3 text-[12px] text-ink-600">
-                  <span className="font-medium">固定分类（可选）</span>
-                  <CategoryHintSelect value={rssFixedCategory} onChange={setRssFixedCategory} emptyLabel="不固定 · 按内容自动分类" className="rounded-lg border border-ink-200 bg-surface px-2 py-2 text-[12px] text-ink-800" />
-                  <span className="text-[11.5px] text-ink-500">适合网盘、课程等专源；AI 不会改到其它分类。</span>
+                  <span className="font-medium">phân loại cố định (tuỳ chọn)</span>
+                  <CategoryHintSelect value={rssFixedCategory} onChange={setRssFixedCategory} emptyLabel="không cố định · tự phân loại theo nội dung" className="rounded-lg border border-ink-200 bg-surface px-2 py-2 text-[12px] text-ink-800" />
+                  <span className="text-[11.5px] text-ink-500">hợp nguồn chuyên cloud drive, khoá học; AI sẽ không đổi sang phân loại khác.</span>
                 </label>
                 <div className="flex flex-wrap items-center justify-between gap-2">
                   <div className="flex items-center gap-2 text-[12px] text-ink-500">
-                    <span>采集周期：</span>
+                    <span>chu kỳ thu thập:</span>
                     <select
                       value={rssInterval}
                       onChange={(e) => setRssInterval(Number(e.target.value))}
@@ -1117,7 +1117,7 @@ export function OpsPanel({
                     >
                       {INTERVAL_OPTIONS.map((o) => (
                         <option key={o.sec} value={o.sec}>
-                          每 {o.label}
+                          mỗi {o.label}
                         </option>
                       ))}
                     </select>
@@ -1149,7 +1149,7 @@ export function OpsPanel({
                     className="inline-flex items-center justify-center gap-1 rounded-lg bg-brand px-3.5 py-1.5 text-[12.5px] font-medium text-white transition-colors hover:bg-brand-hover disabled:opacity-40"
                   >
                     {addingRss ? <Loader2 size={13} className="animate-spin" /> : <Plus size={14} />}
-                    加入并采集
+                    thêm & thu
                   </button>
                 </div>
               </div>
@@ -1187,26 +1187,26 @@ export function OpsPanel({
                                 : "bg-ink-100 text-ink-600")
                         }
                       >
-                        {s.last_status ?? "未运行"}
+                        {s.last_status ?? "chưa chạy"}
                       </span>
                     </div>
 
                     <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1.5 text-[12px] text-ink-500">
-                      <span className="font-mono tabular-nums text-ink-700">{s.items} 条在库</span>
+                      <span className="font-mono tabular-nums text-ink-700">{s.items} tin trong kho</span>
                       <span className="text-ink-400">
                         {(() => {
                           const hints = sourceHints(s);
-                          const cat = hints.category || "分类自动";
-                          const kind = hints.kind || "用途自动";
+                          const cat = hints.category || "phân loại tự động";
+                          const kind = hints.kind || "mục đích tự động";
                           return `${cat} · ${kind}`;
                         })()}
                       </span>
-                      <span>{timeAgo(s.last_run_at)}采集</span>
+                      <span>{timeAgo(s.last_run_at)} · thu</span>
                       <button
                         type="button"
                         onClick={() => onToggleSource(s.id, !s.enabled)}
                         className={"h-5 w-9 shrink-0 rounded-full p-0.5 transition-colors " + (s.enabled ? "bg-brand" : "bg-ink-300")}
-                        title={s.enabled ? "点击禁用" : "点击启用"}
+                        title={s.enabled ? "bấm để tắt" : "bấm để bật"}
                       >
                         <span
                           className={
@@ -1215,7 +1215,7 @@ export function OpsPanel({
                         />
                       </button>
                       {s.kind === "ingest" && !cookieStatus?.sites[siteKeyOf(s.id)]?.configured ? (
-                        <span className="text-[12px] text-ink-500">待配 Cookie</span>
+                        <span className="text-[12px] text-ink-500">Cookie chờ cấu hình</span>
                       ) : (
                         <select
                           value={s.interval_sec}
@@ -1245,17 +1245,17 @@ export function OpsPanel({
                             : "border-ink-200 bg-surface text-ink-700 hover:border-ink-300")
                         }
                       >
-                        <Pencil size={11} /> 编辑
+                        <Pencil size={11} /> sửa
                       </button>
                       {s.kind === "ingest" && !cookieStatus?.sites[siteKeyOf(s.id)]?.configured ? (
                         <button
                           type="button"
                           onClick={() => setShowIngestGuide(true)}
                           className="inline-flex flex-1 items-center justify-center gap-1 rounded-lg border border-brand-border bg-brand-subtle px-2.5 py-2 text-[12px] font-medium text-brand hover:bg-ink-200/70"
-                          title="先贴入 Cookie 或启用本机回环采集"
+                          title="dán Cookie trước hoặc bật thu qua loopback nội bộ"
                         >
                           <KeyRound size={11} />
-                          配置 Cookie
+                          cấu hình Cookie
                         </button>
                       ) : (
                         <button
@@ -1265,7 +1265,7 @@ export function OpsPanel({
                           className="inline-flex flex-1 items-center justify-center gap-1 rounded-lg border border-ink-200 bg-surface px-2.5 py-2 text-[12px] font-medium text-ink-700 hover:border-brand-border hover:bg-brand-subtle hover:text-brand disabled:opacity-50"
                         >
                           {isRunning(s.id) ? <Loader2 size={11} className="animate-spin" /> : <Play size={11} />}
-                          立即采集
+                          thu ngay
                         </button>
                       )}
                     </div>
@@ -1278,15 +1278,15 @@ export function OpsPanel({
               <table className="w-full text-left text-[13px]">
                 <thead className="bg-surface-hover text-[11px] tracking-wide text-ink-500 uppercase">
                   <tr className="border-b border-ink-200">
-                    <th className="px-4 py-2.5 font-medium">源</th>
-                    <th className="px-2 py-2.5 font-medium">启用</th>
-                    <th className="px-2 py-2.5 font-medium">采集周期</th>
-                    <th className="px-2 py-2.5 font-medium">分类口径</th>
-                    <th className="px-2 py-2.5 font-medium">在库条数</th>
-                    <th className="px-2 py-2.5 font-medium">最近采集</th>
-                    <th className="px-2 py-2.5 font-medium">状态</th>
-                    <th className="px-2 py-2.5 font-medium">错误信息</th>
-                    <th className="px-4 py-2.5 text-right font-medium">操作</th>
+                    <th className="px-4 py-2.5 font-medium">nguồn</th>
+                    <th className="px-2 py-2.5 font-medium">Bật</th>
+                    <th className="px-2 py-2.5 font-medium">chu kỳ thu thập</th>
+                    <th className="px-2 py-2.5 font-medium">chuẩn phân loại</th>
+                    <th className="px-2 py-2.5 font-medium">số tin trong kho</th>
+                    <th className="px-2 py-2.5 font-medium">thu thập gần đây</th>
+                    <th className="px-2 py-2.5 font-medium">Trạng thái</th>
+                    <th className="px-2 py-2.5 font-medium">thông báo lỗi</th>
+                    <th className="px-4 py-2.5 text-right font-medium">Thao tác</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-ink-100">
@@ -1308,7 +1308,7 @@ export function OpsPanel({
                             className={
                               "h-5 w-9 rounded-full p-0.5 transition-colors " + (s.enabled ? "bg-brand" : "bg-ink-300")
                             }
-                            title={s.enabled ? "点击禁用" : "点击启用"}
+                            title={s.enabled ? "bấm để tắt" : "bấm để bật"}
                           >
                             <span
                               className={
@@ -1320,7 +1320,7 @@ export function OpsPanel({
                         </td>
                         <td className="px-2 py-2.5">
                           {s.kind === "ingest" && !cookieStatus?.sites[siteKeyOf(s.id)]?.configured ? (
-                            <span className="text-[12px] text-ink-500">待配 Cookie</span>
+                            <span className="text-[12px] text-ink-500">Cookie chờ cấu hình</span>
                           ) : (
                             <select
                               value={s.interval_sec}
@@ -1342,10 +1342,10 @@ export function OpsPanel({
                             return (
                               <div className="flex flex-col gap-0.5 text-[11px]">
                                 <span className={hints.category ? "text-ink-700" : "text-ink-400"}>
-                                  {hints.category || "分类自动"}
+                                  {hints.category || "phân loại tự động"}
                                 </span>
                                 <span className={hints.kind ? "text-ink-500" : "text-ink-400"}>
-                                  {hints.kind || "用途自动"}
+                                  {hints.kind || "mục đích tự động"}
                                 </span>
                               </div>
                             );
@@ -1366,7 +1366,7 @@ export function OpsPanel({
                                     : "bg-ink-100 text-ink-600")
                             }
                           >
-                            {s.last_status ?? "未运行"}
+                            {s.last_status ?? "chưa chạy"}
                           </span>
                         </td>
                         <td className="max-w-[220px] truncate px-2 py-2.5 font-mono text-[11px] text-alert" title={s.last_error ?? ""}>
@@ -1383,9 +1383,9 @@ export function OpsPanel({
                                   ? "border-ink-950 bg-ink-950 text-white"
                                   : "border-ink-200 bg-surface text-ink-600 hover:border-ink-300 hover:text-ink-950")
                               }
-                              title="编辑名称、RSS 地址、用途频道或 JSON 配置"
+                              title="sửa tên, địa chỉ RSS, kênh mục đích hoặc cấu hình JSON"
                             >
-                              <Pencil size={11} /> 编辑
+                              <Pencil size={11} /> sửa
                             </button>
                             {s.kind === "ingest" && !cookieStatus?.sites[siteKeyOf(s.id)]?.configured ? (
                               <>
@@ -1393,16 +1393,16 @@ export function OpsPanel({
                                   type="button"
                                   onClick={() => setShowIngestGuide(true)}
                                   className="inline-flex items-center gap-1 rounded-lg border border-brand-border bg-brand-subtle px-2.5 py-1 text-[12px] font-medium text-brand hover:bg-ink-200/70"
-                                  title="粘贴 Cookie 开启 VPS 全链路采集"
+                                  title="dán Cookie để bật thu toàn chuỗi trên VPS"
                                 >
                                   <KeyRound size={11} />
-                                  配 Cookie
+                                  cấu hình Cookie
                                 </button>
                                 <button
                                   type="button"
                                   onClick={() => void startLoopbackLogin(s.id)}
                                   className="inline-flex items-center gap-1 rounded-lg border border-ink-200 bg-surface px-2 py-1 text-[12px] text-ink-600 hover:border-brand-border hover:text-brand"
-                                  title="备用：通过本机回环助手扫码登录采集"
+                                  title="dự phòng: quét mã đăng nhập thu qua loopback helper"
                                 >
                                   <ExternalLink size={11} />
                                 </button>
@@ -1415,7 +1415,7 @@ export function OpsPanel({
                                 className="inline-flex items-center gap-1 rounded-lg border border-ink-200 bg-surface px-2.5 py-1 text-[12px] font-medium text-ink-700 hover:border-brand-border hover:bg-brand-subtle hover:text-brand disabled:opacity-50"
                               >
                                 {isRunning(s.id) ? <Loader2 size={11} className="animate-spin" /> : <Play size={11} />}
-                                立即采集
+                                thu ngay
                               </button>
                             )}
                           </div>
@@ -1437,17 +1437,17 @@ export function OpsPanel({
           <div className="panel flex flex-wrap items-center justify-between gap-3 p-4">
             <div>
               <div className="flex items-center gap-2 text-[14px] font-semibold text-ink-950">
-                <Gauge size={15} className="text-brand" /> 来源质量榜
+                <Gauge size={15} className="text-brand" /> bảng chất lượng nguồn
               </div>
               <p className="mt-0.5 text-[12px] text-ink-500">
-                留存率 = AI 判为有效 ÷ 已审条数。留存率低、条数又多的源，基本是在白烧采集与 AI 额度。
+                tỉ lệ giữ = AI đánh giá hợp lệ ÷ số tin đã duyệt. nguồn có tỉ lệ giữ thấp mà nhiều tin thì cơ bản đang đốt phí hạn mức thu & AI.
               </p>
             </div>
             <div className="flex items-center gap-0.5 rounded-md border border-ink-200 bg-surface p-0.5">
               {[
-                { d: 1, label: "今天" },
-                { d: 7, label: "7 天" },
-                { d: 30, label: "30 天" },
+                { d: 1, label: "hôm nay" },
+                { d: 7, label: "7 ngày" },
+                { d: 30, label: "30 ngày" },
               ].map((w) => (
                 <button
                   key={w.d}
@@ -1467,20 +1467,20 @@ export function OpsPanel({
           <div className="panel overflow-hidden">
             {qualityLoading && !quality && (
               <div className="flex items-center gap-2 px-4 py-8 text-[13px] text-ink-500">
-                <Loader2 size={13} className="animate-spin" /> 统计中…
+                <Loader2 size={13} className="animate-spin" /> đang thống kê…
               </div>
             )}
             <div className="overflow-x-auto">
               <table className="w-full min-w-[720px] text-left text-[13px]">
                 <thead className="bg-surface-hover text-[11px] tracking-wide text-ink-500 uppercase">
                   <tr className="border-b border-ink-200">
-                    <th className="px-4 py-2 font-medium">源</th>
-                    <th className="px-2 py-2 text-right font-medium">入库</th>
-                    <th className="px-2 py-2 text-right font-medium">已审</th>
-                    <th className="px-2 py-2 text-right font-medium">留存</th>
-                    <th className="px-2 py-2 font-medium">留存率</th>
-                    <th className="px-2 py-2 text-right font-medium">平均质量</th>
-                    <th className="px-2 py-2 text-right font-medium">已推</th>
+                    <th className="px-4 py-2 font-medium">nguồn</th>
+                    <th className="px-2 py-2 text-right font-medium">vào kho</th>
+                    <th className="px-2 py-2 text-right font-medium">đã duyệt</th>
+                    <th className="px-2 py-2 text-right font-medium">giữ lại</th>
+                    <th className="px-2 py-2 font-medium">tỉ lệ giữ lại</th>
+                    <th className="px-2 py-2 text-right font-medium">chất lượng TB</th>
+                    <th className="px-2 py-2 text-right font-medium">đã push</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -1509,7 +1509,7 @@ export function OpsPanel({
                                 />
                               </div>
                               <span className={"font-mono text-[11.5px] tabular-nums " + tone}>
-                                {pct === null ? "未审" : pct + "%"}
+                                {pct === null ? "chưa duyệt" : pct + "%"}
                               </span>
                             </div>
                           </td>
@@ -1524,7 +1524,7 @@ export function OpsPanel({
               </table>
             </div>
             {quality && quality.filter((q) => q.total > 0).length === 0 && (
-              <div className="px-4 py-10 text-center text-[12.5px] text-ink-500">这个时间范围内没有采集到条目</div>
+              <div className="px-4 py-10 text-center text-[12.5px] text-ink-500">không thu được mục nào trong khung thời gian này</div>
             )}
           </div>
         </div>
@@ -1532,18 +1532,18 @@ export function OpsPanel({
       {subTab === "runs" && (
         <div className="panel overflow-hidden">
           <div className="border-b border-ink-100 px-4 py-3 text-[13.5px] font-semibold text-ink-950">
-            最近采集记录（{runs.length}）
+            bản ghi thu gần đây ({runs.length})
           </div>
           <div className="overflow-x-auto">
             <table className="w-full min-w-[560px] text-left text-[13px]">
               <thead className="bg-surface-hover text-[11px] tracking-wide text-ink-500 uppercase">
                 <tr className="border-b border-ink-200">
-                  <th className="px-4 py-2 font-medium">时间</th>
-                  <th className="px-2 py-2 font-medium">源</th>
-                  <th className="px-2 py-2 font-medium">抓取</th>
-                  <th className="px-2 py-2 font-medium">新增</th>
-                  <th className="px-2 py-2 font-medium">耗时</th>
-                  <th className="px-4 py-2 font-medium">结果</th>
+                  <th className="px-4 py-2 font-medium">Thời gian</th>
+                  <th className="px-2 py-2 font-medium">nguồn</th>
+                  <th className="px-2 py-2 font-medium">tải</th>
+                  <th className="px-2 py-2 font-medium">Thêm mới</th>
+                  <th className="px-2 py-2 font-medium">thời gian chạy</th>
+                  <th className="px-4 py-2 font-medium">Kết quả</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-ink-100">
@@ -1574,16 +1574,16 @@ export function OpsPanel({
           <div className="flex flex-wrap items-center justify-between gap-2">
             <div>
               <div className="flex items-center gap-2 text-[14.5px] font-semibold text-ink-950">
-                <Trash2 size={15} className="text-brand" /> 数据保留与自动清理
+                <Trash2 size={15} className="text-brand" /> giữ dữ liệu & tự động dọn
               </div>
               <p className="mt-0.5 text-[12px] text-ink-500">
-                修改天数后失焦即保存；收藏条目永久保留不删除。
+                sửa số ngày rồi mất focus là lưu; mục đã lưu giữ vĩnh viễn không xoá.
               </p>
             </div>
             {retCounts && (
               <span className="text-[12px] text-ink-500">
-                在库 <span className="font-mono font-medium text-ink-800">{retCounts.total}</span> · 收藏{" "}
-                <span className="font-mono font-medium text-amber-700">{retCounts.starred}</span> · 已关闭{" "}
+                trong kho <span className="font-mono font-medium text-ink-800">{retCounts.total}</span> · đã lưu{" "}
+                <span className="font-mono font-medium text-amber-700">{retCounts.starred}</span> · đã đóng{" "}
                 <span className="font-mono font-medium">{retCounts.ignored}</span>
               </span>
             )}
@@ -1592,11 +1592,11 @@ export function OpsPanel({
           {retention && (
             <div className="grid gap-3 sm:grid-cols-5">
               {[
-                { key: "itemDays" as const, label: "非福利条目", hint: "天" },
-                { key: "keptDays" as const, label: "AI 判福利", hint: "天" },
-                { key: "ignoredDays" as const, label: "手动关闭", hint: "天" },
-                { key: "pushLogDays" as const, label: "推送日志", hint: "天" },
-                { key: "digestDays" as const, label: "每日精选", hint: "天" },
+                { key: "itemDays" as const, label: "tin không phải freebie", hint: "ngày" },
+                { key: "keptDays" as const, label: "AI đánh giá freebie", hint: "ngày" },
+                { key: "ignoredDays" as const, label: "đóng thủ công", hint: "ngày" },
+                { key: "pushLogDays" as const, label: "nhật ký push", hint: "ngày" },
+                { key: "digestDays" as const, label: "tuyển chọn ngày", hint: "ngày" },
               ].map((f) => (
                 <label key={f.key} className="block rounded-lg border border-ink-200 bg-surface-hover p-3">
                   <span className="mb-1.5 block text-[12px] font-medium text-ink-700">{f.label}</span>
@@ -1632,7 +1632,7 @@ export function OpsPanel({
                 onChange={(e) => void saveRetentionField({ auto: e.target.checked })}
                 className="h-4 w-4 accent-brand"
               />
-              每天自动清理过期数据
+              mỗi ngày tự dọn dữ liệu hết hạn
             </label>
             <div className="ml-auto flex items-center gap-2">
               <button
@@ -1640,7 +1640,7 @@ export function OpsPanel({
                 onClick={previewCleanup}
                 className="inline-flex items-center gap-1.5 rounded-lg border border-ink-200 bg-surface px-3.5 py-1.5 text-[12.5px] font-medium text-ink-700 hover:bg-ink-100"
               >
-                <Search size={13} /> 预演清理量
+                <Search size={13} /> xem trước lượng dọn
               </button>
               <button
                 type="button"
@@ -1648,18 +1648,18 @@ export function OpsPanel({
                 onClick={doCleanup}
                 className="inline-flex items-center gap-1.5 rounded-lg border border-alert-border bg-alert-subtle px-3.5 py-1.5 text-[12.5px] font-medium text-alert hover:bg-red-100/80 disabled:opacity-60"
               >
-                {cleaning ? <Loader2 size={13} className="animate-spin" /> : <Trash2 size={13} />} 立即清理
+                {cleaning ? <Loader2 size={13} className="animate-spin" /> : <Trash2 size={13} />} dọn ngay
               </button>
             </div>
           </div>
 
           {cleanPreview && (
             <div className="rounded-lg border border-ink-200 bg-surface-hover p-3 text-[12.5px] text-ink-700">
-              将清理：
+              sẽ dọn:
               {Object.entries(cleanPreview)
                 .filter(([, n]) => n > 0)
-                .map(([k, n]) => `${k} ${n} 条`)
-                .join(" · ") || "没有需要清理的条目"}
+                .map(([k, n]) => `${k} ${n} tin`)
+                .join(" · ") || "không có mục cần dọn"}
             </div>
           )}
         </div>

@@ -4,20 +4,20 @@ import { KIND_LABEL, categoryLabelForKind, timeAgo } from "../lib/sources.ts";
 import type { HotReport, HotScope } from "../types.ts";
 
 const WINDOWS = [
-  { hours: 24, label: "24 小时" },
-  { hours: 72, label: "3 天" },
-  { hours: 168, label: "7 天" },
+  { hours: 24, label: "24 giờ" },
+  { hours: 72, label: "3 ngày" },
+  { hours: 168, label: "7 ngày" },
 ];
 
 const SCOPES: { key: HotScope; label: string }[] = [
-  { key: "all", label: "全部" },
-  { key: "deals", label: "福利/好价" },
-  { key: "news", label: "重要新闻" },
-  { key: "info", label: "行业资讯" },
+  { key: "all", label: "Tất cả" },
+  { key: "deals", label: "freebie/giá tốt" },
+  { key: "news", label: "tin quan trọng" },
+  { key: "info", label: "tin ngành" },
 ];
 
 function Delta({ delta }: { delta: number }) {
-  if (delta === 0) return <span className="font-mono text-[11px] text-ink-400">持平</span>;
+  if (delta === 0) return <span className="font-mono text-[11px] text-ink-400">ngang nhau</span>;
   const up = delta > 0;
   return (
     <span className={"inline-flex items-center gap-0.5 font-mono text-[11px] " + (up ? "text-deal" : "text-ink-400")}>
@@ -69,7 +69,7 @@ export function HotPanel({
   };
   const catMax = Math.max(1, ...(report?.categories ?? []).map((c) => c.n));
 
-  const windowLabel = useMemo(() => WINDOWS.find((w) => w.hours === hours)?.label ?? hours + " 小时", [hours]);
+  const windowLabel = useMemo(() => WINDOWS.find((w) => w.hours === hours)?.label ?? hours + " giờ", [hours]);
   const totalDelta = report ? report.scanned - report.prevScanned : 0;
   const topNews = report?.topNews ?? [];
 
@@ -78,8 +78,8 @@ export function HotPanel({
       <div className="panel flex flex-wrap items-center justify-between gap-3 p-4">
         <div className="flex items-center gap-2">
           <Flame size={15} className="text-brand" />
-          <span className="text-[14px] font-semibold text-ink-950">今日热点</span>
-          <span className="text-[11.5px] text-ink-500">已做跨源事件去重，点词或分类直接跳回资源流</span>
+          <span className="text-[14px] font-semibold text-ink-950">điểm nóng hôm nay</span>
+          <span className="text-[11.5px] text-ink-500">đã khử trùng sự kiện liên nguồn, bấm từ hoặc phân loại để về dòng tài nguyên</span>
         </div>
         <div className="flex flex-wrap items-center gap-2">
           <div className="flex items-center gap-0.5 rounded-md border border-ink-200 bg-surface p-0.5">
@@ -116,7 +116,7 @@ export function HotPanel({
             type="button"
             onClick={onReload}
             className="inline-flex h-7 items-center gap-1 rounded-md border border-ink-200 px-2 text-[11.5px] font-medium text-ink-600 transition-colors hover:bg-ink-100 active:scale-[0.98]"
-            title="重新统计"
+            title="Tính lại"
           >
             <RefreshCw size={11} className={loading ? "animate-spin" : ""} />
           </button>
@@ -127,7 +127,7 @@ export function HotPanel({
 
       {loading && !report && (
         <div className="panel flex items-center gap-2 p-6 text-[13px] text-ink-500">
-          <Loader2 size={13} className="animate-spin" /> 正在统计{windowLabel}热词…
+          <Loader2 size={13} className="animate-spin" /> đang thống kê từ hot {windowLabel}…
         </div>
       )}
 
@@ -136,15 +136,15 @@ export function HotPanel({
           <div className="panel grid grid-cols-2 gap-3 p-4 sm:grid-cols-4">
             {[
               {
-                label: "独立事件数",
+                label: "số sự kiện riêng",
                 value: report.scanned,
                 note: report.rawScanned && report.rawScanned > report.scanned
-                  ? `${windowLabel}（原始 ${report.rawScanned} 条已去重）`
+                  ? `${windowLabel}（gốc ${report.rawScanned} tin đã khử trùng）`
                   : windowLabel,
               },
-              { label: "上一窗口", value: report.prevScanned, note: "同长度对比" },
-              { label: "热词数", value: report.words.length, note: "已过滤虚词" },
-              { label: "最值得抢", value: report.top.length, note: "仅真福利与特价好价" },
+              { label: "khung trước", value: report.prevScanned, note: "so sánh cùng độ dài" },
+              { label: "số từ hot", value: report.words.length, note: "đã lọc hư từ" },
+              { label: "đáng săn nhất", value: report.top.length, note: "chỉ freebie thật & giá tốt" },
             ].map((m) => (
               <div key={m.label}>
                 <div className="text-[11.5px] text-ink-500">{m.label}</div>
@@ -156,13 +156,13 @@ export function HotPanel({
 
           <div className="panel p-5">
             <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
-              <span className="text-[13.5px] font-semibold text-ink-950">热词云</span>
+              <span className="text-[13.5px] font-semibold text-ink-950">mây từ hot</span>
               <span className="text-[11.5px] text-ink-500">
-                字号 = 独立事件提及次数 · <Delta delta={totalDelta} /> 为与上一窗口相比的事件增减
+                cỡ chữ = số lần nhắc sự kiện riêng · <Delta delta={totalDelta} /> là mức tăng giảm sự kiện so với khung trước
               </span>
             </div>
             {words.length === 0 ? (
-              <div className="py-10 text-center text-[12.5px] text-ink-500">这个窗口还没有足够的数据</div>
+              <div className="py-10 text-center text-[12.5px] text-ink-500">khung này chưa đủ dữ liệu</div>
             ) : (
               <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1.5 leading-none">
                 {words.map((w) => {
@@ -175,7 +175,7 @@ export function HotPanel({
                       onMouseEnter={() => setHovered(w.w)}
                       onMouseLeave={() => setHovered(null)}
                       onClick={() => onSearchWord(w.w)}
-                      title={`${w.w}：本窗口 ${w.n} 次，上一窗口 ${w.prev} 次（点击搜索）`}
+                      title={`${w.w}: khung này ${w.n} lần, khung trước ${w.prev} lần (bấm để tìm)`}
                       className={
                         "rounded px-1.5 py-0.5 transition-all duration-150 hover:-translate-y-0.5 active:scale-95 " +
                         (hovered === w.w
@@ -201,8 +201,8 @@ export function HotPanel({
           <div className="grid min-w-0 gap-4 lg:grid-cols-2">
             <div className="panel min-w-0 p-5">
               <div className="mb-3 flex items-center justify-between">
-                <span className="text-[13.5px] font-semibold text-ink-950">分类热度</span>
-                <span className="text-[11px] text-ink-400">点击直达对应分类</span>
+                <span className="text-[13.5px] font-semibold text-ink-950">độ hot theo loại</span>
+                <span className="text-[11px] text-ink-400">bấm để tới phân loại tương ứng</span>
               </div>
               <div className="space-y-2">
                 {report.categories.slice(0, 10).map((c) => (
@@ -229,7 +229,7 @@ export function HotPanel({
                     </div>
                   </button>
                 ))}
-                {!report.categories.length && <div className="text-[12.5px] text-ink-500">暂无分类数据</div>}
+                {!report.categories.length && <div className="text-[12.5px] text-ink-500">chưa có dữ liệu phân loại</div>}
               </div>
             </div>
 
@@ -237,9 +237,9 @@ export function HotPanel({
               <div className="mb-3 flex items-center justify-between">
                 <span className="flex items-center gap-1.5 text-[13.5px] font-semibold text-ink-950">
                   <Sparkles size={13} className="text-deal" />
-                  这个窗口最值得抢
+                  đáng săn nhất khung này
                 </span>
-                <span className="text-[11px] text-ink-500">仅白嫖福利与特价好价 · 已去重</span>
+                <span className="text-[11px] text-ink-500">chỉ hàng free & giá tốt · đã khử trùng</span>
               </div>
               <div className="divide-y divide-ink-100">
                 {report.top.map((it, i) => (
@@ -258,10 +258,10 @@ export function HotPanel({
                         <span>{sourceName(it.source_id)}</span>
                         {it.category && <span>· {categoryLabelForKind(it.category, it.kind)}</span>}
                         {it.kind && it.kind !== "freebie" && <span>· {KIND_LABEL[it.kind] ?? it.kind}</span>}
-                        {it.quality ? <span className="text-deal">· 质量 {it.quality}</span> : null}
+                        {it.quality ? <span className="text-deal">· chất lượng {it.quality}</span> : null}
                         {(it.dupCount ?? 1) > 1 ? (
                           <span className="rounded bg-brand-subtle px-1 py-0.2 text-[10.5px] text-accent">
-                            {it.dupCount} 源同步
+                            {it.dupCount} nguồn cùng đăng
                           </span>
                         ) : null}
                       </span>
@@ -274,7 +274,7 @@ export function HotPanel({
                 {!report.top.length && (
                   <div className="flex flex-col items-center gap-2 py-8 text-center">
                     <Radar size={22} className="text-ink-300" />
-                    <span className="text-[12.5px] text-ink-500">这个窗口还没有真福利或特价好价</span>
+                    <span className="text-[12.5px] text-ink-500">khung này chưa có freebie thật hay giá tốt</span>
                   </div>
                 )}
               </div>
@@ -286,9 +286,9 @@ export function HotPanel({
               <div className="mb-3 flex items-center justify-between">
                 <span className="flex items-center gap-1.5 text-[13.5px] font-semibold text-ink-950">
                   <Newspaper size={14} className="text-accent" />
-                  重要新闻与行业资讯精选
+                  tuyển chọn tin quan trọng & tin ngành
                 </span>
-                <span className="text-[11px] text-ink-500">已按同事件折叠，不混入「最值得抢」</span>
+                <span className="text-[11px] text-ink-500">đã gập theo cùng sự kiện, không trộn vào「đáng săn nhất」</span>
               </div>
               <div className="divide-y divide-ink-100">
                 {topNews.map((it, i) => (
@@ -305,10 +305,10 @@ export function HotPanel({
                         <span>{sourceName(it.source_id)}</span>
                         {it.kind && <span>· {KIND_LABEL[it.kind] ?? it.kind}</span>}
                         {it.category && <span>· {categoryLabelForKind(it.category, it.kind)}</span>}
-                        {it.quality ? <span className="text-accent">· 质量 {it.quality}</span> : null}
+                        {it.quality ? <span className="text-accent">· chất lượng {it.quality}</span> : null}
                         {(it.dupCount ?? 1) > 1 ? (
                           <span className="rounded bg-brand-subtle px-1 py-0.2 text-[10.5px] text-accent">
-                            {it.dupCount} 篇同事件
+                            {it.dupCount} bài cùng sự kiện
                           </span>
                         ) : null}
                       </span>
@@ -321,7 +321,7 @@ export function HotPanel({
           )}
 
           <div className="px-1 text-[11px] text-ink-400">
-            统计范围：{windowLabel}内 status=active 且未被 AI 判为噪音的条目 · 更新于 {timeAgo(report.to)}
+            phạm vi thống kê: mục status=active trong {windowLabel} chưa bị AI đánh giá nhiễu · cập nhật {timeAgo(report.to)}
           </div>
         </div>
       )}

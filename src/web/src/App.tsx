@@ -81,30 +81,30 @@ import type {
 } from "./types.ts";
 
 const SOURCE_LABEL: Record<string, string> = {
-  "linuxdo-welfare": "LINUX DO · 福利羊毛",
-  "linuxdo-resource": "LINUX DO · 资源荟萃",
-  "v2ex-free": "V2EX · 免费赠送",
+  "linuxdo-welfare": "LINUX DO · freebie",
+  "linuxdo-resource": "LINUX DO · tổng hợp tài nguyên",
+  "v2ex-free": "V2EX · tặng free",
   "github-free-for-dev": "GitHub · free-for-dev",
-  "rss-fuliba": "福利吧",
-  "rss-52pojie": "吾爱破解",
-  "rss-smzdm": "什么值得买",
-  "zhihu-search": "知乎 · 福利搜索",
-  "xhs-search": "小红书 · 福利搜索",
-  "xiaoheihe-search": "小黑盒 · 福利搜索",
-  "tg-channels": "Telegram 频道",
-  gamerpower: "GamerPower · 免费游戏",
-  "epic-free": "Epic Games · 喜加一",
+  "rss-fuliba": "freebie",
+  "rss-52pojie": "52pojie",
+  "rss-smzdm": "SMZDM",
+  "zhihu-search": "Zhihu · tìm freebie",
+  "xhs-search": "Xiaohongshu · tìm freebie",
+  "xiaoheihe-search": "XiaoHeiHe · tìm freebie",
+  "tg-channels": "kênh Telegram",
+  gamerpower: "GamerPower · game free",
+  "epic-free": "Epic Games · tặng game",
   "rss-reddit-freegames": "Reddit · FreeGameFindings",
   "rss-reddit-efreebies": "Reddit · eFreebies",
   "rss-reddit-gamedeals": "Reddit · GameDeals",
   "rss-slickdeals": "Slickdeals",
   "rss-heyitsfree": "HeyItsFree",
-  "rss-keylol": "其乐 Keylol",
-  "openrouter-free": "OpenRouter · 新免费大模型",
-  "gamerpower-loot": "GamerPower · 免费礼包与 Key",
-  "rss-itch-free": "itch.io · 100% 限免游戏",
-  "rss-freesteamkeys": "FreeSteamKeys · Steam 限免",
-  "rss-ghxi": "果核剥壳 · 免费软件",
+  "rss-keylol": "Keylol",
+  "openrouter-free": "OpenRouter · model lớn free mới",
+  "gamerpower-loot": "GamerPower · gift pack & key free",
+  "rss-itch-free": "itch.io · game tặng giới hạn 100%",
+  "rss-freesteamkeys": "FreeSteamKeys · Steam tặng giới hạn",
+  "rss-ghxi": "Ghxi · phần mềm free",
 };
 
 let SOURCE_NAMES: Record<string, string> = { ...SOURCE_LABEL };
@@ -171,13 +171,13 @@ function Toast({ message }: { message: string | null }) {
 type Preset = { key: string; label: string; icon: typeof Sparkles };
 
 const PRIMARY_CHANNELS: Preset[] = [
-  { key: "verified", label: "真福利", icon: Sparkles },
-  { key: "offline", label: "实物福利", icon: MapPin },
-  { key: "news", label: "重要新闻", icon: Newspaper },
-  { key: "opensource", label: "开源项目", icon: Code },
-  { key: "deal", label: "黑五/好价", icon: Flame },
-  { key: "info", label: "行业资讯", icon: TrendingUp },
-  { key: "pan", label: "网盘/网课", icon: FolderOpen },
+  { key: "verified", label: "freebie thật", icon: Sparkles },
+  { key: "offline", label: "freebie hiện vật", icon: MapPin },
+  { key: "news", label: "tin quan trọng", icon: Newspaper },
+  { key: "opensource", label: "dự án mã nguồn mở", icon: Code },
+  { key: "deal", label: "Black Friday/giá tốt", icon: Flame },
+  { key: "info", label: "tin ngành", icon: TrendingUp },
+  { key: "pan", label: "cloud drive/khoá học", icon: FolderOpen },
 ];
 
 /**
@@ -185,20 +185,20 @@ const PRIMARY_CHANNELS: Preset[] = [
  * 全部是虚构条目，不含任何真实资源标题或链接——真实数据在后端就被过滤掉了。
  */
 const PAN_DEMO_ROWS = [
-  { title: "某编程实战课程合集 · 全 42 讲", meta: "TG · 网盘资源收藏 · 网盘资源", score: "82" },
-  { title: "某设计素材包 · 字体/笔刷/模板", meta: "LINUX DO · 资源荟萃 · 网盘资源", score: "76" },
-  { title: "某电子书套装 · PDF/EPUB 双格式", meta: "TG · 综合资源 · 网盘资源", score: "71" },
-  { title: "某办公软件工具集 · 免安装版", meta: "TG · 网盘资源收藏 · 网盘资源", score: "68" },
-  { title: "某考试真题汇总 · 含答案解析", meta: "LINUX DO · 资源荟萃 · 网课教程", score: "64" },
-  { title: "某视频剪辑教程 · 素材+工程文件", meta: "TG · 综合资源 · 网课教程", score: "59" },
+  { title: "tổng hợp khoá lập trình thực chiến · đủ 42 bài", meta: "TG · sưu tầm cloud drive · cloud drive", score: "82" },
+  { title: "gói asset thiết kế · font/brush/template", meta: "LINUX DO · tổng hợp tài nguyên · cloud drive", score: "76" },
+  { title: "bộ ebook · hai định dạng PDF/EPUB", meta: "TG · tài nguyên tổng hợp · cloud drive", score: "71" },
+  { title: "bộ công cụ văn phòng · bản portable", meta: "TG · sưu tầm cloud drive · cloud drive", score: "68" },
+  { title: "tổng hợp đề thi thật · kèm giải đáp", meta: "LINUX DO · tổng hợp tài nguyên · khoá học", score: "64" },
+  { title: "khoá học dựng video · kèm asset & file project", meta: "TG · tài nguyên tổng hợp · khoá học", score: "59" },
 ];
 
 const SECONDARY_VIEWS: Preset[] = [
-  { key: "codes", label: "含兑换码", icon: Zap },
-  { key: "urgent", label: "今日截止", icon: Bell },
-  { key: "starred", label: "我的收藏", icon: Check },
-  { key: "all", label: "全部收录", icon: AlignJustify },
-  { key: "hidden", label: "已关闭", icon: EyeOff },
+  { key: "codes", label: "có mã đổi quà", icon: Zap },
+  { key: "urgent", label: "hết hạn hôm nay", icon: Bell },
+  { key: "starred", label: "Mục đã lưu", icon: Check },
+  { key: "all", label: "tất cả đã thu", icon: AlignJustify },
+  { key: "hidden", label: "đã đóng", icon: EyeOff },
 ];
 
 const PRESETS: Preset[] = [...PRIMARY_CHANNELS, ...SECONDARY_VIEWS];
@@ -237,12 +237,12 @@ export function App() {
     if (!id || relatedMap[id]) return;
     let alive = true;
     fetch(`/api/items/${id}/related`, { headers: { accept: "application/json" } })
-      .then((r) => { if (!r.ok) throw new Error("关联来源加载失败"); return r.json(); })
+      .then((r) => { if (!r.ok) throw new Error("tải nguồn liên quan thất bại"); return r.json(); })
       .then((d: { items?: (Item & { sourceName?: string })[] }) => {
         if (alive && Array.isArray(d.items)) setRelatedMap((m) => ({ ...m, [id]: d.items! }));
       })
       .catch(() => {
-        if (alive) { setRelatedOpen(null); setToast("关联来源加载失败，请稍后重试"); }
+        if (alive) { setRelatedOpen(null); setToast("tải nguồn liên quan thất bại, thử lại sau"); }
       });
     return () => { alive = false; };
     return () => {
@@ -332,11 +332,11 @@ export function App() {
   const logout = useCallback(async () => {
     try {
       const response = await fetch("/api/auth/logout", { method: "POST" });
-      if (!response.ok) { setToast("退出失败，请重试"); return; }
+      if (!response.ok) { setToast("đăng xuất thất bại, thử lại"); return; }
       setTab("feed");
       setDetail(null);
       boot.reload();
-    } catch { setToast("网络异常，退出未完成，请重试"); }
+    } catch { setToast("lỗi mạng, đăng xuất chưa xong, thử lại"); }
   }, [boot]);
 
   const [search, setSearch] = useState("");
@@ -404,7 +404,7 @@ export function App() {
   const copyCode = useCallback(
     (code: string) => {
       void navigator.clipboard?.writeText(code);
-      notify("已复制兑换码 " + code);
+      notify("đã sao chép mã đổi quà " + code);
     },
     [notify],
   );
@@ -433,7 +433,7 @@ export function App() {
     const nextSearch = sp.toString();
     history.replaceState(null, "", location.pathname + (nextSearch ? "?" + nextSearch : "") + "#ops");
     setTab("ops");
-    notify(`已完成 ${site} 登录并回传公开福利（Cookie 仅留本机）`);
+    notify(`đã đăng nhập ${site} xong và gửi ngược freebie công khai (Cookie chỉ lưu trên máy)`);
   }, [notify]);
 
   const [, bumpNames] = useState(0);
@@ -633,7 +633,7 @@ export function App() {
     const ac = new AbortController();
     setDetailLoading(true); setDetailError(null);
     fetch(`/api/items/${detailId}`, { signal: ac.signal }).then(async (res) => {
-      if (!res.ok) throw new Error("详情加载失败，请重试");
+      if (!res.ok) throw new Error("tải chi tiết thất bại, thử lại");
       return await res.json() as Item;
     }).then((full) => {
       if (!ac.signal.aborted) setDetail((current) => current?.id === detailId ? { ...current, ...full } : current);
@@ -644,7 +644,7 @@ export function App() {
 
   const patch = useCallback(
     async (id: number, body: Record<string, unknown>) => {
-      if (!bootData) { notify("站点配置加载中，请稍后重试"); return; }
+      if (!bootData) { notify("đang tải cấu hình site, thử lại sau"); return; }
       // 公开站未登录：只改本机 localStorage，不发请求，谁也不影响
       if (guestMode) {
         guestPatch(id, body as { starred?: boolean; read?: boolean; status?: string });
@@ -667,7 +667,7 @@ export function App() {
       });
       if (!res.ok) {
         const err = (await res.json().catch(() => ({}))) as { error?: string };
-        notify(err.error ?? "操作失败");
+        notify(err.error ?? "Thao tác thất bại");
         return;
       }
       items.reload();
@@ -686,7 +686,7 @@ export function App() {
       if (guestMode) {
         guestAddBlock(pattern);
         syncGuest();
-        notify("已在本机屏蔽「" + pattern + "」");
+        notify("đã chặn trên máy này「" + pattern + "」");
         items.reload();
         return;
       }
@@ -698,10 +698,10 @@ export function App() {
       });
       if (!res.ok) {
         const err = (await res.json().catch(() => ({}))) as { error?: string };
-        notify(err.error ?? "添加失败");
-        throw new Error(err.error ?? "添加失败");
+        notify(err.error ?? "Thêm thất bại");
+        throw new Error(err.error ?? "Thêm thất bại");
       }
-      notify("已屏蔽「" + pattern + "」");
+      notify("Đã chặn「" + pattern + "」");
       blockRules.reload();
       items.reload();
       stats.reload();
@@ -721,7 +721,7 @@ export function App() {
   const addSubscription = useCallback(
     async (kw: string) => {
       if (guestMode) {
-        notify("登录后才能订阅关键词（访客偏好只存在本机）");
+        notify("đăng nhập mới đăng ký được từ khoá (sở thích khách chỉ lưu trên máy)");
         return;
       }
       const res = await fetch(rulesBase + "/subscriptions", {
@@ -729,10 +729,10 @@ export function App() {
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ keyword: kw }),
       });
-      if (!res.ok) { notify(((await res.json()) as { error?: string }).error ?? "订阅失败"); throw new Error("订阅失败"); }
+      if (!res.ok) { notify(((await res.json()) as { error?: string }).error ?? "Đăng ký thất bại"); throw new Error("Đăng ký thất bại"); }
       subs.reload();
       items.reload();
-      notify("已订阅「" + kw + "」");
+      notify("Đã theo dõi「" + kw + "」");
     },
     [subs, items, notify, guestMode, rulesBase],
   );
@@ -740,7 +740,7 @@ export function App() {
   const removeSubscription = useCallback(
     async (id: number) => {
       const res = await fetch(rulesBase + "/subscriptions/" + id, { method: "DELETE" });
-      if (!res.ok) { notify("删除关注词失败"); return; }
+      if (!res.ok) { notify("Xoá từ theo dõi thất bại"); return; }
       subs.reload();
       items.reload();
     },
@@ -763,7 +763,7 @@ export function App() {
     if (guestMode) {
       guestBatch(unreadIds, "read");
       syncGuest();
-      notify(`已在本机把 ${unreadIds.length} 条标为已读`);
+      notify(`đã đánh dấu đã đọc ${unreadIds.length} tin trên máy này`);
       return;
     }
     const res = await fetch(isPublicSite ? "/api/me/items/batch" : "/api/items/batch", {
@@ -771,8 +771,8 @@ export function App() {
       headers: { "content-type": "application/json" },
       body: JSON.stringify({ ids: unreadIds, action: "read" }),
     });
-    if (!res.ok) { notify("标记已读失败，请重试"); return; }
-    notify(`已将本页 ${unreadIds.length} 条标为已读`);
+    if (!res.ok) { notify("đánh dấu đã đọc thất bại, thử lại"); return; }
+    notify(`đã đánh dấu đã đọc ${unreadIds.length} tin trang này`);
     items.reload();
     stats.reload();
   }, [items, stats, notify, guestMode, isPublicSite, syncGuest, guest, preset, unreadOnly]);
@@ -789,24 +789,24 @@ export function App() {
 
   // 公开区显示「资源流 / 今日热点 / 每日精选」，其余 Tab 只有进管理区后才出现
   const tabs: { key: Tab | "admin"; label: string; icon: typeof Activity; badge?: number }[] = [
-    { key: "feed", label: "资源流", icon: Activity },
-    { key: "hot", label: "今日热点", icon: Flame },
-    { key: "digest", label: "每日精选", icon: Radar },
-    ...(me ? [{ key: "me" as Tab, label: "我的", icon: User }] : []),
+    { key: "feed", label: "Dòng tài nguyên", icon: Activity },
+    { key: "hot", label: "điểm nóng hôm nay", icon: Flame },
+    { key: "digest", label: "tuyển chọn ngày", icon: Radar },
+    ...(me ? [{ key: "me" as Tab, label: "Của tôi", icon: User }] : []),
     ...(!adminReady && me
       ? [
-          { key: "rules" as Tab, label: "我的订阅与屏蔽", icon: ShieldBan, badge: stats.data?.totals.blockRules },
-          { key: "push" as Tab, label: "我的推送规则", icon: Zap, badge: push.data?.stats.queued },
+          { key: "rules" as Tab, label: "theo dõi & chặn của tôi", icon: ShieldBan, badge: stats.data?.totals.blockRules },
+          { key: "push" as Tab, label: "rule push của tôi", icon: Zap, badge: push.data?.stats.queued },
         ]
       : []),
     ...(adminReady
       ? [
-          { key: "rules" as Tab, label: "订阅与屏蔽", icon: ShieldBan, badge: stats.data?.totals.blockRules },
-          { key: "push" as Tab, label: "推送规则", icon: Zap, badge: push.data?.stats.queued },
-          { key: "ai" as Tab, label: "AI 引擎", icon: Bot },
-          { key: "ops" as Tab, label: "数据源运维", icon: Wrench },
+          { key: "rules" as Tab, label: "theo dõi & chặn", icon: ShieldBan, badge: stats.data?.totals.blockRules },
+          { key: "push" as Tab, label: "rule push", icon: Zap, badge: push.data?.stats.queued },
+          { key: "ai" as Tab, label: "engine AI", icon: Bot },
+          { key: "ops" as Tab, label: "vận hành nguồn dữ liệu", icon: Wrench },
         ]
-      : [{ key: "admin" as const, label: "管理区", icon: Lock }]),
+      : [{ key: "admin" as const, label: "khu quản trị", icon: Lock }]),
   ];
 
   const handleTab = (key: Tab | "admin") => {
@@ -828,7 +828,7 @@ export function App() {
         type="button"
         onClick={() => setWelcomeOpen(true)}
         className={ICON_BTN}
-        title="站点说明与使用提示"
+        title="giới thiệu site & hướng dẫn dùng"
       >
         <BookOpen size={14} />
       </button>
@@ -836,7 +836,7 @@ export function App() {
         type="button"
         onClick={() => setRssOpen(true)}
         className={ICON_BTN}
-        title="RSS 订阅地址"
+        title="địa chỉ đăng ký RSS"
       >
         <Globe2 size={14} />
       </button>
@@ -850,8 +850,8 @@ export function App() {
       target="_blank"
       rel="noreferrer"
       className={ICON_BTN}
-      title="主仓库 · GitHub"
-      aria-label="GitHub 主仓库"
+      title="repo chính · GitHub"
+      aria-label="repo chính GitHub"
     >
       <Github size={14} />
     </a>
@@ -860,7 +860,7 @@ export function App() {
   // 账号态：移动端放进导航行右侧，桌面端留在侧栏第二行
   const accountNode = me ? (
     <div className="flex min-w-0 items-center gap-1">
-      <button type="button" onClick={() => setTab("me")} aria-label="打开个人中心" title="个人中心与推送渠道" className="flex min-w-0 items-center gap-1 rounded hover:bg-ink-100">
+      <button type="button" onClick={() => setTab("me")} aria-label="mở trung tâm cá nhân" title="trung tâm cá nhân & kênh push" className="flex min-w-0 items-center gap-1 rounded hover:bg-ink-100">
       {me.avatarUrl ? (
         <img src={me.avatarUrl} alt="" className="h-6 w-6 shrink-0 rounded-full border border-ink-200" />
       ) : (
@@ -870,7 +870,7 @@ export function App() {
       )}
       <span
         className="hidden min-w-0 truncate text-[11.5px] font-medium text-ink-800 sm:inline"
-        title={`${me.name ?? me.username} · ${me.linuxdoId < 0 ? "GitHub" : `LINUX DO 信任等级 ${me.trustLevel}`}`}
+        title={`${me.name ?? me.username} · ${me.linuxdoId < 0 ? "GitHub" : `cấp trust LINUX DO ${me.trustLevel}`}`}
       >
         {me.name ?? me.username}
       </span>
@@ -879,7 +879,7 @@ export function App() {
         type="button"
         onClick={() => void logout()}
         className="shrink-0 rounded p-1 text-ink-400 hover:bg-ink-100 hover:text-ink-900"
-        title="退出登录"
+        title="Đăng xuất"
       >
         <LogOut size={12} />
       </button>
@@ -892,9 +892,9 @@ export function App() {
         setAuthOpen(true);
       }}
       className="inline-flex shrink-0 items-center gap-1 rounded-md bg-ink-950 px-2 py-1 text-[11.5px] font-medium whitespace-nowrap text-white hover:bg-brand-hover"
-      title="用 LINUX DO 登录"
+      title="đăng nhập bằng LINUX DO"
     >
-      <User size={12} /> 登录
+      <User size={12} /> đăng nhập
     </button>
   ) : null;
 
@@ -903,15 +903,15 @@ export function App() {
     <>
       <div className="pt-1">
         <div className="mb-1.5 flex items-center justify-between px-2">
-          <span className="text-[11px] font-medium text-ink-400">快捷视图</span>
+          <span className="text-[11px] font-medium text-ink-400">xem nhanh</span>
           {activeFilterCount > 0 && (
             <button
               type="button"
               onClick={resetFilters}
               className="inline-flex items-center gap-0.5 text-[11px] font-medium text-accent hover:underline"
-              title="清除全部筛选条件"
+              title="xoá toàn bộ điều kiện lọc"
             >
-              <RotateCcw size={10} /> 清除 {activeFilterCount}
+              <RotateCcw size={10} /> Xoá {activeFilterCount}
             </button>
           )}
         </div>
@@ -937,13 +937,13 @@ export function App() {
 
       <div className="border-t border-ink-200 pt-3">
         <div className="mb-1.5 flex items-center justify-between px-2">
-          <span className="text-[11px] font-medium text-ink-400">数据源</span>
+          <span className="text-[11px] font-medium text-ink-400">nguồn dữ liệu</span>
           <button
             type="button"
             onClick={() => setShowAllSources((v) => !v)}
             className="text-[11px] text-ink-400 hover:text-ink-700"
           >
-            {showAllSources ? "隐藏禁用" : "显示全部"}
+            {showAllSources ? "ẩn mục đã tắt" : "Hiện tất cả"}
           </button>
         </div>
         <button
@@ -956,7 +956,7 @@ export function App() {
               : "font-medium text-ink-600 hover:bg-canvas-subtle/60")
           }
         >
-          全部来源
+          tất cả nguồn
         </button>
         {grouped.map((g) => {
           const collapsed = collapsedGroups[g.key] ?? !g.sources.some((s) => s.id === source);
@@ -987,7 +987,7 @@ export function App() {
                           : "text-ink-600 hover:bg-canvas-subtle/60") +
                         (s.enabled ? "" : " opacity-45")
                       }
-                      title={s.id + " · 采集周期 " + formatInterval(s.interval_sec)}
+                      title={s.id + " · chu kỳ thu thập " + formatInterval(s.interval_sec)}
                     >
                       <span className="truncate">{s.name}</span>
                       <span className="ml-1.5 shrink-0 font-mono text-[11px] tabular-nums text-ink-400">{s.items}</span>
@@ -1010,18 +1010,18 @@ export function App() {
         <div className="flex items-center justify-between gap-2 px-1">
           <div className="flex items-center gap-2">
             <span className="h-2.5 w-2.5 shrink-0 rounded-full bg-accent" aria-hidden="true" />
-            <h1 className="text-[14.5px] font-semibold tracking-tight text-ink-950">资源雷达</h1>
+            <h1 className="text-[14.5px] font-semibold tracking-tight text-ink-950">Freebie Radar</h1>
           </div>
           <span className="hidden font-mono text-[11px] tabular-nums text-ink-400 lg:inline">
-            {stats.data?.totals.aiKept ?? "—"} 精选
+            {stats.data?.totals.aiKept ?? "—"} tuyển chọn
           </span>
           <div className="flex items-center gap-1 lg:hidden">
             {helpRssNode}
             {githubNode}
-            {tab === "feed" && <a href={exportUrl} className={ICON_BTN} title="按当前筛选导出 Markdown">
+            {tab === "feed" && <a href={exportUrl} className={ICON_BTN} title="xuất Markdown theo lọc hiện tại">
               <Download size={14} />
             </a>}
-            <button type="button" onClick={refreshAll} className={ICON_BTN} title="刷新数据">
+            <button type="button" onClick={refreshAll} className={ICON_BTN} title="Làm mới dữ liệu">
               <RefreshCw size={14} className={items.loading ? "animate-spin" : ""} />
             </button>
           </div>
@@ -1036,7 +1036,7 @@ export function App() {
 
         {isPublicSite && (guest.hidden.length > 0 || guest.starred.length > 0 || guest.read.length > 0 || guest.blocked.length > 0) && (
           <div className="mt-2 rounded-md border border-ink-200 bg-surface-hover px-2.5 py-1.5 text-[11px] leading-relaxed text-ink-600">
-            本机偏好：收藏 {guest.starred.length} · 已读 {guest.read.length} · 已关闭 {guest.hidden.length}
+            sở thích trên máy: lưu {guest.starred.length} · đã đọc {guest.read.length} · đã đóng {guest.hidden.length}
             {bootData?.loginEnabled && (
               <button
                 type="button"
@@ -1044,18 +1044,18 @@ export function App() {
                   if (!me) { setAuthOpen(true); return; }
                   const r = await importGuestToAccount(guest);
                   if (r.ok) {
-                    notify(`已合并 ${r.imported} 条偏好到账号`);
+                    notify(`đã gộp ${r.imported} mục sở thích vào tài khoản`);
                     syncGuest();
                     items.reload();
                     stats.reload();
                     blockRules.reload();
                   } else {
-                    notify(r.error ?? "合并失败");
+                    notify(r.error ?? "Gộp thất bại");
                   }
                 }}
                 className="ml-1 font-medium text-accent hover:underline"
               >
-                {me ? "合并到当前账号" : "登录后合并"}
+                {me ? "gộp vào tài khoản hiện tại" : "gộp sau đăng nhập"}
               </button>
             )}
           </div>
@@ -1077,7 +1077,7 @@ export function App() {
                 }
               }
             }}
-            placeholder="搜索福利、兑换码…"
+            placeholder="tìm freebie, mã đổi quà…"
             className="h-8 w-full rounded-md border border-ink-200 bg-surface pr-8 pl-8 text-[12.5px] text-ink-950 transition-colors outline-none placeholder:text-ink-400 focus:border-accent"
           />
           {search ? (
@@ -1088,7 +1088,7 @@ export function App() {
                 setDebounced("");
               }}
               className="absolute top-1/2 right-2 -translate-y-1/2 rounded p-0.5 text-ink-400 hover:bg-ink-100 hover:text-ink-700"
-              title="清空搜索"
+              title="Xoá tìm kiếm"
             >
               <X size={12} />
             </button>
@@ -1101,7 +1101,7 @@ export function App() {
 
         {/* 导航：手机横向可滚 + 右侧账号，桌面纵列无边框 */}
         <div className="-mx-3.5 mt-2.5 flex items-center gap-1.5 px-3.5 pb-0.5 lg:mx-0 lg:mt-0 lg:block lg:px-0 lg:pb-0">
-          <nav ref={mobileNavRef} aria-label="页面导航" className="no-scrollbar flex min-w-0 flex-1 items-center gap-1 overflow-x-auto lg:block lg:flex-none lg:space-y-0.5 lg:overflow-visible">
+          <nav ref={mobileNavRef} aria-label="điều hướng trang" className="no-scrollbar flex min-w-0 flex-1 items-center gap-1 overflow-x-auto lg:block lg:flex-none lg:space-y-0.5 lg:overflow-visible">
           {tabs.slice(0, 3).map((t) => (
             <button
               key={t.key}
@@ -1135,7 +1135,7 @@ export function App() {
           ))}
           <div className="mx-1 h-4 w-px shrink-0 self-center bg-ink-200 lg:hidden" />
           <div className="hidden px-2.5 pt-3 pb-1 text-[11px] font-medium text-ink-400 lg:block">
-            {adminReady ? "管理" : me ? "个人空间" : "管理"}
+            {adminReady ? "Quản trị" : me ? "không gian cá nhân" : "Quản trị"}
           </div>
           {tabs.slice(3).map((t) => (
             <button
@@ -1187,9 +1187,9 @@ export function App() {
         {/* 桌面 48px 顶栏 */}
         <header className="sticky top-0 z-20 hidden h-12 items-center justify-between gap-4 border-b border-ink-200 bg-surface/95 px-6 backdrop-blur-sm lg:flex">
           <div className="flex min-w-0 items-center gap-2 text-[13px]">
-            <span className="text-ink-500">{adminReady && ADMIN_TABS.has(tab) ? "管理工作台" : tab === "me" || (me && (tab === "rules" || tab === "push")) ? "个人空间" : "公开内容"}</span>
+            <span className="text-ink-500">{adminReady && ADMIN_TABS.has(tab) ? "bàn làm việc quản trị" : tab === "me" || (me && (tab === "rules" || tab === "push")) ? "không gian cá nhân" : "nội dung công khai"}</span>
             <ChevronRight size={12} className="text-ink-300" />
-            <span className="font-medium text-ink-900">{tabs.find((t) => t.key === tab)?.label ?? "管理区"}</span>
+            <span className="font-medium text-ink-900">{tabs.find((t) => t.key === tab)?.label ?? "khu quản trị"}</span>
           </div>
 
           <div className="flex shrink-0 items-center gap-3 text-[12px] text-ink-500">
@@ -1198,27 +1198,27 @@ export function App() {
             </span>
             <span className="text-ink-300" aria-hidden="true">·</span>
             <span className="font-mono tabular-nums">
-              含码 <strong className="font-semibold text-ink-900">{stats.data?.totals.withCodes ?? "—"}</strong>
+              có mã <strong className="font-semibold text-ink-900">{stats.data?.totals.withCodes ?? "—"}</strong>
             </span>
             {(stats.data?.totals.aiRejected ?? 0) > 0 && (
               <>
                 <span className="text-ink-300" aria-hidden="true">·</span>
-                <span>已滤 {stats.data?.totals.aiRejected} 条水帖</span>
+                <span>đã lọc {stats.data?.totals.aiRejected} bài rác</span>
               </>
             )}
             <a
               href={exportUrl}
               className="ml-1 inline-flex h-7 items-center gap-1.5 rounded-md border border-ink-200 bg-surface px-2.5 text-[12px] font-medium text-ink-700 transition-colors hover:bg-ink-100 hover:text-ink-950"
-              title="按当前筛选导出 Markdown"
+              title="xuất Markdown theo lọc hiện tại"
             >
-              <Download size={12} /> 导出
+              <Download size={12} /> Xuất
             </a>
             </>}
             <button
               type="button"
               onClick={refreshAll}
               className="inline-flex h-7 w-7 items-center justify-center rounded-md border border-ink-200 bg-surface text-ink-600 transition-colors hover:bg-ink-100 hover:text-ink-950"
-              title="刷新数据"
+              title="Làm mới dữ liệu"
             >
               <RefreshCw size={13} className={items.loading ? "animate-spin" : ""} />
             </button>
@@ -1231,7 +1231,7 @@ export function App() {
           <Suspense
             fallback={
               <div className="flex items-center justify-center gap-1.5 px-6 py-10 text-[12.5px] text-ink-400">
-                <Loader2 size={13} className="animate-spin" /> 载入中…
+                <Loader2 size={13} className="animate-spin" /> Đang tải…
               </div>
             }
           >
@@ -1239,10 +1239,10 @@ export function App() {
             <AdminGate protectedMode={protectedMode} entryAllowed={adminEntryAllowed} onAuthChange={setAdminAuthed}>
               <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
                 {[
-                  { key: "rules" as Tab, label: "订阅与屏蔽", desc: "关键词订阅、屏蔽词防火墙", icon: ShieldBan },
-                  { key: "push" as Tab, label: "推送规则", desc: "推送时机、阈值、格式与免打扰", icon: Zap },
-                  { key: "ai" as Tab, label: "AI 引擎", desc: "规则初筛、审核模型、提示词与补审", icon: Bot },
-                  { key: "ops" as Tab, label: "数据源运维", desc: "采集开关、间隔、数据清理", icon: Wrench },
+                  { key: "rules" as Tab, label: "theo dõi & chặn", desc: "đăng ký từ khoá, tường lửa từ chặn", icon: ShieldBan },
+                  { key: "push" as Tab, label: "rule push", desc: "thời điểm push, ngưỡng, định dạng & không làm phiền", icon: Zap },
+                  { key: "ai" as Tab, label: "engine AI", desc: "lọc sơ bằng rule, model duyệt, prompt & duyệt bổ sung", icon: Bot },
+                  { key: "ops" as Tab, label: "vận hành nguồn dữ liệu", desc: "công tắc thu thập, chu kỳ, dọn dữ liệu", icon: Wrench },
                 ].map((entry) => (
                   <button
                     key={entry.key}
@@ -1263,7 +1263,7 @@ export function App() {
             <>
               {/* 移动端：频道胶囊 + 筛选/视图压成一行，省掉两条整行按钮 */}
               <div className="flex items-stretch border-b border-ink-100 bg-surface">
-                <div className="channel-nav no-scrollbar min-w-0 flex-1" role="group" aria-label="内容频道">
+                <div className="channel-nav no-scrollbar min-w-0 flex-1" role="group" aria-label="kênh nội dung">
                   {PRIMARY_CHANNELS.map((p) => (
                     <button
                       key={p.key}
@@ -1289,8 +1289,8 @@ export function App() {
                         ? "border-ink-950 bg-ink-950 text-white"
                         : "border-ink-200 bg-surface text-ink-600")
                     }
-                    title="筛选条件"
-                    aria-label="筛选条件"
+                    title="điều kiện lọc"
+                    aria-label="điều kiện lọc"
                     aria-expanded={mobileFilterBar}
                   >
                     <SlidersHorizontal size={14} />
@@ -1304,8 +1304,8 @@ export function App() {
                     type="button"
                     onClick={() => updateViewMode(viewMode === "compact" ? "grid2" : "compact")}
                     className="inline-flex h-7 w-7 items-center justify-center rounded-md border border-ink-200 bg-surface text-ink-600 transition-colors hover:text-ink-950"
-                    title={viewMode === "compact" ? "切到卡片网格" : "切到紧凑列表"}
-                    aria-label="切换视图"
+                    title={viewMode === "compact" ? "chuyển sang lưới thẻ" : "chuyển sang danh sách gọn"}
+                    aria-label="đổi chế độ xem"
                   >
                     {viewMode === "compact" ? <LayoutGrid size={14} /> : <AlignJustify size={14} />}
                   </button>
@@ -1332,7 +1332,7 @@ export function App() {
                           : "text-ink-500 hover:bg-ink-100 hover:text-ink-900")
                       }
                     >
-                      全部{preset === "news" ? "要闻" : preset === "info" ? "资讯" : "分类"}
+                      tất cả{preset === "news" ? "tin chính" : preset === "info" ? "tin tức" : "Phân loại"}
                     </button>
                     {quickCats.map((key) => {
                       const n = countMap.get(key) ?? 0;
@@ -1368,9 +1368,9 @@ export function App() {
                     {/* 移动端统计并进这一行右端，不再单占一条 */}
                     <div className="relative flex shrink-0 items-center border-l border-ink-100 bg-surface px-2.5 text-[11px] whitespace-nowrap text-ink-500 sm:hidden">
                       <span className="pointer-events-none absolute inset-y-0 -left-4 w-4 bg-gradient-to-l from-surface to-transparent" aria-hidden="true" />
-                      共 <strong className="ml-1 font-mono font-semibold tabular-nums text-ink-900">{items.data?.total ?? 0}</strong>
-                      <span className="ml-0.5">条</span>
-                      {preset === "verified" && <span className="ml-1 font-medium text-deal">· 验真</span>}
+                      tổng <strong className="ml-1 font-mono font-semibold tabular-nums text-ink-900">{items.data?.total ?? 0}</strong>
+                      <span className="ml-0.5">tin</span>
+                      {preset === "verified" && <span className="ml-1 font-medium text-deal">· xác thực</span>}
                     </div>
                   </div>
                 );
@@ -1398,24 +1398,24 @@ export function App() {
                     >
                       <span>
                         {categories.length === 0
-                          ? "分类"
+                          ? "Phân loại"
                           : categories.length === 1
-                            ? `分类：${categoryLabelForPreset(categories[0]!, preset)}`
-                            : `分类：已选 ${categories.length} 项`}
+                            ? `phân loại: ${categoryLabelForPreset(categories[0]!, preset)}`
+                            : `phân loại: đã chọn ${categories.length} mục`}
                       </span>
                       <ChevronDown size={12} />
                     </button>
                     {catOpen && (
                       <div className="pop-enter panel absolute top-full left-0 z-40 mt-1.5 w-[260px] p-2.5 shadow-lg">
                         <div className="mb-2 flex items-center justify-between text-[11px] text-ink-500">
-                          <span>{preset === "news" ? "要闻栏目（支持多选）" : preset === "info" ? "行业资讯栏目（支持多选）" : preset === "deal" ? "好价分类（支持多选）" : preset === "opensource" ? "开源方向（支持多选）" : "福利分类（支持多选）"}</span>
+                          <span>{preset === "news" ? "mục tin chính (chọn nhiều)" : preset === "info" ? "mục tin ngành (chọn nhiều)" : preset === "deal" ? "phân loại giá tốt (chọn nhiều)" : preset === "opensource" ? "hướng mã nguồn mở (chọn nhiều)" : "phân loại freebie (chọn nhiều)"}</span>
                           {categories.length > 0 && (
                             <button
                               type="button"
                               onClick={() => setCategories([])}
                               className="font-medium text-accent hover:underline"
                             >
-                              清空
+                              xoá hết
                             </button>
                           )}
                         </div>
@@ -1463,10 +1463,10 @@ export function App() {
                     value={kindFilter}
                     onChange={(e) => setKindFilter(e.target.value)}
                     className="h-7 rounded-md border border-ink-200 bg-surface px-1.5 text-[11.5px] text-ink-700 outline-none focus:border-accent"
-                    title="内容形态"
+                    title="dạng nội dung"
                   >
-                    <option value="auto">形态：{preset === "verified" ? "真福利" : preset === "deal" ? "好价" : preset === "opensource" ? "开源" : preset === "news" ? "要闻" : preset === "info" ? "资讯" : "全部"}</option>
-                    <option value="all">形态：全部（含其它）</option>
+                    <option value="auto">dạng: {preset === "verified" ? "freebie thật" : preset === "deal" ? "giá tốt" : preset === "opensource" ? "mã nguồn mở" : preset === "news" ? "tin chính" : preset === "info" ? "tin tức" : "Tất cả"}</option>
+                    <option value="all">dạng: tất cả (kể cả khác)</option>
                     {KIND_ORDER.map((k) => (
                       <option key={k} value={k}>
                         {KIND_LABEL[k]}
@@ -1479,11 +1479,11 @@ export function App() {
                     value={lang}
                     onChange={(e) => setLang(e.target.value as "all" | "zh" | "en")}
                     className="h-7 rounded-md border border-ink-200 bg-surface px-1.5 text-[11.5px] text-ink-700 outline-none focus:border-accent"
-                    title="按标题语言筛选"
+                    title="lọc theo ngôn ngữ tiêu đề"
                   >
-                    <option value="all">语言：全部</option>
-                    <option value="zh">仅看中文</option>
-                    <option value="en">仅看英文</option>
+                    <option value="all">ngôn ngữ: tất cả</option>
+                    <option value="zh">chỉ xem tiếng Trung</option>
+                    <option value="en">chỉ xem tiếng Anh</option>
                   </select>
 
                   {preset !== "news" && preset !== "info" && preset !== "opensource" && (
@@ -1492,34 +1492,34 @@ export function App() {
                         value={priceCap}
                         onChange={(e) => setPriceCap(e.target.value)}
                         className="h-7 rounded-md border border-ink-200 bg-surface px-1.5 text-[11.5px] text-ink-700 outline-none focus:border-accent"
-                        title="价格上限"
+                        title="giá tối đa"
                       >
                         <option value="auto">
-                          价格：不限
+                          giá: không giới hạn
                         </option>
-                        <option value="all">价格：不限</option>
-                        <option value="free">仅白嫖 (0 元)</option>
-                        <option value="5">≤ 5 元</option>
-                        <option value="10">≤ 10 元</option>
-                        <option value="30">≤ 30 元</option>
-                        <option value="100">≤ 100 元</option>
+                        <option value="all">giá: không giới hạn</option>
+                        <option value="free">chỉ hàng free (0 tệ)</option>
+                        <option value="5">≤ 5 tệ</option>
+                        <option value="10">≤ 10 tệ</option>
+                        <option value="30">≤ 30 tệ</option>
+                        <option value="100">≤ 100 tệ</option>
                       </select>
 
                       {advancedFilters && <select
                         value={obtain}
                         onChange={(e) => setObtain(e.target.value)}
                         className="h-7 rounded-md border border-ink-200 bg-surface px-1.5 text-[11.5px] text-ink-700 outline-none focus:border-accent"
-                        title={OBTAIN_HINT[obtain] ?? "获取方式"}
+                        title={OBTAIN_HINT[obtain] ?? "cách lấy"}
                       >
                         <option value="auto">
-                          方式：{preset === "verified" ? "白嫖+条件" : "不限"}
+                          cách lấy: {preset === "verified" ? "free + điều kiện" : "không giới hạn"}
                         </option>
-                        <option value="all">方式：全部（含抽奖/试用）</option>
-                        <option value="free">仅直接白嫖</option>
-                        <option value="conditional">有条件领取</option>
-                        <option value="lottery">抽奖/开奖</option>
-                        <option value="trial">免费试用</option>
-                        <option value="promo">推广/引流</option>
+                        <option value="all">cách: tất cả (kể cả quay thưởng/dùng thử)</option>
+                        <option value="free">chỉ hàng free trực tiếp</option>
+                        <option value="conditional">nhận có điều kiện</option>
+                        <option value="lottery">quay thưởng/trúng thưởng</option>
+                        <option value="trial">dùng thử free</option>
+                        <option value="promo">quảng bá</option>
                       </select>}
                     </>
                   )}
@@ -1528,45 +1528,45 @@ export function App() {
                     value={range}
                     onChange={(e) => setRange(e.target.value)}
                     className="h-7 rounded-md border border-ink-200 bg-surface px-1.5 text-[11.5px] text-ink-700 outline-none focus:border-accent"
-                    title="发布时间窗口"
+                    title="khung thời gian đăng"
                   >
                     <option value="auto">
-                      时间：{preset === "verified" ? "7天内" : "不限"}
+                      thời gian: {preset === "verified" ? "trong 7 ngày" : "không giới hạn"}
                     </option>
-                    <option value="all">时间：不限</option>
-                    <option value="1d">24 小时内</option>
-                    <option value="3d">3 天内</option>
-                    <option value="7d">一周内</option>
-                    <option value="30d">一个月内</option>
+                    <option value="all">thời gian: không giới hạn</option>
+                    <option value="1d">trong 24 giờ</option>
+                    <option value="3d">trong 3 ngày</option>
+                    <option value="7d">trong tuần</option>
+                    <option value="30d">trong tháng</option>
                   </select>
 
                   {advancedFilters && <select
                     value={minScore}
                     onChange={(e) => setMinScore(e.target.value)}
                     className="h-7 rounded-md border border-ink-200 bg-surface px-1.5 text-[11.5px] text-ink-700 outline-none focus:border-accent"
-                    title="最低评分"
+                    title="điểm tối thiểu"
                   >
-                    <option value="all">评分：不限</option>
-                    <option value="50">≥ 50 分</option>
-                    <option value="60">≥ 60 分</option>
-                    <option value="70">≥ 70 分</option>
+                    <option value="all">điểm: không giới hạn</option>
+                    <option value="50">≥ 50 điểm</option>
+                    <option value="60">≥ 60 điểm</option>
+                    <option value="70">≥ 70 điểm</option>
                   </select>}
-                  <button type="button" aria-label={advancedFilters ? "收起高级筛选" : "高级筛选"} aria-expanded={advancedFilters} onClick={() => setAdvancedFilters((v) => !v)} className="inline-flex items-center gap-1 rounded-md px-2 text-[12px] font-medium text-accent hover:bg-brand-subtle">
-                    <SlidersHorizontal size={12} /> {advancedFilters ? "收起高级筛选" : "高级筛选"}
-                    {(kindFilter !== "auto" || obtain !== "auto" || minScore !== "all") && <span className="h-1.5 w-1.5 rounded-full bg-accent" aria-label="高级条件已生效" />}
+                  <button type="button" aria-label={advancedFilters ? "thu gọn lọc nâng cao" : "lọc nâng cao"} aria-expanded={advancedFilters} onClick={() => setAdvancedFilters((v) => !v)} className="inline-flex items-center gap-1 rounded-md px-2 text-[12px] font-medium text-accent hover:bg-brand-subtle">
+                    <SlidersHorizontal size={12} /> {advancedFilters ? "thu gọn lọc nâng cao" : "lọc nâng cao"}
+                    {(kindFilter !== "auto" || obtain !== "auto" || minScore !== "all") && <span className="h-1.5 w-1.5 rounded-full bg-accent" aria-label="điều kiện nâng cao đã áp dụng" />}
                   </button>
 
                   <select
                     value={sort}
                     onChange={(e) => setSort(e.target.value)}
                     className="h-7 rounded-md border border-ink-200 bg-surface px-1.5 text-[11.5px] text-ink-700 outline-none focus:border-accent"
-                    title="排序方式"
+                    title="cách sắp xếp"
                   >
-                    <option value="newest">最新</option>
-                    <option value="score">高分</option>
-                    <option value="oldest">最早</option>
-                    <option value="expiring">快截止</option>
-                    {preset !== "news" && preset !== "info" && <option value="price_asc">低价</option>}
+                    <option value="newest">mới nhất</option>
+                    <option value="score">điểm cao</option>
+                    <option value="oldest">sớm nhất</option>
+                    <option value="expiring">sắp hết hạn</option>
+                    {preset !== "news" && preset !== "info" && <option value="price_asc">giá rẻ</option>}
                   </select>
 
                   <button
@@ -1580,20 +1580,20 @@ export function App() {
                         : "border-ink-200 bg-surface text-ink-600 hover:border-ink-300")
                     }
                   >
-                    未读
+                    chưa đọc
                   </button>
                   {viewMode === "compact" && <button type="button" aria-pressed={showRowSummary} onClick={toggleRowSummary}
                     className={"inline-flex items-center gap-1 rounded-md border px-2.5 text-[12px] font-medium " + (showRowSummary ? "border-brand-border bg-brand-subtle text-accent" : "border-ink-200 bg-surface text-ink-600")}
-                    title="展开或收起每条资源的 AI 摘要，不影响筛选结果">显示摘要</button>}
+                    title="mở/thu tóm tắt AI của từng tài nguyên, không ảnh hưởng kết quả lọc">hiện tóm tắt</button>}
 
                   {visible.some((i) => !i.read) && (
                     <button
                       type="button"
                       onClick={() => void markVisibleRead()}
                       className="inline-flex h-7 items-center gap-1 rounded-md border border-ink-200 bg-surface px-2 text-[12px] font-medium text-ink-600 transition-colors hover:bg-ink-100 hover:text-ink-950 active:scale-[0.97]"
-                      title="把当前列表里的未读条目一次性标为已读"
+                      title="đánh dấu đã đọc một lượt các mục chưa đọc trong danh sách"
                     >
-                      <CheckCheck size={12} /> 标已读
+                      <CheckCheck size={12} /> đánh dấu đã đọc
                     </button>
                   )}
 
@@ -1603,7 +1603,7 @@ export function App() {
                       onClick={resetFilters}
                       className="inline-flex h-7 items-center gap-1 rounded-md px-2 text-[12px] font-medium text-accent hover:bg-brand-subtle"
                     >
-                      <RotateCcw size={11} /> 重置 ({activeFilterCount})
+                      <RotateCcw size={11} /> đặt lại ({activeFilterCount})
                     </button>
                   )}
 
@@ -1612,19 +1612,19 @@ export function App() {
                     <span className="text-[12px] text-ink-500">
                       {items.loading ? (
                         <span className="inline-flex items-center gap-1">
-                          <Loader2 size={11} className="animate-spin" /> 加载中…
+                          <Loader2 size={11} className="animate-spin" /> Đang tải…
                         </span>
                       ) : (
                         <>
-                          共 <strong className="font-mono font-semibold tabular-nums text-ink-900">{items.data?.total ?? 0}</strong> 条
+                          tổng <strong className="font-mono font-semibold tabular-nums text-ink-900">{items.data?.total ?? 0}</strong> tin
                         </>
                       )}
                     </span>
                     <div className="flex items-center gap-0.5 rounded-md border border-ink-200 bg-surface p-0.5">
                       {[
-                        { key: "compact" as const, icon: AlignJustify, label: "紧凑列表，适合快速扫读", text: "列表" },
-                        { key: "grid2" as const, icon: LayoutGrid, label: "双列图文卡片", text: "2列" },
-                        { key: "grid3" as const, icon: LayoutGrid, label: "三列图文卡片", text: "3列" },
+                        { key: "compact" as const, icon: AlignJustify, label: "danh sách gọn, hợp lướt nhanh", text: "Danh sách" },
+                        { key: "grid2" as const, icon: LayoutGrid, label: "thẻ ảnh 2 cột", text: "2 cột" },
+                        { key: "grid3" as const, icon: LayoutGrid, label: "thẻ ảnh 3 cột", text: "3 cột" },
                       ].map((v) => (
                         <button
                           key={v.key}
@@ -1650,7 +1650,7 @@ export function App() {
 
                 {activeFilterCount > 0 && (
                   <div className="mt-2 flex flex-wrap items-center gap-1.5 border-t border-ink-100 pt-2 text-[11.5px]">
-                    <span className="text-ink-400">当前条件：</span>
+                    <span className="text-ink-400">Điều kiện hiện tại:</span>
                     {debounced && (
                       <button
                         type="button"
@@ -1660,7 +1660,7 @@ export function App() {
                         }}
                         className="rounded bg-ink-100 px-2 py-0.5 text-ink-700 hover:bg-ink-200"
                       >
-                        搜索：{debounced} ×
+                        tìm: {debounced} ×
                       </button>
                     )}
                     {source && (
@@ -1669,7 +1669,7 @@ export function App() {
                         onClick={() => setSource("")}
                         className="rounded bg-brand-subtle px-2 py-0.5 text-accent hover:bg-ink-200/70"
                       >
-                        源：{sourceName(source)} ×
+                        nguồn: {sourceName(source)} ×
                       </button>
                     )}
                     {categories.map((cat) => (
@@ -1679,7 +1679,7 @@ export function App() {
                         onClick={() => setCategories((cur) => cur.filter((x) => x !== cat))}
                         className="rounded bg-brand-subtle px-2 py-0.5 text-accent hover:bg-ink-200/70"
                       >
-                        分类：{categoryLabelForPreset(cat, preset)} ×
+                        phân loại: {categoryLabelForPreset(cat, preset)} ×
                       </button>
                     ))}
                     {lang !== "all" && (
@@ -1688,7 +1688,7 @@ export function App() {
                         onClick={() => setLang("all")}
                         className="rounded bg-brand-subtle px-2 py-0.5 text-accent hover:bg-ink-200/70"
                       >
-                        语言：{lang === "zh" ? "仅看中文" : "仅看英文"} ×
+                        ngôn ngữ: {lang === "zh" ? "chỉ xem tiếng Trung" : "chỉ xem tiếng Anh"} ×
                       </button>
                     )}
                     {priceCap !== "auto" && (
@@ -1697,7 +1697,7 @@ export function App() {
                         onClick={() => setPriceCap("auto")}
                         className="rounded bg-brand-subtle px-2 py-0.5 text-accent hover:bg-ink-200/70"
                       >
-                        价格：{priceCap === "all" ? "不限" : priceCap === "free" ? "仅白嫖" : `≤${priceCap}元`} ×
+                        giá: {priceCap === "all" ? "không giới hạn" : priceCap === "free" ? "chỉ hàng free" : `≤${priceCap} tệ`} ×
                       </button>
                     )}
                     {obtain !== "auto" && (
@@ -1706,7 +1706,7 @@ export function App() {
                         onClick={() => setObtain("auto")}
                         className="rounded bg-brand-subtle px-2 py-0.5 text-accent hover:bg-ink-200/70"
                       >
-                        方式：{obtain === "all" ? "全部" : (OBTAIN_LABEL[obtain] ?? obtain)} ×
+                        cách lấy: {obtain === "all" ? "Tất cả" : (OBTAIN_LABEL[obtain] ?? obtain)} ×
                       </button>
                     )}
                     {range !== "auto" && (
@@ -1715,7 +1715,7 @@ export function App() {
                         onClick={() => setRange("auto")}
                         className="rounded bg-brand-subtle px-2 py-0.5 text-accent hover:bg-ink-200/70"
                       >
-                        时间：{range === "all" ? "不限" : range} ×
+                        thời gian: {range === "all" ? "không giới hạn" : range} ×
                       </button>
                     )}
                     {minScore !== "all" && (
@@ -1724,35 +1724,35 @@ export function App() {
                         onClick={() => setMinScore("all")}
                         className="rounded bg-brand-subtle px-2 py-0.5 text-accent hover:bg-ink-200/70"
                       >
-                        评分：≥{minScore} ×
+                        điểm: ≥{minScore} ×
                       </button>
                     )}
-                    {kindFilter !== "auto" && <button type="button" onClick={() => setKindFilter("auto")} className="rounded bg-brand-subtle px-2 py-0.5 text-accent hover:bg-ink-200/70">形态：{kindFilter === "all" ? "全部" : KIND_LABEL[kindFilter]} ×</button>}
+                    {kindFilter !== "auto" && <button type="button" onClick={() => setKindFilter("auto")} className="rounded bg-brand-subtle px-2 py-0.5 text-accent hover:bg-ink-200/70">dạng: {kindFilter === "all" ? "Tất cả" : KIND_LABEL[kindFilter]} ×</button>}
                     {unreadOnly && (
                       <button
                         type="button"
                         onClick={() => setUnreadOnly(false)}
                         className="rounded bg-brand-subtle px-2 py-0.5 text-accent hover:bg-ink-200/70"
                       >
-                        仅未读 ×
+                        chỉ chưa đọc ×
                       </button>
                     )}
-                    <button type="button" onClick={resetFilters} className="ml-auto font-medium text-accent hover:underline">清除条件</button>
+                    <button type="button" onClick={resetFilters} className="ml-auto font-medium text-accent hover:underline">Xoá điều kiện</button>
                   </div>
                 )}
               </div>
               {activeFilterCount > 0 && !mobileFilterBar && <div className="flex items-center justify-between gap-3 border-b border-ink-100 bg-brand-subtle/40 px-3.5 py-2 text-[12px] sm:hidden">
-                <button type="button" onClick={() => setMobileFilterBar(true)} className="min-w-0 truncate text-ink-700">已筛选 {activeFilterCount} 项{source ? ` · ${sourceName(source)}` : ""}{categories.length ? ` · ${categories.map((cat) => categoryLabelForPreset(cat, preset)).join("、")}` : ""} · 查看条件</button>
-                <button type="button" onClick={resetFilters} className="shrink-0 font-medium text-accent">清除</button>
+                <button type="button" onClick={() => setMobileFilterBar(true)} className="min-w-0 truncate text-ink-700">đã lọc {activeFilterCount} mục{source ? ` · ${sourceName(source)}` : ""}{categories.length ? ` · ${categories.map((cat) => categoryLabelForPreset(cat, preset)).join("、")}` : ""} · xem điều kiện</button>
+                <button type="button" onClick={resetFilters} className="shrink-0 font-medium text-accent">Xoá</button>
               </div>}
 
 
               {items.error && (
                 <div role="alert" className="mx-3.5 my-3 rounded-lg border border-alert-border bg-alert-subtle p-4 text-[13px] text-alert sm:mx-6">
-                  加载失败：{items.error} <button type="button" onClick={items.reload} className="ml-2 underline">重新加载</button>
+                  tải thất bại: {items.error} <button type="button" onClick={items.reload} className="ml-2 underline">Tải lại</button>
                 </div>
               )}
-              {items.loading && !visible.length && <div role="status" aria-label="资源加载中" className="divide-y divide-ink-100">
+              {items.loading && !visible.length && <div role="status" aria-label="Đang tải tài nguyên" className="divide-y divide-ink-100">
                 {Array.from({ length: 5 }, (_, index) => <div key={index} className="flex items-center gap-4 px-6 py-5">
                   <div className="h-4 w-9 rounded bg-ink-100" /><div className="flex-1 space-y-2"><div className="h-3 w-2/3 rounded bg-ink-100" /><div className="h-2.5 w-1/3 rounded bg-ink-100" /></div>
                 </div>)}
@@ -1777,7 +1777,7 @@ export function App() {
                       {relatedOpen === item.id && relatedMap[item.id] ? (
                         <div className="pop-enter border-b border-ink-100 bg-surface-hover px-3.5 py-2 sm:px-6">
                           <div className="mb-1 text-[11px] font-medium text-ink-500">
-                            同一事件 / 福利的其他 {relatedMap[item.id]!.length} 条来源报道
+                            cùng sự kiện/freebie · {relatedMap[item.id]!.length} nguồn khác cùng đăng
                           </div>
                           <ul className="space-y-1">
                             {relatedMap[item.id]!.map((r) => (
@@ -1850,21 +1850,21 @@ export function App() {
                       <div className="w-full max-w-xl rounded-lg border border-ink-200 bg-surface p-6 shadow-sm">
                         <div className="flex items-center gap-2 text-[15px] font-medium text-ink-900">
                           <FolderOpen size={16} className="text-ink-400" />
-                          网盘/网课频道在公开演示站已停用
+                          kênh cloud drive/khoá học đã tắt trên site demo công khai
                         </div>
                         <p className="mt-3 text-[12.5px] leading-relaxed text-ink-500">
-                          该频道聚合的是第三方网盘分享链接，公开展示存在版权风险，因此演示站不采集、不展示这类内容。背景条目为占位示意，不是真实资源。
+                          kênh này tổng hợp link chia sẻ cloud drive của bên thứ ba, trưng công khai có rủi ro bản quyền, nên site demo không thu cũng không hiển thị loại nội dung này. các mục nền chỉ là minh hoạ, không phải tài nguyên thật.
                         </p>
                         <div className="mt-4 border-t border-ink-100 pt-4">
-                          <div className="text-[12px] font-medium text-ink-700">能力说明（自部署可开启）</div>
+                          <div className="text-[12px] font-medium text-ink-700">mô tả tính năng (bật được khi tự host)</div>
                           <ul className="mt-2 space-y-1.5 text-[12px] leading-relaxed text-ink-500">
-                            <li>· 多源采集：TG 频道、linux.do、RSS、GitHub Releases</li>
-                            <li>· AI 语义分流：自动识别网盘资源、网课教程、影视剧集</li>
-                            <li>· 一条消息含多个资源时自动拆分入库，标题清洗掉栏目前缀</li>
+                            <li>· thu đa nguồn: kênh TG, linux.do, RSS, GitHub Releases</li>
+                            <li>· AI phân luồng ngữ nghĩa: tự nhận diện cloud drive, khoá học, phim/series</li>
+                            <li>· một tin chứa nhiều tài nguyên tự tách vào kho, tiêu đề gột sạch tiền tố mục</li>
                           </ul>
                         </div>
                         <a href={REPO_URL} target="_blank" rel="noreferrer" className="mt-4 inline-flex items-center gap-1 text-[12.5px] font-medium text-brand hover:underline">
-                          查看自部署文档 →
+                          xem tài liệu tự host →
                         </a>
                       </div>
                     </div>
@@ -1872,13 +1872,13 @@ export function App() {
                 ) : (
                 <div className="flex flex-col items-center gap-3 px-6 py-20 text-center">
                   <Radar size={28} className="text-ink-300" />
-                  <div className="text-[15px] font-medium text-ink-900">{preset === "hidden" ? "还没有已关闭的内容" : preset === "starred" ? "还没有符合条件的收藏" : "当前条件下暂无内容"}</div>
+                  <div className="text-[15px] font-medium text-ink-900">{preset === "hidden" ? "chưa có nội dung đã đóng" : preset === "starred" ? "chưa có mục lưu thoả điều kiện" : "chưa có nội dung theo điều kiện hiện tại"}</div>
                   <p className="max-w-md text-[12.5px] leading-relaxed text-ink-500">
-                    {preset === "hidden" ? "列表里点“不想看”的内容会来到这里，需要时可恢复。" : preset === "starred" ? "点资源旁的星标即可收藏；已收藏但未显示时，可先清除筛选。" : `「${PRESETS.find((p) => p.key === preset)?.label ?? "当前频道"}」暂时没有匹配结果，可以清除条件或浏览全部收录。`}
+                    {preset === "hidden" ? "nội dung bấm“không muốn xem”trong danh sách sẽ vào đây, khôi phục được khi cần." : preset === "starred" ? "bấm sao cạnh tài nguyên để lưu; đã lưu mà chưa thấy thì xoá bộ lọc trước." : `「${PRESETS.find((p) => p.key === preset)?.label ?? "kênh hiện tại"}」tạm chưa có kết quả khớp, có thể xoá điều kiện hoặc xem tất cả đã thu.`}
                   </p>
                   <div className="flex gap-2">
-                    {activeFilterCount > 0 && <button type="button" onClick={resetFilters} className="rounded-md border border-ink-200 px-4 py-2 text-[12.5px] font-medium text-ink-700 hover:bg-ink-100">清除当前条件</button>}
-                    <button type="button" onClick={() => { resetFilters(); setPreset("all"); }} className="rounded-md bg-brand px-4 py-2 text-[12.5px] font-medium text-white hover:bg-brand-hover">浏览全部收录</button>
+                    {activeFilterCount > 0 && <button type="button" onClick={resetFilters} className="rounded-md border border-ink-200 px-4 py-2 text-[12.5px] font-medium text-ink-700 hover:bg-ink-100">xoá điều kiện hiện tại</button>}
+                    <button type="button" onClick={() => { resetFilters(); setPreset("all"); }} className="rounded-md bg-brand px-4 py-2 text-[12.5px] font-medium text-white hover:bg-brand-hover">xem tất cả đã thu</button>
                   </div>
                 </div>
                 )
@@ -1942,11 +1942,11 @@ export function App() {
               onPickDate={setPickedDate}
               canAdmin={adminReady}
               onRunDaily={async () => {
-                notify("正在生成今日精选…");
+                notify("Đang tạo tuyển chọn hôm nay…");
                 const res = await fetch("/api/digests/run", { method: "POST" });
                 const data = (await res.json().catch(() => ({}))) as { date?: string; count?: number; error?: string };
-                if (!res.ok) notify(data.error ?? "生成失败");
-                else notify(`已生成 ${data.count ?? 0} 条精选`);
+                if (!res.ok) notify(data.error ?? "Tạo thất bại");
+                else notify(`đã tạo ${data.count ?? 0} tin tuyển chọn`);
                 digests.reload();
                 setPickedDate(res.ok && data.date ? data.date : null);
                 digestDetail.reload();
@@ -1957,11 +1957,11 @@ export function App() {
               onQuickBlock={setQuickBlock}
               onCopyCode={copyCode}
               onRunWeekly={async () => {
-                notify("正在汇总本周精选…");
+                notify("Đang tổng hợp tuyển chọn tuần…");
                 const res = await fetch("/api/digests/weekly", { method: "POST" });
                 const data = (await res.json().catch(() => ({}))) as { date?: string; count?: number; error?: string; pushed?: boolean };
-                if (!res.ok) notify(data.error ?? "生成失败");
-                else notify(`周报已生成 ${data.count ?? 0} 条${data.pushed ? "，已发 Telegram" : ""}`);
+                if (!res.ok) notify(data.error ?? "Tạo thất bại");
+                else notify(`tổng hợp tuần đã tạo ${data.count ?? 0} tin${data.pushed ? ", đã gửi Telegram" : ""}`);
                 digests.reload();
                 setPickedDate(res.ok && data.date ? data.date : null);
                 digestDetail.reload();
@@ -1993,11 +1993,11 @@ export function App() {
                   headers: { "content-type": "application/json" },
                   body: JSON.stringify({ presets: true }),
                 });
-                if (!res.ok) { notify("导入屏蔽词失败"); return; }
+                if (!res.ok) { notify("Import từ chặn thất bại"); return; }
                 blockRules.reload();
                 items.reload();
                 stats.reload();
-                notify("已导入常见噪音屏蔽词");
+                notify("đã import từ chặn nhiễu phổ biến");
               }}
               onToggleRule={async (id, enabled) => {
                 const res = await fetch(rulesBase + "/block-rules/" + id, {
@@ -2005,19 +2005,19 @@ export function App() {
                   headers: { "content-type": "application/json" },
                   body: JSON.stringify({ enabled }),
                 });
-                if (!res.ok) { notify("修改规则失败"); return; }
+                if (!res.ok) { notify("Sửa rule thất bại"); return; }
                 blockRules.reload();
                 items.reload();
                 setBlockedPreview(null);
               }}
               onDeleteRule={async (id) => {
                 const res = await fetch(rulesBase + "/block-rules/" + id, { method: "DELETE" });
-                if (!res.ok) { notify("删除规则失败"); return; }
+                if (!res.ok) { notify("Xoá rule thất bại"); return; }
                 blockRules.reload();
                 items.reload();
                 stats.reload();
                 setBlockedPreview(null);
-                notify("规则已删除，相关条目已恢复显示");
+                notify("đã xoá rule, các mục liên quan hiện lại");
               }}
               onLoadBlockedPreview={async () => {
                 const res = await fetch("/api/items?includeBlocked=1&limit=80&sort=newest");
@@ -2040,24 +2040,24 @@ export function App() {
                   body: JSON.stringify(p),
                 });
                 if (!res.ok) {
-                  const error = ((await res.json().catch(() => ({}))) as { error?: string }).error ?? "保存失败";
+                  const error = ((await res.json().catch(() => ({}))) as { error?: string }).error ?? "Lưu thất bại";
                   notify(error);
                   throw new Error(error);
                 }
                 push.reload();
                 setPushPreview(null);
-                notify("推送规则已保存");
+                notify("đã lưu rule push");
               }}
               onPreview={async () => {
                 const res = await fetch((pushBase ?? "/api/push") + "/preview?limit=6");
-                if (!res.ok) { notify("试算失败，请稍后重试"); return; }
+                if (!res.ok) { notify("chạy thử thất bại, thử lại sau"); return; }
                 setPushPreview((await res.json()) as PushPreview);
               }}
               onFlush={async () => {
                 const res = await fetch((pushBase ?? "/api/push") + "/flush", { method: "POST" });
                 const data = (await res.json().catch(() => ({}))) as { sent?: number; queued?: number; error?: string };
-                if (!res.ok) { notify(data.error ?? "发送失败"); return; }
-                notify(`已发送 ${data.sent ?? 0} 条，队列剩 ${data.queued ?? 0} 条`);
+                if (!res.ok) { notify(data.error ?? "Gửi thất bại"); return; }
+                notify(`đã gửi ${data.sent ?? 0} tin, hàng đợi còn ${data.queued ?? 0} tin`);
                 push.reload();
                 pushLogs.reload();
                 setPushPreview(null);
@@ -2065,7 +2065,7 @@ export function App() {
               onTest={async () => {
                 const res = await fetch((pushBase ?? "/api/push") + "/test", { method: "POST" });
                 const data = await res.json().catch(() => ({})) as { error?: string };
-                notify(res.ok ? "测试消息已发送到当前渠道" : data.error ?? "推送未启用或缺少凭据");
+                notify(res.ok ? "tin test đã gửi tới kênh hiện tại" : data.error ?? "push chưa bật hoặc thiếu thông tin");
                 pushLogs.reload();
               }}
             />
@@ -2107,7 +2107,7 @@ export function App() {
               sourceName={sourceName}
               onCollectSource={async (id) => {
                 const isCookieSite = id === "zhihu-search" || id === "xhs-search" || id === "xiaoheihe-search";
-                notify(isCookieSite ? "正在通过 VPS Cookie 采集（约 15-40 秒）…" : "正在采集…");
+                notify(isCookieSite ? "Đang thu qua Cookie trên VPS (khoảng 15-40 giây)…" : "Đang thu thập…");
                 const res = await fetch(`/api/sources/${id}/collect`, { method: "POST" });
                 const data = (await res.json().catch(() => ({}))) as {
                   ok?: boolean;
@@ -2115,9 +2115,9 @@ export function App() {
                   summary?: { inserted: number; fetched: number; status: string };
                 };
                 if (!res.ok || data.ok === false || data.summary?.status === "failed") {
-                  notify(data.error ?? "采集失败");
+                  notify(data.error ?? "Thu thập thất bại");
                 } else {
-                  notify(`完成：抓取 ${data.summary?.fetched ?? 0}，新增 ${data.summary?.inserted ?? 0}`);
+                  notify(`xong: tải ${data.summary?.fetched ?? 0}, thêm mới ${data.summary?.inserted ?? 0}`);
                 }
                 refreshAll();
               }}
@@ -2128,7 +2128,7 @@ export function App() {
                   body: JSON.stringify({ enabled }),
                 });
                 sources.reload();
-                notify(enabled ? "已启用该源" : "已禁用该源");
+                notify(enabled ? "đã bật nguồn này" : "đã tắt nguồn này");
               }}
               onChangeInterval={async (id, sec) => {
                 await fetch("/api/sources/" + id, {
@@ -2137,10 +2137,10 @@ export function App() {
                   body: JSON.stringify({ interval_sec: sec }),
                 });
                 sources.reload();
-                notify("采集周期已改为 " + formatInterval(sec));
+                notify("chu kỳ thu thập đã đổi thành " + formatInterval(sec));
               }}
               onAddRss={async (name, url, intervalSec, kindHint, categoryHint, fixedCategory) => {
-                notify("正在添加并试采…");
+                notify("Đang thêm và thử thu thập…");
                 const res = await fetch("/api/sources", {
                   method: "POST",
                   headers: { "content-type": "application/json" },
@@ -2150,9 +2150,9 @@ export function App() {
                   error?: string;
                   summary?: { fetched: number; inserted: number; status: string; error?: string };
                 };
-                if (!res.ok) notify(data.error ?? "添加失败");
-                else if (data.summary?.status === "failed") notify("已添加，但首次采集失败：" + (data.summary.error ?? ""));
-                else notify(`已添加，抓取 ${data.summary?.fetched ?? 0} 条，新增 ${data.summary?.inserted ?? 0}`);
+                if (!res.ok) notify(data.error ?? "Thêm thất bại");
+                else if (data.summary?.status === "failed") notify("đã thêm, nhưng lần thu đầu thất bại:" + (data.summary.error ?? ""));
+                else notify(`đã thêm, tải ${data.summary?.fetched ?? 0} tin, thêm mới ${data.summary?.inserted ?? 0}`);
                 refreshAll();
               }}
               onUpdateSource={async (id, patch) => {
@@ -2163,7 +2163,7 @@ export function App() {
                 });
                 const data = (await res.json().catch(() => ({}))) as { error?: string; reclassified?: number };
                 if (!res.ok) {
-                  notify(data.error ?? "保存失败");
+                  notify(data.error ?? "Lưu thất bại");
                   return false;
                 }
                 // Commit the acknowledged config locally before closing/reopening the editor.
@@ -2172,18 +2172,18 @@ export function App() {
                 refreshAll();
                 hot.reload();
                 digestDetail.reload();
-                notify(data.reclassified ? `配置已更新，${data.reclassified} 条历史资源已重新归类` : "数据源配置已更新");
+                notify(data.reclassified ? `đã cập nhật cấu hình, ${data.reclassified} tài nguyên lịch sử đã được xếp loại lại` : "đã cập nhật cấu hình nguồn");
                 return true;
               }}
               onDeleteSource={async (id) => {
                 const res = await fetch("/api/sources/" + id, { method: "DELETE" });
                 const data = (await res.json().catch(() => ({}))) as { error?: string };
                 if (!res.ok) {
-                  notify(data.error ?? "删除失败");
+                  notify(data.error ?? "Xoá thất bại");
                   return false;
                 }
                 refreshAll();
-                notify("已删除自定义数据源");
+                notify("đã xoá nguồn dữ liệu tuỳ chọn");
                 return true;
               }}
               onNotify={notify}
@@ -2193,12 +2193,12 @@ export function App() {
         </main>
 
         <footer className="mt-auto flex flex-wrap items-center justify-between gap-2 border-t border-ink-200 px-3.5 py-3 text-[11.5px] text-ink-400 sm:px-6">
-          <span>资源雷达 · 多源聚合 · AI 语义分流 · 所筛即所推</span>
+          <span>Freebie Radar · tổng hợp đa nguồn · AI phân luồng ngữ nghĩa · lọc gì push nấy</span>
           <span className="font-mono tabular-nums">
-            {stats.data?.totals.active ?? 0} 条在库 · {stats.data?.totals.unread ?? 0} 条未读
+            {stats.data?.totals.active ?? 0} tin trong kho · {stats.data?.totals.unread ?? 0} tin chưa đọc
           </span>
           <span className="w-full text-[11px] leading-relaxed text-ink-400/80">
-            本站仅聚合公开渠道的资源标题与原始链接，不存储、不代理、不转存任何文件。如权利人认为内容侵权，请联系删除，本站将在收到通知后第一时间下架。
+            site này chỉ tổng hợp tiêu đề và link gốc của tài nguyên từ kênh công khai, không lưu trữ, không proxy, không chuyển tải file nào. nếu chủ sở hữu cho rằng nội dung vi phạm, vui lòng liên hệ xoá, site sẽ gỡ ngay khi nhận thông báo.
           </span>
         </footer>
       </div>
@@ -2219,7 +2219,7 @@ export function App() {
           onClassificationSave={adminReady ? async (id, update) => {
             const response = await fetch(`/api/admin/items/${id}/classification`, { method: "PATCH", headers: { "content-type": "application/json" }, body: JSON.stringify(update) });
             const result = await response.json() as { error?: string };
-            if (!response.ok) throw new Error(result.error ?? "保存分类失败");
+            if (!response.ok) throw new Error(result.error ?? "Lưu phân loại thất bại");
             // A fresh detail carries personal state and manual metadata without crossing user/admin scopes.
             const fullResponse = await fetch(`/api/items/${id}`);
             if (fullResponse.ok) {

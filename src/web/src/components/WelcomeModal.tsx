@@ -19,18 +19,18 @@ export function WelcomeModal({
   const cards = [
     isPublic && {
       icon: ShieldCheck,
-      title: "不登录也不会互相影响",
-      body: "不想看、收藏、已读、快捷屏蔽都只存在你自己的浏览器里；登录后才跨设备同步。",
+      title: "không đăng nhập cũng không ảnh hưởng nhau",
+      body: "không muốn xem, lưu, đã đọc, chặn nhanh chỉ lưu trong browser của bạn; đăng nhập mới đồng bộ đa thiết bị.",
     },
     boot.loginEnabled && {
       icon: Send,
-      title: "绑定自己的 Telegram Bot",
-      body: "登录后可填自己的 Bot Token 与 Chat ID，按个人规则收推送，不会打扰别人。",
+      title: "gắn Telegram Bot của riêng bạn",
+      body: "sau đăng nhập điền Bot Token & Chat ID riêng, nhận push theo rule cá nhân, không làm phiền ai.",
     },
     {
       icon: Globe2,
-      title: "支持 RSS 订阅",
-      body: "顶栏「RSS」按钮能生成公开订阅链接；登录后还有带个人屏蔽规则的专属链接。",
+      title: "hỗ trợ đăng ký RSS",
+      body: "nút「RSS」trên thanh trên tạo link đăng ký công khai; sau đăng nhập còn có link riêng kèm rule chặn cá nhân.",
     },
   ].filter(Boolean) as { icon: typeof ShieldCheck; title: string; body: string }[];
 
@@ -46,7 +46,7 @@ export function WelcomeModal({
             type="button"
             onClick={onClose}
             className="rounded p-1 text-ink-400 hover:bg-ink-100 hover:text-ink-900"
-            title="关闭"
+            title="Đóng"
           >
             <X size={14} />
           </button>
@@ -77,7 +77,7 @@ export function WelcomeModal({
               onClick={onLogin}
               className="rounded-lg border border-ink-200 bg-surface px-3 py-1.5 text-[12.5px] font-medium text-ink-700 hover:bg-ink-100"
             >
-              先登录
+              đăng nhập trước
             </button>
           )}
           <button
@@ -85,7 +85,7 @@ export function WelcomeModal({
             onClick={onClose}
             className="rounded-lg bg-ink-950 px-3.5 py-1.5 text-[12.5px] font-medium text-white hover:bg-brand-hover"
           >
-            开始使用
+            bắt đầu dùng
           </button>
         </div>
       </div>

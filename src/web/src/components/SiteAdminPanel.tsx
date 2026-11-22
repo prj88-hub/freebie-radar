@@ -97,9 +97,9 @@ function Section({ icon: Icon, title, desc, children }: { icon: typeof Users; ti
 }
 
 const MODE_LABEL: Record<string, string> = {
-  git: "Git 源码直跑",
-  "docker-webhook": "Docker + 宿主机 Webhook",
-  "docker-readonly": "Docker（只读，需宿主机操作）",
+  git: "chạy trực tiếp từ source Git",
+  "docker-webhook": "Docker + webhook trên host",
+  "docker-readonly": "Docker (chỉ đọc, thao tác trên host)",
 };
 
 export function SiteAdminPanel() {
@@ -146,17 +146,17 @@ export function SiteAdminPanel() {
   const patchAccess = async (patch: Partial<Access>) => {
     const res = await fetch("/api/admin/access", { method: "PATCH", headers: jsonAuth(), body: JSON.stringify(patch) });
     const data = (await res.json().catch(() => ({}))) as { access?: Access; error?: string };
-    if (!res.ok) return notify(data.error ?? "保存失败");
+    if (!res.ok) return notify(data.error ?? "Lưu thất bại");
     setAccess(data.access ?? null);
-    notify("已保存");
+    notify("đã lưu");
   };
 
   const saveOnboarding = async (patch: Record<string, unknown>) => {
     const res = await fetch("/api/admin/onboarding", { method: "PATCH", headers: jsonAuth(), body: JSON.stringify(patch) });
     const data = (await res.json().catch(() => ({}))) as { onboarding?: Onboarding; error?: string };
-    if (!res.ok) return notify(data.error ?? "保存失败");
+    if (!res.ok) return notify(data.error ?? "Lưu thất bại");
     setOnboarding(data.onboarding ?? null);
-    notify("已保存");
+    notify("đã lưu");
   };
 
   const runCheck = async () => {
@@ -164,9 +164,9 @@ export function SiteAdminPanel() {
     try {
       const res = await fetch("/api/admin/update/check", { headers: authHeaders() });
       const data = (await res.json().catch(() => ({}))) as UpdateCheck & { error?: string };
-      if (!res.ok) return notify(data.error ?? "检查失败");
+      if (!res.ok) return notify(data.error ?? "Kiểm tra thất bại");
       setCheck(data);
-      notify(data.available ? `发现 ${data.behind} 个新提交` : "已是最新");
+      notify(data.available ? `phát hiện ${data.behind} commit mới` : "đã mới nhất");
     } finally {
       setBusy(null);
     }
@@ -177,7 +177,7 @@ export function SiteAdminPanel() {
     try {
       const res = await fetch("/api/admin/update/run", { method: "POST", headers: authHeaders() });
       const data = (await res.json().catch(() => ({}))) as { job?: UpdateJob; error?: string };
-      if (!res.ok) return notify(data.error ?? "启动失败");
+      if (!res.ok) return notify(data.error ?? "Khởi động thất bại");
       setJob(data.job ?? null);
       pollJob();
     } finally {
@@ -195,7 +195,7 @@ export function SiteAdminPanel() {
         setJob(data.job);
         if (data.job && data.job.status !== "running") {
           clearInterval(timer);
-          notify(data.job.status === "done" ? "更新完成" : "更新失败：" + (data.job.error ?? ""));
+          notify(data.job.status === "done" ? "Cập nhật xong" : "Cập nhật thất bại:" + (data.job.error ?? ""));
         }
       }
       if (n > 100) clearInterval(timer);
@@ -212,15 +212,15 @@ export function SiteAdminPanel() {
 
       <Section
         icon={ShieldCheck}
-        title="访问控制"
-        desc="登录入口与注册模式热生效，无需重启。管理权限始终只认 ADMIN_TOKEN，LINUX DO 登录不会提权。"
+        title="kiểm soát truy cập"
+        desc="cổng đăng nhập & chế độ đăng ký áp dụng nóng, không cần restart. quyền quản trị luôn chỉ nhận ADMIN_TOKEN, đăng nhập LINUX DO không nâng quyền."
       >
         {!access ? (
-          <div className="text-[12.5px] text-ink-500">加载中…</div>
+          <div className="text-[12.5px] text-ink-500">Đang tải…</div>
         ) : (
           <div className="space-y-2.5">
             <label className="flex items-center justify-between gap-2 rounded-lg border border-ink-200 bg-surface-hover px-3 py-2 text-[12.5px] text-ink-800">
-              <span>开放登录入口</span>
+              <span>mở cổng đăng nhập</span>
               <input
                 type="checkbox"
                 checked={access.loginEnabled}
@@ -229,7 +229,7 @@ export function SiteAdminPanel() {
               />
             </label>
             <label className="flex items-center justify-between gap-2 rounded-lg border border-ink-200 bg-surface-hover px-3 py-2 text-[12.5px] text-ink-800">
-              <span>关闭登录时同步暂停个人端（维护模式）</span>
+              <span>đóng đăng nhập thì đồng thời tạm dừng phía cá nhân (chế độ bảo trì)</span>
               <input
                 type="checkbox"
                 checked={access.suspendUserSessionsOnClose}
@@ -238,12 +238,12 @@ export function SiteAdminPanel() {
               />
             </label>
             <div className="flex flex-wrap items-center gap-1.5">
-              <span className="text-[12px] text-ink-700">注册模式</span>
+              <span className="text-[12px] text-ink-700">chế độ đăng ký</span>
               {(
                 [
-                  ["open", "开放注册"],
-                  ["invite", "邀请码注册"],
-                  ["closed", "停止新注册"],
+                  ["open", "mở đăng ký"],
+                  ["invite", "đăng ký bằng mã mời"],
+                  ["closed", "dừng đăng ký mới"],
                 ] as const
               ).map(([key, label]) => (
                 <button
@@ -262,7 +262,7 @@ export function SiteAdminPanel() {
               ))}
             </div>
             <label className="flex items-center justify-between gap-2 rounded-lg border border-ink-200 bg-surface-hover px-3 py-2 text-[12.5px] text-ink-800">
-              <span>最低 LINUX DO 信任等级</span>
+              <span>cấp trust LINUX DO tối thiểu</span>
               <select
                 value={access.minTrustLevel}
                 onChange={(e) => void patchAccess({ minTrustLevel: Number(e.target.value) })}
@@ -277,8 +277,8 @@ export function SiteAdminPanel() {
             </label>
             <label className="flex items-center justify-between gap-2 rounded-lg border border-ink-200 bg-surface-hover px-3 py-2 text-[12.5px] text-ink-800">
               <span>
-                注册名额上限
-                <span className="ml-1.5 text-[11px] text-ink-500">0 = 不限；满了只挡新注册，老用户照常登录</span>
+                giới hạn suất đăng ký
+                <span className="ml-1.5 text-[11px] text-ink-500">0 = không giới hạn; đầy chỉ chặn đăng ký mới, user cũ đăng nhập bình thường</span>
               </span>
               <input
                 type="number"
@@ -293,12 +293,12 @@ export function SiteAdminPanel() {
         )}
       </Section>
 
-      <Section icon={Ticket} title="邀请码" desc="核销是原子的（BEGIN IMMEDIATE + 条件 UPDATE），并发不会超发；老用户永远免码。">
+      <Section icon={Ticket} title="mã mời" desc="ghi danh là nguyên tử (BEGIN IMMEDIATE + UPDATE điều kiện), đồng thời không cấp vượt; user cũ mãi mãi không cần mã.">
         <div className="flex flex-wrap items-end gap-2">
           {[
-            { label: "数量", value: inviteCount, set: setInviteCount, max: 50 },
-            { label: "每码可用次数", value: inviteUses, set: setInviteUses, max: 10000 },
-            { label: "有效天数（0=永久）", value: inviteDays, set: setInviteDays, max: 3650 },
+            { label: "Số lượng", value: inviteCount, set: setInviteCount, max: 50 },
+            { label: "số lần dùng mỗi mã", value: inviteUses, set: setInviteUses, max: 10000 },
+            { label: "số ngày hiệu lực (0=vĩnh viễn)", value: inviteDays, set: setInviteDays, max: 3650 },
           ].map((f) => (
             <label key={f.label} className="block">
               <span className="text-[11.5px] text-ink-600">{f.label}</span>
@@ -313,11 +313,11 @@ export function SiteAdminPanel() {
             </label>
           ))}
           <label className="block">
-            <span className="text-[11.5px] text-ink-600">备注</span>
+            <span className="text-[11.5px] text-ink-600">Ghi chú</span>
             <input
               value={inviteNote}
               onChange={(e) => setInviteNote(e.target.value)}
-              placeholder="可选"
+              placeholder="tuỳ chọn"
               className="mt-1 w-[150px] rounded-lg border border-ink-200 bg-surface px-2 py-1.5 text-[12px] text-ink-950 outline-none focus:border-accent"
             />
           </label>
@@ -332,9 +332,9 @@ export function SiteAdminPanel() {
                   body: JSON.stringify({ count: inviteCount, maxUses: inviteUses, expiresDays: inviteDays, note: inviteNote }),
                 });
                 const data = (await res.json().catch(() => ({}))) as { created?: Invite[]; codes?: Invite[]; error?: string };
-                if (!res.ok) return notify(data.error ?? "生成失败");
+                if (!res.ok) return notify(data.error ?? "Tạo thất bại");
                 setInvites((data.codes ?? []) as Invite[]);
-                notify(`已生成 ${data.created?.length ?? 0} 个邀请码`);
+                notify(`đã tạo ${data.created?.length ?? 0} mã mời`);
                 setInviteNote("");
               } finally {
                 setBusy(null);
@@ -343,12 +343,12 @@ export function SiteAdminPanel() {
             disabled={busy !== null}
             className="inline-flex items-center gap-1.5 rounded-lg bg-ink-950 px-3 py-1.5 text-[12px] font-medium text-white hover:bg-brand-hover disabled:opacity-60"
           >
-            {busy === "invite" ? <Loader2 size={12} className="animate-spin" /> : <Ticket size={12} />} 生成
+            {busy === "invite" ? <Loader2 size={12} className="animate-spin" /> : <Ticket size={12} />} tạo
           </button>
         </div>
 
         <div className="max-h-[260px] divide-y divide-ink-100 overflow-auto rounded-lg border border-ink-200">
-          {invites.length === 0 && <div className="px-3 py-6 text-center text-[12px] text-ink-500">还没有邀请码</div>}
+          {invites.length === 0 && <div className="px-3 py-6 text-center text-[12px] text-ink-500">chưa có mã mời</div>}
           {invites.map((v) => (
             <div key={v.id} className="flex flex-wrap items-center gap-2 px-3 py-2 text-[12px]">
               <code className="font-mono font-medium text-ink-900">{v.code}</code>
@@ -356,21 +356,21 @@ export function SiteAdminPanel() {
                 {v.used_count}/{v.max_uses}
               </span>
               {v.note && <span className="text-ink-500">· {v.note}</span>}
-              {v.expires_at && <span className="text-ink-400">· {v.expires_at.slice(0, 10)} 到期</span>}
-              {v.disabled === 1 && <span className="rounded bg-ink-100 px-1.5 py-0.5 text-ink-600">已停用</span>}
+              {v.expires_at && <span className="text-ink-400">· {v.expires_at.slice(0, 10)} hết hạn</span>}
+              {v.disabled === 1 && <span className="rounded bg-ink-100 px-1.5 py-0.5 text-ink-600">đã ngừng</span>}
               <div className="ml-auto flex items-center gap-1.5">
                 <button
                   type="button"
                   onClick={async () => {
                     try {
                       await navigator.clipboard.writeText(v.code);
-                      notify("已复制");
+                      notify("Đã sao chép");
                     } catch {
                       /* ignore */
                     }
                   }}
                   className="rounded p-1 text-ink-400 hover:bg-ink-100 hover:text-ink-900"
-                  title="复制"
+                  title="Sao chép"
                 >
                   <Copy size={12} />
                 </button>
@@ -386,7 +386,7 @@ export function SiteAdminPanel() {
                   }}
                   className="rounded px-1.5 py-0.5 text-[11.5px] text-ink-600 hover:bg-ink-100"
                 >
-                  {v.disabled === 1 ? "启用" : "停用"}
+                  {v.disabled === 1 ? "Bật" : "Ngừng dùng"}
                 </button>
                 <button
                   type="button"
@@ -396,7 +396,7 @@ export function SiteAdminPanel() {
                   }}
                   className="rounded px-1.5 py-0.5 text-[11.5px] text-alert hover:bg-ink-100"
                 >
-                  删除
+                  xoá
                 </button>
               </div>
             </div>
@@ -404,19 +404,19 @@ export function SiteAdminPanel() {
         </div>
       </Section>
 
-      <Section icon={Users} title={`已注册用户（${users.length}）`} desc="封禁会同时清掉该用户的登录态；个人 Bot 推送也会随之停用。">
+      <Section icon={Users} title={`user đã đăng ký (${users.length})`} desc="cấm sẽ đồng thời xoá phiên đăng nhập của user đó; push bot cá nhân cũng ngừng theo.">
         <div className="max-h-[280px] divide-y divide-ink-100 overflow-auto rounded-lg border border-ink-200">
-          {users.length === 0 && <div className="px-3 py-6 text-center text-[12px] text-ink-500">还没有用户</div>}
+          {users.length === 0 && <div className="px-3 py-6 text-center text-[12px] text-ink-500">chưa có người dùng</div>}
           {users.map((u) => (
             <div key={u.id} className="flex flex-wrap items-center gap-2 px-3 py-2 text-[12px]">
               <span className="font-medium text-ink-900">{u.name ?? u.username}</span>
               <span className="text-ink-500">@{u.username}</span>
               <span className="rounded bg-ink-100 px-1.5 py-0.5 text-ink-600">TL{u.trust_level}</span>
               <span className="text-ink-500">
-                收藏 {u.starred} · 关闭 {u.hidden} {u.push_enabled === 1 ? "· 个人推送" : ""}
+                lưu {u.starred} · đóng {u.hidden} {u.push_enabled === 1 ? "· push cá nhân" : ""}
               </span>
-              <span className="text-ink-400">最近 {u.last_login_at.slice(0, 10)}</span>
-              {u.disabled === 1 && <span className="rounded bg-alert-subtle px-1.5 py-0.5 text-alert">已封禁</span>}
+              <span className="text-ink-400">gần đây {u.last_login_at.slice(0, 10)}</span>
+              {u.disabled === 1 && <span className="rounded bg-alert-subtle px-1.5 py-0.5 text-alert">đã cấm</span>}
               <button
                 type="button"
                 onClick={async () => {
@@ -427,26 +427,26 @@ export function SiteAdminPanel() {
                   });
                   if (res.ok) {
                     setUsers((prev) => prev.map((x) => (x.id === u.id ? { ...x, disabled: u.disabled === 1 ? 0 : 1 } : x)));
-                    notify(u.disabled === 1 ? "已解封" : "已封禁");
+                    notify(u.disabled === 1 ? "đã bỏ cấm" : "đã cấm");
                   }
                 }}
                 className="ml-auto inline-flex items-center gap-1 rounded px-1.5 py-0.5 text-[11.5px] text-ink-600 hover:bg-ink-100"
               >
                 {u.disabled === 1 ? <Check size={11} /> : <Ban size={11} />}
-                {u.disabled === 1 ? "解封" : "封禁"}
+                {u.disabled === 1 ? "Bỏ cấm" : "Cấm"}
               </button>
             </div>
           ))}
         </div>
       </Section>
 
-      <Section icon={Megaphone} title="入站公告" desc="按版本号只弹一次；点「保存并重新弹出」会让所有访客下次进站重新看到。">
+      <Section icon={Megaphone} title="thông báo chung" desc="chỉ bật một lần theo số phiên bản; bấm「lưu và bật lại」để mọi khách thấy lại lần vào sau.">
         {!onboarding ? (
-          <div className="text-[12.5px] text-ink-500">加载中…</div>
+          <div className="text-[12.5px] text-ink-500">Đang tải…</div>
         ) : (
           <div className="space-y-2.5">
             <label className="block">
-              <span className="text-[12px] text-ink-700">标题</span>
+              <span className="text-[12px] text-ink-700">Tiêu đề</span>
               <input
                 defaultValue={onboarding.title}
                 onBlur={(e) => e.target.value !== onboarding.title && void saveOnboarding({ title: e.target.value })}
@@ -454,7 +454,7 @@ export function SiteAdminPanel() {
               />
             </label>
             <label className="block">
-              <span className="text-[12px] text-ink-700">正文</span>
+              <span className="text-[12px] text-ink-700">Nội dung</span>
               <textarea
                 defaultValue={onboarding.content}
                 rows={6}
@@ -470,7 +470,7 @@ export function SiteAdminPanel() {
                   onChange={(e) => void saveOnboarding({ enabled: e.target.checked })}
                   className="h-3.5 w-3.5 accent-[#111318]"
                 />
-                启用公告
+                bật thông báo
               </label>
               <label className="inline-flex items-center gap-1.5">
                 <input
@@ -479,22 +479,22 @@ export function SiteAdminPanel() {
                   onChange={(e) => void saveOnboarding({ showGuideCards: e.target.checked })}
                   className="h-3.5 w-3.5 accent-[#111318]"
                 />
-                显示功能引导卡片
+                hiện thẻ hướng dẫn tính năng
               </label>
-              <span className="text-ink-400">当前版本 v{onboarding.version}</span>
+              <span className="text-ink-400">phiên bản hiện tại v{onboarding.version}</span>
               <button
                 type="button"
                 onClick={() => void saveOnboarding({ bumpVersion: true })}
                 className="rounded-lg border border-ink-200 bg-surface px-2.5 py-1 text-[11.5px] font-medium text-ink-700 hover:bg-ink-100"
               >
-                保存并重新弹出
+                lưu và bật lại
               </button>
             </div>
           </div>
         )}
       </Section>
 
-      <Section icon={DownloadCloud} title="版本与更新" desc="容器内无法重建镜像，会如实提示边界，不会假装能自更新。">
+      <Section icon={DownloadCloud} title="phiên bản & cập nhật" desc="trong container không dựng lại image được, sẽ báo đúng giới hạn chứ không giả vờ tự cập nhật.">
         <div className="flex flex-wrap items-center gap-2 text-[12px] text-ink-700">
           <span className="rounded bg-ink-100 px-2 py-0.5 font-mono">
             v{build?.version ?? "?"} {build?.commitShort ? "· " + build.commitShort : ""}
@@ -506,7 +506,7 @@ export function SiteAdminPanel() {
             disabled={busy !== null}
             className="inline-flex items-center gap-1.5 rounded-lg border border-ink-200 bg-surface px-2.5 py-1 text-[11.5px] font-medium text-ink-700 hover:bg-ink-100 disabled:opacity-60"
           >
-            {busy === "check" ? <Loader2 size={11} className="animate-spin" /> : <RefreshCw size={11} />} 检查更新
+            {busy === "check" ? <Loader2 size={11} className="animate-spin" /> : <RefreshCw size={11} />} kiểm tra cập nhật
           </button>
           {check?.canAutoUpdate && (
             <button
@@ -515,7 +515,7 @@ export function SiteAdminPanel() {
               disabled={busy !== null}
               className="inline-flex items-center gap-1.5 rounded-lg bg-ink-950 px-2.5 py-1 text-[11.5px] font-medium text-white hover:bg-brand-hover disabled:opacity-60"
             >
-              {busy === "update" ? <Loader2 size={11} className="animate-spin" /> : <DownloadCloud size={11} />} 备份并一键更新
+              {busy === "update" ? <Loader2 size={11} className="animate-spin" /> : <DownloadCloud size={11} />} sao lưu & cập nhật một chạm
             </button>
           )}
         </div>
@@ -523,8 +523,8 @@ export function SiteAdminPanel() {
         {check && (
           <div className="space-y-2 rounded-lg border border-ink-200 bg-surface-hover p-3 text-[11.5px] leading-relaxed">
             <div className="text-ink-700">
-              {check.available ? `落后 ${check.behind} 个提交` : "已是最新"}
-              {check.latest ? ` · 最新 ${check.latest.short} ${check.latest.message}` : ""}
+              {check.available ? `chậm ${check.behind} commit` : "đã mới nhất"}
+              {check.latest ? ` · mới nhất ${check.latest.short} ${check.latest.message}` : ""}
             </div>
             {check.notes.map((n) => (
               <div key={n} className="text-ink-500">
@@ -551,8 +551,8 @@ export function SiteAdminPanel() {
         {job && (
           <div className="space-y-1.5 rounded-lg border border-ink-200 bg-surface-hover p-3 text-[11.5px]">
             <div className="flex items-center gap-2">
-              <span className="font-medium text-ink-800">更新任务 {job.status}</span>
-              {job.restartScheduled && <span className="text-ink-500">· 已安排重启</span>}
+              <span className="font-medium text-ink-800">tác vụ cập nhật {job.status}</span>
+              {job.restartScheduled && <span className="text-ink-500">· đã xếp lịch khởi động lại</span>}
               {job.error && <span className="text-alert">· {job.error}</span>}
             </div>
             {job.steps.map((s) => (
@@ -575,7 +575,7 @@ export function SiteAdminPanel() {
 
       <p className="px-1 text-[11.5px] leading-relaxed text-ink-500">
         <ShieldCheck size={11} className="mr-1 inline" />
-        这些接口全部要求 ADMIN_TOKEN；用 LINUX DO 登录的普通账号访问会返回 401。
+        các API này đều yêu cầu ADMIN_TOKEN; tài khoản thường đăng nhập LINUX DO truy cập sẽ trả 401.
       </p>
     </div>
   );

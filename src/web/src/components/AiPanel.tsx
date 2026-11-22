@@ -23,10 +23,10 @@ import { KIND_LABEL, OBTAIN_LABEL, categoryLabel, timeAgo } from "../lib/sources
 import type { AiPayload, AiSettings, AiSourceMode, AiStage, AiStats, Source } from "../types.ts";
 
 const STAGE_META: Record<AiStage, { label: string; cls: string }> = {
-  sync: { label: "推送前同步", cls: "bg-brand-subtle text-accent border-brand-border" },
-  queue: { label: "异步队列", cls: "bg-ink-100 text-ink-700 border-ink-200" },
-  backfill: { label: "历史补审", cls: "bg-code-subtle text-code border-code-border" },
-  test: { label: "连通测试", cls: "bg-deal-subtle text-deal border-deal-border" },
+  sync: { label: "đồng bộ trước khi push", cls: "bg-brand-subtle text-accent border-brand-border" },
+  queue: { label: "hàng đợi async", cls: "bg-ink-100 text-ink-700 border-ink-200" },
+  backfill: { label: "duyệt bổ sung lịch sử", cls: "bg-code-subtle text-code border-code-border" },
+  test: { label: "test kết nối", cls: "bg-deal-subtle text-deal border-deal-border" },
 };
 
 function fmtDuration(ms: number): string {
@@ -217,7 +217,7 @@ export function AiPanel({
   }, [st?.recent, sampleFilter, sampleQuery, sourceName]);
 
   if (!data || !form || !st) {
-    return <div className="panel p-6 text-[13px] text-ink-500">正在读取 AI 配置…</div>;
+    return <div className="panel p-6 text-[13px] text-ink-500">Đang đọc cấu hình AI…</div>;
   }
 
   const s = data.settings;
@@ -225,7 +225,7 @@ export function AiPanel({
   const keptPct = total ? Math.round((st.kept / total) * 100) : 0;
   const enabledSources = sources.filter((src) => src.enabled);
 
-  async function save(patch: Partial<AiSettings>, toastText = "AI 配置已保存") {
+  async function save(patch: Partial<AiSettings>, toastText = "đã lưu cấu hình AI") {
     setSaving(true);
     try {
       const r = await fetch("/api/ai", {
@@ -253,7 +253,7 @@ export function AiPanel({
         reload();
         onNotify?.(toastText);
       } else {
-        onNotify?.("保存失败");
+        onNotify?.("Lưu thất bại");
       }
     } finally {
       setSaving(false);
@@ -313,7 +313,7 @@ export function AiPanel({
       });
       const j = (await r.json()) as { scanned: number; updated: number; movedFromOther: number };
       reload();
-      onNotify?.(`已扫描 ${j.scanned} 条「其它」，成功归类 ${j.movedFromOther} 条（零 Token）`);
+      onNotify?.(`đã quét ${j.scanned} tin「khác」, xếp loại được ${j.movedFromOther} tin (0 token)`);
     } finally {
       setReclassifying(false);
     }
@@ -334,7 +334,7 @@ export function AiPanel({
       onNotify?.(
         j.skippedReason
           ? j.skippedReason
-          : `已比对 ${j.scanned} 条，合并 ${j.merged} 条重复（当前共 ${j.clusters} 个聚类）`,
+          : `đã đối chiếu ${j.scanned} tin, gộp ${j.merged} tin trùng (hiện tổng ${j.clusters} cụm)`,
       );
     } finally {
       setDeduping(false);
@@ -361,27 +361,27 @@ export function AiPanel({
           </div>
           <div className="min-w-0 flex-1">
             <div className="flex flex-wrap items-center gap-2">
-              <h2 className="text-[15px] font-semibold text-ink-900">AI 语义审核引擎</h2>
+              <h2 className="text-[15px] font-semibold text-ink-900">engine duyệt ngữ nghĩa AI</h2>
               {s.ready ? (
                 <span className="inline-flex items-center gap-1 rounded-md bg-deal-subtle px-1.5 py-0.5 text-[11px] font-medium text-deal">
-                  <CircleCheck size={11} /> 运行中
+                  <CircleCheck size={11} /> đang chạy
                 </span>
               ) : (
                 <span className="inline-flex items-center gap-1 rounded-md bg-amber-50 px-1.5 py-0.5 text-[11px] font-medium text-amber-700">
-                  <AlertTriangle size={11} /> 未启用
+                  <AlertTriangle size={11} /> chưa bật
                 </span>
               )}
               {st.queue && (
                 <span className="rounded-md bg-ink-100 px-2 py-0.5 font-mono text-[11px] text-ink-600">
-                  异步队列：{st.queue.queued} 待审{st.queue.running ? "（运行中）" : ""} · 已处理 {st.queue.processed}
-                  {st.queue.dropped > 0 ? ` · 丢弃 ${st.queue.dropped}` : ""}
+                  hàng đợi async: {st.queue.queued} chờ duyệt{st.queue.running ? "（đang chạy）" : ""} · đã xử lý {st.queue.processed}
+                  {st.queue.dropped > 0 ? ` · bỏ ${st.queue.dropped}` : ""}
                 </span>
               )}
             </div>
             <p className="mt-0.5 text-[12px] text-ink-500">
-              {s.baseUrl ? s.model + " @ " + s.baseUrl.replace(/^https?:\/\//, "") : "还没有配置端点"}
-              {s.hasKey ? " · Key " + s.keyHint : " · 未设置 Key"}
-              {" · 推送前等待/极速抢码时机请到「推送规则」设置"}
+              {s.baseUrl ? s.model + " @ " + s.baseUrl.replace(/^https?:\/\//, "") : "chưa cấu hình endpoint"}
+              {s.hasKey ? " · Key " + s.keyHint : " · chưa đặt key"}
+              {" · thời điểm chờ/cướp mã tốc độ trước push vào「rule push」để đặt"}
             </p>
           </div>
           <div className="flex flex-wrap items-center gap-2">
@@ -389,11 +389,11 @@ export function AiPanel({
               type="button"
               onClick={runTest}
               disabled={testing || !canTest}
-              title="直接用下方表单的端点、模型与提示词草稿发起测试"
+              title="dùng thẳng endpoint, model & bản nháp prompt trong form dưới để test"
               className="inline-flex items-center gap-1.5 rounded-lg border border-ink-200 bg-surface px-3 py-1.5 text-[12.5px] font-medium text-ink-700 hover:bg-ink-100 disabled:opacity-50"
             >
               {testing ? <Loader2 size={13} className="animate-spin" /> : <FlaskConical size={13} />}
-              测试草稿配置
+              test cấu hình nháp
             </button>
           </div>
         </div>
@@ -401,8 +401,8 @@ export function AiPanel({
         {/* 补审 / 重审工具条 */}
         <div className="flex flex-wrap items-center justify-between gap-2 rounded-lg border border-ink-200 bg-surface-hover px-3.5 py-2.5">
           <div className="text-[12px] text-ink-700">
-            <span className="font-medium text-ink-900">历史库补审 / 重审：</span>
-            改完补充规则或提示词后，可立即拿历史条目复审验证
+            <span className="font-medium text-ink-900">duyệt bổ sung / duyệt lại kho cũ:</span>
+            sau khi sửa rule/prompt bổ sung, có thể duyệt lại mục lịch sử để kiểm chứng ngay
           </div>
           <div className="flex flex-wrap items-center gap-2">
             <select
@@ -410,18 +410,18 @@ export function AiPanel({
               onChange={(e) => setBackfillMode(e.target.value as BackfillMode)}
               className="rounded-lg border border-ink-200 bg-surface px-2.5 py-1 text-[12px] text-ink-800 outline-none focus:border-brand"
             >
-              <option value="pending">仅审未审条目 (pending)</option>
-              <option value="recent">重审近期已入库 (校准分类/评分)</option>
-              <option value="rejected">复核已被 AI 拦截 (防误杀)</option>
+              <option value="pending">chỉ duyệt mục chưa duyệt (pending)</option>
+              <option value="recent">duyệt lại mục đã vào kho gần đây (chuẩn lại phân loại/điểm)</option>
+              <option value="rejected">rà soát mục bị AI chặn (chống giết nhầm)</option>
             </select>
             <select
               value={backfillLimit}
               onChange={(e) => setBackfillLimit(Number(e.target.value))}
               className="rounded-lg border border-ink-200 bg-surface px-2 py-1 font-mono text-[12px] text-ink-800 outline-none focus:border-brand"
             >
-              <option value={50}>50 条</option>
-              <option value={200}>200 条</option>
-              <option value={500}>500 条</option>
+              <option value={50}>50 tin</option>
+              <option value={200}>200 tin</option>
+              <option value={500}>500 tin</option>
             </select>
             <button
               type="button"
@@ -430,18 +430,18 @@ export function AiPanel({
               className="inline-flex items-center gap-1.5 rounded-lg bg-brand px-3 py-1 text-[12px] font-medium text-white hover:bg-brand-hover disabled:opacity-50"
             >
               {backfilling ? <Loader2 size={12} className="animate-spin" /> : <Sparkles size={12} />}
-              立即执行
+              chạy ngay
             </button>
 
             <button
               type="button"
               onClick={runReclassify}
               disabled={reclassifying}
-              title="按最新关键词规则零 Token 重算历史「其它」分类"
+              title="tính lại phân loại「khác」lịch sử bằng rule từ khoá mới nhất, 0 token"
               className="inline-flex items-center gap-1 rounded-lg border border-ink-200 bg-surface px-2.5 py-1 text-[12px] font-medium text-ink-700 hover:bg-ink-100 disabled:opacity-50"
             >
               {reclassifying ? <Loader2 size={12} className="animate-spin" /> : null}
-              重整分类 (0 Token)
+              xếp lại phân loại (0 token)
             </button>
           </div>
         </div>
@@ -455,7 +455,7 @@ export function AiPanel({
           >
             <div className="mb-2 flex items-center gap-2 font-medium">
               {test.ok ? <CircleCheck size={13} className="text-deal" /> : <CircleX size={13} className="text-red-600" />}
-              {test.ok ? "连通正常" : "调用失败"} · {test.model} · {test.ms} ms
+              {test.ok ? "kết nối bình thường" : "Gọi API thất bại"} · {test.model} · {test.ms} ms
               {test.error && <span className="font-normal text-red-700">{test.error}</span>}
             </div>
             {test.results.map((r) => (
@@ -490,16 +490,16 @@ export function AiPanel({
 
         {backfill && (
           <div className="rounded-lg border border-ink-200 bg-surface p-3 text-[12.5px] text-ink-700">
-            执行完成（{backfill.mode ?? "pending"}）：扫描 {backfill.scanned} 条，判定 {backfill.reviewed} 条（通过{" "}
-            {backfill.reviewed - backfill.rejected} / 拦掉 {backfill.rejected}）
+            chạy xong ({backfill.mode ?? "pending"}): quét {backfill.scanned} tin, đánh giá {backfill.reviewed} tin (qua{" "}
+            {backfill.reviewed - backfill.rejected} / chặn {backfill.rejected})
             {backfill.skippedBlocked ? (
               <span className="text-ink-500">
                 {" "}
-                · 已跳过 {backfill.skippedBlocked} 条命中全局屏蔽词（省额度）
+                · đã bỏ qua {backfill.skippedBlocked} tin trúng từ chặn toàn cục (tiết kiệm hạn mức)
               </span>
             ) : null}
             {backfill.reviewed === 0 && (backfill.skippedBlocked ?? 0) > 0 && !backfill.error ? (
-              <span className="ml-1 text-ink-500">— 当前没有未被屏蔽的待审条目</span>
+              <span className="ml-1 text-ink-500">— hiện không có mục chờ duyệt chưa bị chặn</span>
             ) : null}
             {backfill.error && <span className="text-red-700"> · {backfill.error}</span>}
           </div>
@@ -519,14 +519,14 @@ export function AiPanel({
               <span className="inline-flex h-2 w-2 rounded-full bg-deal" />
             )}
             <h3 className="text-[13.5px] font-semibold text-ink-900">
-              {isLiveActive ? "AI 实时审核进行中" : "AI 执行监控"}
+              {isLiveActive ? "AI đang duyệt thời gian thực" : "giám sát chạy AI"}
             </h3>
             <span className="text-[11.5px] text-ink-500">
               {isLiveActive
-                ? "每完成一批请求自动刷新结论与进度"
+                ? "tự làm mới kết quả & tiến độ sau mỗi batch"
                 : st.telemetry?.history?.length
-                  ? `最近记录 ${st.telemetry.history.length} 轮执行`
-                  : "等待下次采集或手动补审触发"}
+                  ? `bản ghi gần đây ${st.telemetry.history.length} lượt chạy`
+                  : "chờ lần thu sau hoặc kích duyệt bổ sung thủ công"}
             </span>
           </div>
           {(st.telemetry?.history?.length ?? 0) > 0 && (
@@ -536,7 +536,7 @@ export function AiPanel({
               className="inline-flex items-center gap-1 rounded-md border border-ink-200 bg-surface px-2 py-1 text-[11.5px] text-ink-600 hover:bg-ink-100"
             >
               {showHistory ? <ChevronUp size={12} /> : <ChevronDown size={12} />}
-              {showHistory ? "收起全部流水" : `最近执行流水 (${st.telemetry?.history?.length ?? 0})`}
+              {showHistory ? "thu gọn toàn bộ log" : `log chạy gần đây (${st.telemetry?.history?.length ?? 0})`}
             </button>
           )}
         </div>
@@ -564,7 +564,7 @@ export function AiPanel({
                     </div>
                     <div className="flex items-center gap-2 font-mono text-[11.5px] tabular-nums text-ink-600">
                       <span>
-                        第 {Math.min(job.completedBatches + 1, job.totalBatches)}/{job.totalBatches} 批
+                        đợt {Math.min(job.completedBatches + 1, job.totalBatches)}/{job.totalBatches}
                       </span>
                       <span>·</span>
                       <span className="inline-flex items-center gap-1">
@@ -586,17 +586,17 @@ export function AiPanel({
                   <div className="flex flex-wrap items-center justify-between gap-2 text-[12px]">
                     <div className="flex flex-wrap items-center gap-3 font-mono tabular-nums">
                       <span className="text-ink-900">
-                        进度 {job.done}/{job.total}（{pct}%）
+                        tiến độ {job.done}/{job.total} ({pct}%)
                       </span>
-                      <span className="text-deal">通过 {job.kept}</span>
-                      <span className="text-alert">拦截 {job.rejected}</span>
-                      {job.failed > 0 && <span className="text-code">失败 {job.failed}</span>}
+                      <span className="text-deal">qua {job.kept}</span>
+                      <span className="text-alert">chặn {job.rejected}</span>
+                      {job.failed > 0 && <span className="text-code">thất bại {job.failed}</span>}
                     </div>
                   </div>
 
                   {job.recentEvents.length > 0 && (
                     <div className="space-y-1 border-t border-brand-border/50 pt-2">
-                      <div className="text-[11px] font-medium text-ink-500">刚落库的判定</div>
+                      <div className="text-[11px] font-medium text-ink-500">đánh giá vừa ghi DB</div>
                       {job.recentEvents.slice(0, 4).map((ev, idx) => (
                         <div
                           key={ev.title + idx}
@@ -639,15 +639,15 @@ export function AiPanel({
                     {run.sourceId ? sourceName(run.sourceId) : run.label}
                   </span>
                   <div className="flex items-center gap-2">
-                    <div className="h-1.5 w-14 overflow-hidden rounded-full bg-ink-200" title={`留存 ${run.kept} / 拦截 ${run.rejected}`}>
+                    <div className="h-1.5 w-14 overflow-hidden rounded-full bg-ink-200" title={`giữ ${run.kept} / chặn ${run.rejected}`}>
                       <div className="h-full bg-deal" style={{ width: passRatio + "%" }} />
                     </div>
                     <span className="font-mono text-[11.5px] tabular-nums text-ink-700">
-                      {run.reviewed} 条（<span className="text-deal">{run.kept}</span>/<span className="text-ink-500">{run.rejected}</span>）
+                      {run.reviewed} tin (<span className="text-deal">{run.kept}</span>/<span className="text-ink-500">{run.rejected}</span>）
                     </span>
                   </div>
                   {run.skippedBlocked ? (
-                    <span className="font-mono text-[11px] text-ink-400">屏蔽跳过 {run.skippedBlocked}</span>
+                    <span className="font-mono text-[11px] text-ink-400">bỏ qua theo chặn {run.skippedBlocked}</span>
                   ) : null}
                   {run.error ? (
                     <span className="max-w-[180px] truncate rounded bg-alert-subtle px-1.5 py-0.5 text-[11px] text-alert">
@@ -656,7 +656,7 @@ export function AiPanel({
                   ) : (
                     <span className="font-mono text-[11px] tabular-nums text-ink-500">
                       {fmtDuration(run.durationMs)}
-                      {run.ttfbAvgMs !== null ? ` · 首字 ${run.ttfbAvgMs}ms` : ""}
+                      {run.ttfbAvgMs !== null ? ` · byte đầu ${run.ttfbAvgMs}ms` : ""}
                     </span>
                   )}
                   <span className="font-mono text-[11px] text-ink-400">{timeAgo(run.finishedAt)}</span>
@@ -672,12 +672,12 @@ export function AiPanel({
         <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
           <div className="flex items-center gap-2">
             <Activity size={14} className="text-ink-500" />
-            <h3 className="text-[13.5px] font-semibold text-ink-900">判定分布</h3>
-            <span className="text-[11.5px] text-ink-500">共 {total} 条待/已审活跃条目</span>
+            <h3 className="text-[13.5px] font-semibold text-ink-900">phân bố đánh giá</h3>
+            <span className="text-[11.5px] text-ink-500">tổng {total} tin chờ/đã duyệt đang hoạt động</span>
           </div>
           {(st.blockedSkipped ?? 0) > 0 && (
             <span className="text-[11.5px] text-ink-500">
-              另有 <span className="font-mono text-ink-700">{st.blockedSkipped}</span> 条命中全局屏蔽词，已免送 AI 省额度
+              ngoài ra <span className="font-mono text-ink-700">{st.blockedSkipped}</span> tin trúng từ chặn toàn cục, đã miễn gửi AI tiết kiệm hạn mức
             </span>
           )}
         </div>
@@ -687,19 +687,19 @@ export function AiPanel({
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
           <div>
             <div className="font-mono text-[18px] font-semibold tabular-nums text-deal">{st.kept}</div>
-            <div className="text-[11.5px] text-ink-500">判定有效</div>
+            <div className="text-[11.5px] text-ink-500">đánh giá hợp lệ</div>
           </div>
           <div>
             <div className="font-mono text-[18px] font-semibold tabular-nums text-ink-700">{st.rejected}</div>
-            <div className="text-[11.5px] text-ink-500">判定噪音</div>
+            <div className="text-[11.5px] text-ink-500">đánh giá nhiễu</div>
           </div>
           <div>
             <div className="font-mono text-[18px] font-semibold tabular-nums text-ink-900">{st.pending}</div>
-            <div className="text-[11.5px] text-ink-500">真正待送审</div>
+            <div className="text-[11.5px] text-ink-500">thực sự chờ duyệt</div>
           </div>
           <div>
             <div className="font-mono text-[18px] font-semibold tabular-nums text-ink-400">{st.blockedSkipped ?? 0}</div>
-            <div className="text-[11.5px] text-ink-500">屏蔽词跳过（省额度）</div>
+            <div className="text-[11.5px] text-ink-500">bỏ qua theo từ chặn (tiết kiệm hạn mức)</div>
           </div>
         </div>
         {st.byCategory.length > 0 && (
@@ -718,28 +718,28 @@ export function AiPanel({
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Filter size={15} className="text-brand" />
-            <h3 className="text-[13.5px] font-semibold text-ink-900">规则初筛与送审范围（省额度 · 提速度）</h3>
+            <h3 className="text-[13.5px] font-semibold text-ink-900">lọc sơ bằng rule & phạm vi gửi duyệt (tiết kiệm hạn mức · tăng tốc)</h3>
           </div>
-          <span className="text-[11.5px] text-ink-500">采集入库后，先过规则初筛再决定是否送入 AI</span>
+          <span className="text-[11.5px] text-ink-500">sau khi thu vào kho, qua lọc sơ bằng rule trước rồi mới quyết gửi AI</span>
         </div>
 
         <div className="grid gap-2.5 sm:grid-cols-2">
           <SwitchRow
-            label="启用入口噪音预拦截（规则初筛）"
-            hint="自动跳过求助/问价/游戏更新补丁等明显非福利帖，不送 AI 也不主动直推"
+            label="bật chặn trước nhiễu đầu vào (lọc sơ bằng rule)"
+            hint="tự bỏ qua bài cầu cứu/hỏi giá/patch game rõ ràng không phải freebie, không gửi AI cũng không chủ động push thẳng"
             value={form.preFilterEnabled}
             onChange={(v) => {
               setForm({ ...form, preFilterEnabled: v });
-              void save({ preFilterEnabled: v }, v ? "已开启规则初筛" : "已关闭规则初筛（全量直通 AI）");
+              void save({ preFilterEnabled: v }, v ? "đã bật lọc sơ bằng rule" : "đã tắt lọc sơ bằng rule (toàn bộ thẳng vào AI)");
             }}
           />
           <SwitchRow
-            label="纯白嫖专源免送 AI 直通"
-            hint="Epic/Steam/GamerPower/CheapShark/ITAD/SharewareOnSale 等纯白嫖源直接判真福利省额度"
+            label="nguồn chuyên free miễn gửi AI, thông hành"
+            hint="nguồn chuyên free như Epic/Steam/GamerPower/CheapShark/ITAD/SharewareOnSale đánh thẳng freebie thật để tiết kiệm hạn mức"
             value={form.skipFreebieSources}
             onChange={(v) => {
               setForm({ ...form, skipFreebieSources: v });
-              void save({ skipFreebieSources: v }, v ? "纯白嫖专源已设为免审直通" : "纯白嫖专源已恢复送 AI");
+              void save({ skipFreebieSources: v }, v ? "nguồn chuyên free đã đặt thông hành miễn duyệt" : "nguồn chuyên free đã khôi phục gửi AI");
             }}
           />
         </div>
@@ -747,18 +747,18 @@ export function AiPanel({
         <div className="rounded-lg border border-ink-200 bg-surface-hover p-3.5">
           <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
             <div className="min-w-0">
-              <div className="text-[12.5px] font-medium text-ink-900">AI 语义去重（自动）</div>
+              <div className="text-[12.5px] font-medium text-ink-900">khử trùng ngữ nghĩa AI (tự động)</div>
               <div className="mt-0.5 text-[11px] leading-snug text-ink-500">
-开启后全自动运行：入库审核通过时比对一次，Telegram 推送前再比对一次。同一活动/事件即使各家措辞完全不同，也只保留 1 条、只推 1 次。
-                {st?.dedup ? ` 已合并 ${st.dedup.mergedItems} 条、${st.dedup.clusterCount} 个聚类。` : ""}
+sau khi bật chạy hoàn toàn tự động: đối chiếu một lần khi duyệt vào kho qua, lại đối chiếu một lần trước khi push Telegram. cùng hoạt động/sự kiện dù mỗi nơi diễn đạt khác hẳn cũng chỉ giữ 1 tin, chỉ push 1 lần.
+                {st?.dedup ? ` đã gộp ${st.dedup.mergedItems} tin, ${st.dedup.clusterCount} cụm.` : ""}
                 {st?.dedup?.degraded && st.dedup.degraded.count > 0
-                  ? ` ⚠ 已降级 ${st.dedup.degraded.count} 次（最近：${st.dedup.degraded.lastReason ?? "未知"}），期间仅规则去重生效。`
+                  ? ` ⚠ đã hạ cấp ${st.dedup.degraded.count} lần (gần nhất: ${st.dedup.degraded.lastReason ?? "không rõ"}), trong lúc đó chỉ khử trùng bằng rule có hiệu lực.`
                   : ""}
               </div>
             </div>
             <div className="flex shrink-0 items-center gap-2">
               <label className="flex items-center gap-1 text-[11.5px] text-ink-600">
-                对比窗口
+                khung đối chiếu
                 <input
                   type="number"
                   min={6}
@@ -768,14 +768,14 @@ export function AiPanel({
                   onBlur={() => void save({ aiDedupWindowHours: form.aiDedupWindowHours })}
                   className="w-14 rounded border border-ink-200 bg-surface px-1.5 py-0.5 text-center font-mono text-[12px]"
                 />
-                小时
+                giờ
               </label>
               <button
                 type="button"
                 onClick={() => {
                   const next = !form.aiDedupEnabled;
                   setForm({ ...form, aiDedupEnabled: next });
-                  void save({ aiDedupEnabled: next }, next ? "已开启 AI 语义去重" : "已关闭 AI 语义去重");
+                  void save({ aiDedupEnabled: next }, next ? "đã bật khử trùng ngữ nghĩa AI" : "đã tắt khử trùng ngữ nghĩa AI");
                 }}
                 className={
                   "rounded-lg border px-3 py-1 text-[12px] font-medium transition-colors " +
@@ -784,17 +784,17 @@ export function AiPanel({
                     : "border-ink-200 bg-ink-100 text-ink-600")
                 }
               >
-                {form.aiDedupEnabled ? "已开启" : "已关闭"}
+                {form.aiDedupEnabled ? "đã bật" : "đã đóng"}
               </button>
               <button
                 type="button"
                 onClick={() => void runDedup()}
                 disabled={deduping || !s.ready}
-                title="对近 N 小时已入库条目跑一次语义聚类，历史重复也会被折叠"
+                title="chạy một lượt gom cụm ngữ nghĩa cho mục đã vào kho trong N giờ qua, trùng lịch sử cũng bị gập"
                 className="inline-flex items-center gap-1 rounded-lg border border-ink-200 bg-surface px-2.5 py-1 text-[12px] font-medium text-ink-700 hover:bg-ink-100 disabled:opacity-50"
               >
                 {deduping ? <Loader2 size={12} className="animate-spin" /> : <Zap size={12} />}
-                立即聚类去重
+                gom cụm khử trùng ngay
               </button>
             </div>
           </div>
@@ -802,23 +802,23 @@ export function AiPanel({
             <div className="mt-1 text-[11.5px] text-ink-600">
               {dedupResult.skippedReason
                 ? dedupResult.skippedReason
-                : `已比对 ${dedupResult.scanned} 条，合并 ${dedupResult.merged} 条重复，当前共 ${dedupResult.clusters} 个聚类。`}
+                : `đã đối chiếu ${dedupResult.scanned} tin, gộp ${dedupResult.merged} tin trùng, hiện tổng ${dedupResult.clusters} cụm.`}
             </div>
           )}
         </div>
 
 <div className="rounded-lg border border-ink-200 bg-surface-hover px-3.5 py-2.5 text-[12px] leading-relaxed text-ink-600">
-          自定义拦截词已与「<span className="font-medium text-ink-900">订阅与屏蔽</span>」合并为统一规则：命中全局屏蔽词或正则的条目，同样会在入库送 AI 前直接跳过、节省审核额度。
+          từ chặn tuỳ chọn đã gộp với「<span className="font-medium text-ink-900">theo dõi & chặn</span>」thành rule thống nhất: mục trúng từ chặn toàn cục hoặc regex cũng bị bỏ qua thẳng trước khi vào kho gửi AI, tiết kiệm hạn mức duyệt.
         </div>
 
         <div className="rounded-lg border border-ink-200 bg-surface-hover p-3.5">
           <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
-            <span className="text-[12.5px] font-medium text-ink-900">送审数据源范围</span>
+            <span className="text-[12.5px] font-medium text-ink-900">phạm vi nguồn gửi duyệt</span>
             <div className="flex items-center gap-1.5">
               {[
-                { key: "all" as AiSourceMode, label: "全部启用源" },
-                { key: "exclude" as AiSourceMode, label: "排除指定源" },
-                { key: "only" as AiSourceMode, label: "仅审指定源" },
+                { key: "all" as AiSourceMode, label: "tất cả nguồn đang bật" },
+                { key: "exclude" as AiSourceMode, label: "loại trừ nguồn chọn" },
+                { key: "only" as AiSourceMode, label: "chỉ duyệt nguồn chọn" },
               ].map((m) => (
                 <button
                   key={m.key}
@@ -868,24 +868,24 @@ export function AiPanel({
       {/* 4. 模型连接、性能并发与提示词自定义 */}
       <div className="panel space-y-4 p-4">
         <div className="flex items-center justify-between">
-          <h3 className="text-[13.5px] font-semibold text-ink-900">模型连接、并发性能与审核口径</h3>
+          <h3 className="text-[13.5px] font-semibold text-ink-900">kết nối model, hiệu năng song song & chuẩn duyệt</h3>
           <label className="flex items-center gap-2 text-[12.5px] font-medium text-ink-800">
             <input
               type="checkbox"
               checked={form.enabled}
               onChange={(e) => {
                 setForm({ ...form, enabled: e.target.checked });
-                void save({ enabled: e.target.checked }, e.target.checked ? "已启用 AI 语义审核" : "已关闭 AI 语义审核");
+                void save({ enabled: e.target.checked }, e.target.checked ? "đã bật duyệt ngữ nghĩa AI" : "đã tắt duyệt ngữ nghĩa AI");
               }}
               className="h-3.5 w-3.5 accent-brand"
             />
-            启用 AI 语义审核
+            bật duyệt ngữ nghĩa AI
           </label>
         </div>
 
         <div className="grid gap-3 sm:grid-cols-3">
           <label className="block">
-            <span className="mb-1 block text-[12px] font-medium text-ink-700">API 端点（OpenAI 兼容）</span>
+            <span className="mb-1 block text-[12px] font-medium text-ink-700">endpoint API (tương thích OpenAI)</span>
             <input
               value={form.baseUrl}
               onChange={(e) => setForm({ ...form, baseUrl: e.target.value })}
@@ -894,7 +894,7 @@ export function AiPanel({
             />
           </label>
           <label className="block">
-            <span className="mb-1 block text-[12px] font-medium text-ink-700">模型名</span>
+            <span className="mb-1 block text-[12px] font-medium text-ink-700">Tên model</span>
             <input
               value={form.model}
               onChange={(e) => setForm({ ...form, model: e.target.value })}
@@ -904,13 +904,13 @@ export function AiPanel({
           </label>
           <label className="block">
             <span className="mb-1 block text-[12px] font-medium text-ink-700">
-              API Key {s.hasKey && <span className="font-normal text-ink-500">（当前 {s.keyHint}）</span>}
+              API Key {s.hasKey && <span className="font-normal text-ink-500">（hiện tại {s.keyHint}）</span>}
             </span>
             <input
               type="password"
               value={(form.apiKey ?? "").startsWith("••••") ? "" : (form.apiKey ?? "")}
               onChange={(e) => setForm({ ...form, apiKey: e.target.value })}
-              placeholder={s.hasKey ? "已配置，留空保持不变" : "sk-..."}
+              placeholder={s.hasKey ? "đã cấu hình, để trống = giữ nguyên" : "sk-..."}
               className="w-full rounded-lg border border-ink-200 bg-surface px-2.5 py-1.5 font-mono text-[12.5px] text-ink-900 outline-none focus:border-brand"
             />
           </label>
@@ -919,7 +919,7 @@ export function AiPanel({
         {/* 性能参数 */}
         <div className="grid gap-3 sm:grid-cols-4">
           <label className="block rounded-lg border border-ink-200 bg-surface-hover p-3">
-            <span className="mb-1 block text-[12px] font-medium text-ink-700">单次调用上限 (20~500)</span>
+            <span className="mb-1 block text-[12px] font-medium text-ink-700">giới hạn mỗi lần gọi (20~500)</span>
             <input
               type="number"
               min={20}
@@ -931,7 +931,7 @@ export function AiPanel({
             />
           </label>
           <label className="block rounded-lg border border-ink-200 bg-surface-hover p-3">
-            <span className="mb-1 block text-[12px] font-medium text-ink-700">每批条数 (2~20)</span>
+            <span className="mb-1 block text-[12px] font-medium text-ink-700">số tin mỗi batch (2~20)</span>
             <input
               type="number"
               min={2}
@@ -942,7 +942,7 @@ export function AiPanel({
             />
           </label>
           <label className="block rounded-lg border border-ink-200 bg-surface-hover p-3">
-            <span className="mb-1 block text-[12px] font-medium text-ink-700">并发批数 (1~8)</span>
+            <span className="mb-1 block text-[12px] font-medium text-ink-700">số batch song song (1~8)</span>
             <input
               type="number"
               min={1}
@@ -953,7 +953,7 @@ export function AiPanel({
             />
           </label>
           <label className="block rounded-lg border border-ink-200 bg-surface-hover p-3">
-            <span className="mb-1 block text-[12px] font-medium text-ink-700">单批超时秒数 (5~60)</span>
+            <span className="mb-1 block text-[12px] font-medium text-ink-700">timeout mỗi batch, giây (5~60)</span>
             <input
               type="number"
               min={5}
@@ -966,25 +966,25 @@ export function AiPanel({
         </div>
 
         <div className="rounded-lg border border-ink-200 bg-surface-hover px-3.5 py-2 text-[11.5px] leading-relaxed text-ink-600">
-          当前分波节奏：每次 HTTP 请求打包 <span className="font-mono font-medium text-ink-900">{form.batchSize}</span> 条 ×{" "}
-          <span className="font-mono font-medium text-ink-900">{form.concurrency}</span> 并发 = 每波{" "}
-          <span className="font-mono font-medium text-ink-900">{form.batchSize * form.concurrency}</span> 条 · 采集后先同步审核前{" "}
-          <span className="font-mono font-medium text-ink-900">{s.syncPrePushLimit ?? 20}</span> 条再推（可在「推送规则」调整），超出部分进异步队列每波最多{" "}
-          <span className="font-mono font-medium text-ink-900">{Math.min(Math.max(form.batchSize * form.concurrency, 12), 48)}</span> 条 · 上方「单次调用上限」仅限制直接批调用，「历史补审 50/200/500」则由右侧下拉单独控制。
+          nhịp từng đợt hiện tại: mỗi HTTP request gói <span className="font-mono font-medium text-ink-900">{form.batchSize}</span> tin ×{" "}
+          <span className="font-mono font-medium text-ink-900">{form.concurrency}</span> song song = mỗi đợt{" "}
+          <span className="font-mono font-medium text-ink-900">{form.batchSize * form.concurrency}</span> tin · sau thu duyệt đồng bộ trước{" "}
+          <span className="font-mono font-medium text-ink-900">{s.syncPrePushLimit ?? 20}</span> tin rồi push (chỉnh được trong「rule push」), phần vượt vào hàng đợi async tối đa mỗi đợt{" "}
+          <span className="font-mono font-medium text-ink-900">{Math.min(Math.max(form.batchSize * form.concurrency, 12), 48)}</span> tin ·「giới hạn mỗi lần gọi」trên chỉ giới hạn gọi batch trực tiếp,「lịch sử duyệt bù 50/200/500」do dropdown bên phải điều khiển riêng.
         </div>
 
         {/* 偏好自适应 */}
         <div className="rounded-lg border border-ink-200 bg-surface-hover p-3.5">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
-              <div className="text-[12.5px] font-medium text-ink-900">从收藏与关闭自动学习偏好</div>
+              <div className="text-[12.5px] font-medium text-ink-900">tự học sở thích từ lưu & đóng</div>
               <div className="mt-0.5 text-[11px] text-ink-500">
-                自动提取最近收藏（正样本 {data.feedback?.positive ?? 0} 条）与手动关闭（负样本 {data.feedback?.negative ?? 0} 条）作为审核参考
+                tự lấy mục lưu gần đây (mẫu dương {data.feedback?.positive ?? 0} tin) và đóng thủ công (mẫu âm {data.feedback?.negative ?? 0} tin) làm tham chiếu duyệt
               </div>
             </div>
             <div className="flex items-center gap-2">
               <label className="flex items-center gap-1 text-[11.5px] text-ink-600">
-                各取最近
+                mỗi loại lấy gần đây
                 <input
                   type="number"
                   min={1}
@@ -993,21 +993,21 @@ export function AiPanel({
                   onChange={(e) => setForm({ ...form, feedbackLimit: Number(e.target.value) })}
                   className="w-12 rounded border border-ink-200 bg-surface px-1.5 py-0.5 text-center font-mono text-[12px]"
                 />
-                条
+                tin
               </label>
               <button
                 type="button"
                 onClick={() => setShowSamples((v) => !v)}
                 className="inline-flex items-center gap-1 rounded-lg border border-ink-200 bg-surface px-2.5 py-1 text-[11.5px] text-ink-700 hover:bg-ink-100"
               >
-                {showSamples ? <ChevronUp size={12} /> : <ChevronDown size={12} />} 查看样本
+                {showSamples ? <ChevronUp size={12} /> : <ChevronDown size={12} />} xem mẫu
               </button>
               <button
                 type="button"
                 onClick={() => {
                   const next = !form.learnFromFeedback;
                   setForm({ ...form, learnFromFeedback: next });
-                  void save({ learnFromFeedback: next }, next ? "已开启偏好自适应" : "已关闭偏好自适应");
+                  void save({ learnFromFeedback: next }, next ? "đã bật tự thích ứng sở thích" : "đã tắt tự thích ứng sở thích");
                 }}
                 className={
                   "rounded-lg border px-3 py-1 text-[12px] font-medium transition-colors " +
@@ -1016,7 +1016,7 @@ export function AiPanel({
                     : "border-ink-200 bg-ink-100 text-ink-600")
                 }
               >
-                {form.learnFromFeedback ? "自动学习中" : "已关闭"}
+                {form.learnFromFeedback ? "đang tự học" : "đã đóng"}
               </button>
             </div>
           </div>
@@ -1024,25 +1024,25 @@ export function AiPanel({
           {showSamples && (
             <div className="mt-3 grid gap-2.5 border-t border-ink-200 pt-2.5 sm:grid-cols-2">
               <div>
-                <div className="mb-1 text-[11px] font-medium text-deal">注入的正样本（最近收藏）</div>
+                <div className="mb-1 text-[11px] font-medium text-deal">mẫu dương đã nạp (lưu gần đây)</div>
                 <ul className="space-y-1 text-[11.5px] text-ink-700">
                   {(data.feedback?.positiveSamples ?? []).map((t, idx) => (
                     <li key={idx} className="truncate">
                       · {t}
                     </li>
                   ))}
-                  {!(data.feedback?.positiveSamples?.length) && <li className="text-ink-400">暂无收藏样本</li>}
+                  {!(data.feedback?.positiveSamples?.length) && <li className="text-ink-400">chưa có mẫu đã lưu</li>}
                 </ul>
               </div>
               <div>
-                <div className="mb-1 text-[11px] font-medium text-alert">注入的负样本（最近关闭）</div>
+                <div className="mb-1 text-[11px] font-medium text-alert">mẫu âm đã nạp (đóng gần đây)</div>
                 <ul className="space-y-1 text-[11.5px] text-ink-700">
                   {(data.feedback?.negativeSamples ?? []).map((t, idx) => (
                     <li key={idx} className="truncate">
                       · {t}
                     </li>
                   ))}
-                  {!(data.feedback?.negativeSamples?.length) && <li className="text-ink-400">暂无关闭样本</li>}
+                  {!(data.feedback?.negativeSamples?.length) && <li className="text-ink-400">chưa có mẫu đã đóng</li>}
                 </ul>
               </div>
             </div>
@@ -1053,15 +1053,15 @@ export function AiPanel({
         <label className="block">
           <div className="mb-1 flex items-center justify-between">
             <span className="text-[12px] font-medium text-ink-800">
-              补充审核规则（推荐 · 自动追加在系统默认口径后，不破坏 JSON 格式）
+              rule duyệt bổ sung (khuyên dùng · tự nối sau chuẩn mặc định hệ thống, không phá format JSON)
             </span>
-            <span className="text-[11px] text-ink-500">可随时追加偏好，如「需要绑信用卡的判 false」「AI 模型免费额度一律留」</span>
+            <span className="text-[11px] text-ink-500">thêm sở thích bất cứ lúc nào, vd「bắt buộc gắn thẻ tín dụng thì đánh false」「quota free của model AI thì giữ hết」</span>
           </div>
           <textarea
             value={form.extraPrompt}
             onChange={(e) => setForm({ ...form, extraPrompt: e.target.value })}
             rows={3}
-            placeholder="例如：1. 需要企业认证/营业执照的活动判 keep=false；2. 开源免费 AI 接口/白嫖算力券优先给 quality=5..."
+            placeholder="vd: 1. hoạt động cần xác thực doanh nghiệp/giấy phép kinh doanh thì đánh keep=false; 2. API AI nguồn mở free/voucher sức mạnh tính toán thì ưu tiên quality=5..."
             className="w-full rounded-lg border border-ink-200 bg-surface px-2.5 py-2 text-[12px] leading-relaxed text-ink-800 outline-none focus:border-brand"
           />
         </label>
@@ -1088,7 +1088,7 @@ export function AiPanel({
             className="inline-flex items-center gap-1.5 rounded-lg bg-brand px-3.5 py-1.5 text-[12.5px] font-medium text-white hover:bg-brand-hover disabled:opacity-60"
           >
             {saving ? <Loader2 size={13} className="animate-spin" /> : <Save size={13} />}
-            保存配置
+            lưu cấu hình
           </button>
           <button
             type="button"
@@ -1096,14 +1096,14 @@ export function AiPanel({
             className="inline-flex items-center gap-1.5 rounded-lg border border-ink-200 bg-surface px-3 py-1.5 text-[12.5px] font-medium text-ink-700 hover:bg-ink-100"
           >
             <Zap size={13} />
-            {showPrompt ? "收起完整主提示词" : "高级：自定义完整主提示词"}
+            {showPrompt ? "thu gọn prompt chính đầy đủ" : "nâng cao: tuỳ chỉnh prompt chính đầy đủ"}
           </button>
           <button
             type="button"
             onClick={reload}
             className="inline-flex items-center gap-1.5 rounded-lg border border-ink-200 bg-surface px-3 py-1.5 text-[12.5px] font-medium text-ink-700 hover:bg-ink-100"
           >
-            <RefreshCw size={13} /> 刷新
+            <RefreshCw size={13} /> làm mới
           </button>
         </div>
 
@@ -1111,11 +1111,11 @@ export function AiPanel({
           <div className="border-t border-ink-100 pt-3">
             <div className="mb-1 flex items-center justify-between">
               <span className="text-[12px] font-medium text-ink-700">
-                完整系统主提示词
+                prompt chính hệ thống đầy đủ
                 {s.promptIsDefault ? (
-                  <span className="ml-1 font-normal text-ink-500">（当前使用内置默认，留空可随时吃满版本更新）</span>
+                  <span className="ml-1 font-normal text-ink-500">（đang dùng mặc định tích hợp, để trống = luôn theo bản cập nhật）</span>
                 ) : (
-                  <span className="ml-1 font-normal text-brand">（已完全自定义覆盖）</span>
+                  <span className="ml-1 font-normal text-brand">（đã tuỳ chỉnh ghi đè hoàn toàn）</span>
                 )}
               </span>
               {!s.promptIsDefault && (
@@ -1123,11 +1123,11 @@ export function AiPanel({
                   type="button"
                   onClick={() => {
                     setForm({ ...form, systemPrompt: "" });
-                    void save({ systemPrompt: "" }, "已恢复内置主提示词");
+                    void save({ systemPrompt: "" }, "đã khôi phục prompt chính mặc định");
                   }}
                   className="text-[11.5px] font-medium text-brand hover:underline"
                 >
-                  恢复默认主提示词
+                  khôi phục prompt chính mặc định
                 </button>
               )}
             </div>
@@ -1145,15 +1145,15 @@ export function AiPanel({
       <div className="panel p-4">
         <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
           <div className="flex items-center gap-2">
-            <h3 className="text-[13.5px] font-semibold text-ink-900">最近判定样本</h3>
-            <span className="text-[11.5px] text-ink-500">按实际 AI 判定时间倒序，展示最近 {st.recent.length} 条</span>
+            <h3 className="text-[13.5px] font-semibold text-ink-900">mẫu đánh giá gần đây</h3>
+            <span className="text-[11.5px] text-ink-500">xếp ngược theo thời điểm AI đánh giá thực, hiện {st.recent.length} tin gần nhất</span>
           </div>
           <div className="flex flex-wrap items-center gap-2">
             <div className="flex items-center gap-0.5 rounded-md border border-ink-200 bg-surface p-0.5 text-[11.5px]">
               {[
-                { key: "all" as const, label: `全部 ${st.recent.length}` },
-                { key: "kept" as const, label: `通过 ${st.recent.filter((r) => r.keep).length}` },
-                { key: "rejected" as const, label: `拦截 ${st.recent.filter((r) => r.keep === false).length}` },
+                { key: "all" as const, label: `tất cả ${st.recent.length}` },
+                { key: "kept" as const, label: `qua ${st.recent.filter((r) => r.keep).length}` },
+                { key: "rejected" as const, label: `chặn ${st.recent.filter((r) => r.keep === false).length}` },
               ].map((tabItem) => (
                 <button
                   key={tabItem.key}
@@ -1173,7 +1173,7 @@ export function AiPanel({
               <input
                 value={sampleQuery}
                 onChange={(e) => setSampleQuery(e.target.value)}
-                placeholder="搜标题 / 理由 / 来源"
+                placeholder="tìm tiêu đề / lý do / nguồn"
                 className="w-40 rounded-md border border-ink-200 bg-surface py-1 pr-2 pl-6 text-[11.5px] text-ink-800 outline-none focus:border-brand"
               />
             </div>
@@ -1227,7 +1227,7 @@ export function AiPanel({
                     {typeof r.quality === "number" && (
                       <span className="rounded bg-brand-subtle px-1.5 py-0.5 font-mono text-accent">★{r.quality}</span>
                     )}
-                    <span className="font-mono text-ink-400">{Math.round(r.score)} 分</span>
+                    <span className="font-mono text-ink-400">{Math.round(r.score)} điểm</span>
                     {r.reason && (
                       <span className={"ml-0.5 " + (r.keep ? "text-ink-600" : "text-alert/90")}>
                         · {r.reason}
@@ -1240,7 +1240,7 @@ export function AiPanel({
           ))}
           {!recentFiltered.length && (
             <div className="py-6 text-center text-[12.5px] text-ink-500">
-              {st.recent.length ? "没有匹配的样本" : "还没有判定记录"}
+              {st.recent.length ? "không có mẫu khớp" : "chưa có bản ghi đánh giá"}
             </div>
           )}
         </div>

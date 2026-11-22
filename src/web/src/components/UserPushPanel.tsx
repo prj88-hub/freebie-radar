@@ -52,10 +52,10 @@ const num = (v: unknown, fallback: number): number => (Number.isFinite(Number(v)
 const str = (v: unknown, fallback: string): string => (typeof v === "string" ? v : fallback);
 const bool = (v: unknown, fallback: boolean): boolean => (typeof v === "boolean" ? v : fallback);
 const REJECTION_LABEL: Record<string, string> = {
-  hidden: "已关闭", blocked: "屏蔽词", duplicate: "重复内容", stale: "超出时效",
-  source: "来源限制", lang: "语言不符", kind: "形态不符", category: "分类不符",
-  price: "价格超限", ai: "AI 拦截", obtain: "获取方式", route: "未命中路由",
-  lowScore: "分数不足", disabled: "推送关闭", other: "其他条件",
+  hidden: "đã đóng", blocked: "từ chặn", duplicate: "nội dung trùng", stale: "quá hạn",
+  source: "giới hạn nguồn", lang: "sai ngôn ngữ", kind: "sai dạng nội dung", category: "sai phân loại",
+  price: "vượt giá", ai: "AI chặn", obtain: "cách lấy", route: "không khớp route",
+  lowScore: "điểm chưa đủ", disabled: "push đã tắt", other: "điều kiện khác",
 };
 
 function Toast2({ msg }: { msg: string | null }) {
@@ -101,17 +101,17 @@ export function UserPushPanel({ boot }: { boot: Bootstrap }) {
     setLogsLoading(true);
     try {
       const res = await fetch("/api/me/push/log?limit=30");
-      if (!res.ok) throw new Error("推送记录加载失败");
+      if (!res.ok) throw new Error("tải lịch sử push thất bại");
       const data = await res.json() as { logs: typeof logs };
       if (alive.current) setLogs(data.logs);
-    } catch { notify("推送记录加载失败，可点击刷新重试"); }
+    } catch { notify("tải lịch sử push thất bại, bấm làm mới để thử lại"); }
     finally { if (alive.current) setLogsLoading(false); }
   }, [notify]);
 
   const load = useCallback(async () => {
     try {
       const res = await fetch("/api/me/push");
-      if (!res.ok) throw new Error(((await res.json()) as { error?: string }).error ?? "配置加载失败");
+      if (!res.ok) throw new Error(((await res.json()) as { error?: string }).error ?? "Tải cấu hình thất bại");
       if (alive.current) {
         const data = (await res.json()) as MePushPayload;
         setPayload(data);
@@ -121,7 +121,7 @@ export function UserPushPanel({ boot }: { boot: Bootstrap }) {
         setSecretInput(str(data.settings.webhookSecret, ""));
       }
     } catch (e) {
-      if (alive.current) setLoadError(e instanceof Error ? e.message : "无法连接服务端");
+      if (alive.current) setLoadError(e instanceof Error ? e.message : "không kết nối được server");
     } finally {
       if (alive.current) setLoading(false);
     }
@@ -145,7 +145,7 @@ export function UserPushPanel({ boot }: { boot: Bootstrap }) {
         });
         const data = (await res.json().catch(() => ({}))) as Partial<MePushPayload> & { error?: string };
         if (!res.ok) {
-          notify(data.error ?? "保存失败");
+          notify(data.error ?? "Lưu thất bại");
           return false;
         }
         if (alive.current) {
@@ -154,7 +154,7 @@ export function UserPushPanel({ boot }: { boot: Bootstrap }) {
         }
         return true;
       } catch {
-        notify("网络异常，配置未保存，请重试");
+        notify("lỗi mạng, cấu hình chưa lưu, thử lại");
         return false;
       } finally { if (alive.current) setSaving(false); }
     },
@@ -165,8 +165,8 @@ export function UserPushPanel({ boot }: { boot: Bootstrap }) {
   const cfg = payload?.config;
   useEffect(() => { setTested(false); }, [cfg?.botTokenMask, cfg?.chatId, cfg?.settings.webhookUrl, cfg?.settings.webhookSecret, cfg?.settings.deliverVia]);
 
-  if (loading) return <div className="panel p-6 text-[13px] text-ink-500">加载个人推送配置中…</div>;
-  if (!payload || !cfg) return <div role="alert" className="panel p-6 text-[13px] text-alert">{loadError ?? "无法读取个人推送配置"} <button type="button" onClick={() => void load()} className="ml-2 underline">重试</button></div>;
+  if (loading) return <div className="panel p-6 text-[13px] text-ink-500">Đang tải cấu hình push cá nhân…</div>;
+  if (!payload || !cfg) return <div role="alert" className="panel p-6 text-[13px] text-alert">{loadError ?? "không đọc được cấu hình push cá nhân"} <button type="button" onClick={() => void load()} className="ml-2 underline">Thử lại</button></div>;
   const viaWebhook = cfg.settings.deliverVia === "webhook";
   const ready = viaWebhook ? Boolean(cfg.settings.webhookUrl) : cfg.hasToken && Boolean(cfg.chatId);
   const credentialsDirty = viaWebhook
@@ -176,33 +176,33 @@ export function UserPushPanel({ boot }: { boot: Bootstrap }) {
   return (
     <fieldset disabled={busy !== null || saving} className="min-w-0 space-y-4">
       <Toast2 msg={toast} />
-      <PageHeading eyebrow="个人空间" title="个人推送" description="把感兴趣的资源送到自己的渠道。先完成接入，再调整频率；所有设置只影响你自己。"
-        actions={!boot.isAdmin && <a href="#push" className="inline-flex min-h-9 items-center gap-1 rounded-md border border-ink-200 px-3 text-[12px] font-medium text-ink-700 hover:bg-surface-hover">完整推送规则 <ChevronRight size={13} /></a>} />
+      <PageHeading eyebrow="không gian cá nhân" title="push cá nhân" description="đưa tài nguyên bạn quan tâm tới kênh riêng. hoàn tất kết nối trước rồi chỉnh tần suất; mọi cài đặt chỉ ảnh hưởng bạn."
+        actions={!boot.isAdmin && <a href="#push" className="inline-flex min-h-9 items-center gap-1 rounded-md border border-ink-200 px-3 text-[12px] font-medium text-ink-700 hover:bg-surface-hover">rule push đầy đủ <ChevronRight size={13} /></a>} />
 
       <div className="panel overflow-hidden">
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-ink-100 px-4 py-3">
         <div>
           <div className="flex items-center gap-2 text-[14px] font-semibold text-ink-950">
-            <Bot size={15} className="text-accent" /> {viaWebhook ? "Webhook" : "Telegram"} 渠道
+            <Bot size={15} className="text-accent" /> {viaWebhook ? "Webhook" : "Telegram"} kênh
           </div>
         </div>
         <div className="flex items-center gap-2">
           <span className={`text-[11.5px] font-medium ${cfg.enabled ? "text-deal" : "text-ink-500"}`}>
-            {cfg.enabled ? "已开启" : "未开启"}
+            {cfg.enabled ? "đã bật" : "chưa bật"}
           </span>
           <button
             type="button"
             ref={enableRef}
             role="switch"
             aria-checked={cfg.enabled}
-            aria-label="开启个人推送"
+            aria-label="bật push cá nhân"
             disabled={!cfg.enabled && (!ready || credentialsDirty)}
-            onClick={async () => { if (await save({ enabled: !cfg.enabled })) notify(cfg.enabled ? "个人推送已关闭" : "个人推送已开启"); }}
+            onClick={async () => { if (await save({ enabled: !cfg.enabled })) notify(cfg.enabled ? "push cá nhân đã tắt" : "push cá nhân đã bật"); }}
             className={
               "relative inline-flex h-5 w-9 shrink-0 items-center rounded-full transition-colors " +
               (cfg.enabled ? "bg-brand" : "bg-ink-300") + " disabled:opacity-40"
             }
-            title={cfg.enabled ? "点击关闭个人推送" : "点击开启个人推送"}
+            title={cfg.enabled ? "bấm để tắt push cá nhân" : "bấm để bật push cá nhân"}
           >
             <span
               className={
@@ -215,20 +215,20 @@ export function UserPushPanel({ boot }: { boot: Bootstrap }) {
       </div>
       <div className="grid grid-cols-3 gap-1 p-2">
         {[
-          { title: "配置渠道", note: ready && !credentialsDirty ? "凭据已保存" : "填写并保存凭据", done: ready && !credentialsDirty, current: !ready || credentialsDirty, run: () => { credentialsRef.current?.scrollIntoView({ block: "center", behavior: "smooth" }); credentialsRef.current?.querySelector<HTMLInputElement>("input")?.focus({ preventScroll: true }); } },
-          { title: "测试投递", note: tested ? "本次测试成功" : "推荐先发测试消息", done: tested, current: ready && !credentialsDirty && !tested && !cfg.enabled, run: () => testButtonRef.current?.focus() },
-          { title: "开启推送", note: cfg.enabled ? "自动推送已开启" : "随时开启或暂停", done: cfg.enabled, current: ready && !credentialsDirty && (tested || cfg.enabled), run: () => enableRef.current?.focus() },
+          { title: "Cấu hình kênh", note: ready && !credentialsDirty ? "đã lưu thông tin" : "điền và lưu thông tin", done: ready && !credentialsDirty, current: !ready || credentialsDirty, run: () => { credentialsRef.current?.scrollIntoView({ block: "center", behavior: "smooth" }); credentialsRef.current?.querySelector<HTMLInputElement>("input")?.focus({ preventScroll: true }); } },
+          { title: "test gửi", note: tested ? "test lần này thành công" : "khuyên gửi tin test trước", done: tested, current: ready && !credentialsDirty && !tested && !cfg.enabled, run: () => testButtonRef.current?.focus() },
+          { title: "Bật push", note: cfg.enabled ? "push tự động đã bật" : "bật/tạm dừng bất cứ lúc nào", done: cfg.enabled, current: ready && !credentialsDirty && (tested || cfg.enabled), run: () => enableRef.current?.focus() },
         ].map((step, index) => <button type="button" key={step.title} className="setup-step" data-current={step.current} data-done={step.done} onClick={step.run}>
           <span className="setup-step-number">{step.done ? <Check size={13} /> : index + 1}</span>
           <span><span className="block text-[12px] font-semibold">{step.title}</span><span className="step-note mt-0.5 block text-[11px] text-ink-500">{step.note}</span></span>
         </button>)}
       </div>
       <div role="status" aria-live="polite" className="border-t border-ink-100 bg-surface-hover px-4 py-2.5 text-[12px] leading-relaxed text-ink-500">
-        {saving ? "正在保存…" : credentialsDirty ? "凭据有未保存更改，请先保存再测试或开启。" : !ready ? "请先配置当前渠道；配置完成前不会发送消息。" : payload.quiet && cfg.enabled ? "当前处于免打扰时段；手动发送仍会占用小时额度。" : "配置已同步，试算不会真实发送。"}
+        {saving ? "Đang lưu…" : credentialsDirty ? "thông tin có thay đổi chưa lưu, hãy lưu rồi test hoặc bật." : !ready ? "hãy cấu hình kênh hiện tại trước; trước khi xong sẽ không gửi tin." : payload.quiet && cfg.enabled ? "đang trong giờ không làm phiền; gửi thủ công vẫn tính hạn mức giờ." : "cấu hình đã đồng bộ, chạy thử sẽ không gửi thật."}
       </div>
       </div>
       <div className="grid grid-cols-3 gap-3 px-1 py-1">
-        {[{ label: "近 24 小时已推", value: payload.stats.sentLast24h }, { label: "等待攒批", value: payload.stats.queued }, { label: "本小时剩余额度", value: Math.max(0, num(s.maxPerHour, 24) - payload.stats.sentLastHour) }].map((metric) => <div key={metric.label} className="border-l-2 border-ink-200 pl-3">
+        {[{ label: "đã push trong 24 giờ qua", value: payload.stats.sentLast24h }, { label: "chờ gộp tin", value: payload.stats.queued }, { label: "hạn mức còn lại giờ này", value: Math.max(0, num(s.maxPerHour, 24) - payload.stats.sentLastHour) }].map((metric) => <div key={metric.label} className="border-l-2 border-ink-200 pl-3">
           <span className="block font-mono text-[20px] font-semibold tabular-nums text-ink-900">{metric.value}</span>
           <span className="text-[11.5px] text-ink-500">{metric.label}</span>
         </div>)}
@@ -236,15 +236,15 @@ export function UserPushPanel({ boot }: { boot: Bootstrap }) {
 
       {cfg.lastError && (
         <div className="panel border-alert-border bg-alert-subtle p-3.5 text-[12px] text-alert">
-          最近一次失败：{cfg.lastError}
-          {cfg.consecutiveFails > 0 ? `（连续失败 ${cfg.consecutiveFails} 次，达 3 次会自动停用）` : ""}
+          lỗi gần nhất: {cfg.lastError}
+          {cfg.consecutiveFails > 0 ? `（thất bại liên tiếp ${cfg.consecutiveFails} lần, đủ 3 lần tự ngừng）` : ""}
         </div>
       )}
 
       <div className="settings-layout grid gap-4 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)]">
         <section ref={credentialsRef} className="panel space-y-4 p-5">
           <div className="settings-section-title">
-            <KeyRound size={14} className="text-accent" /> {viaWebhook ? "Webhook 凭据" : "Bot 凭据"}
+            <KeyRound size={14} className="text-accent" /> {viaWebhook ? "thông tin webhook" : "thông tin Bot"}
             <span className="ml-auto rounded-full bg-canvas-subtle px-2 py-0.5 text-[10.5px] font-medium text-ink-600">
               {cfg.settings.deliverVia === "webhook" ? "Webhook" : "Telegram"}
             </span>
@@ -255,12 +255,12 @@ export function UserPushPanel({ boot }: { boot: Bootstrap }) {
                 key={v}
                 type="button"
                 onClick={async () => {
-                  if (credentialsDirty && !window.confirm("切换渠道会放弃当前未保存的凭据更改，继续吗？")) return;
+                  if (credentialsDirty && !window.confirm("đổi kênh sẽ bỏ thay đổi thông tin chưa lưu, tiếp tục?")) return;
                   if (await save({ deliverVia: v, enabled: false })) {
                     setTokenInput(""); setChatInput(cfg.chatId);
                     setWebhookInput(str(cfg.settings.webhookUrl, "")); setSecretInput(str(cfg.settings.webhookSecret, ""));
                     setDetected([]);
-                    notify("渠道已切换，推送保持关闭；保存凭据并测试后再开启");
+                    notify("đã đổi kênh, push vẫn tắt; lưu thông tin và test xong mới bật");
                   }
                 }}
                 className={
@@ -277,33 +277,33 @@ export function UserPushPanel({ boot }: { boot: Bootstrap }) {
           {cfg.settings.deliverVia === "webhook" ? (
             <>
               <label className="block">
-                <span className="text-[12px] font-medium text-ink-700">Webhook 地址</span>
+                <span className="text-[12px] font-medium text-ink-700">địa chỉ webhook</span>
                 <input
                   value={webhookInput}
                   onChange={(e) => setWebhookInput(e.target.value)}
-                  placeholder="https://你的公开推送服务/webhook"
+                  placeholder="https://dich-vu-push-cong-khai-cua-ban/webhook"
                   className="mt-1 w-full rounded-lg border border-ink-200 bg-surface px-2.5 py-1.5 font-mono text-[12px] text-ink-950 outline-none focus:border-accent"
                 />
                 <span className="mt-1 block text-[11px] text-ink-500">
-                  接收 POST JSON：source / text / sentAt。公开站不允许本机、内网地址或重定向，请填最终地址。
+                  nhận POST JSON: source / text / sentAt. site công khai không cho địa chỉ loopback/nội mạng hay redirect, hãy điền địa chỉ cuối.
                 </span>
               </label>
               <label className="block">
-                <span className="text-[12px] font-medium text-ink-700">校验密钥（可选）</span>
+                <span className="text-[12px] font-medium text-ink-700">khoá xác thực (tuỳ chọn)</span>
                 <input
                   type="password"
                   autoComplete="new-password"
                   value={secretInput}
                   onChange={(e) => setSecretInput(e.target.value)}
-                  placeholder="会以 X-Radar-Secret 头发送"
+                  placeholder="sẽ gửi kèm header X-Radar-Secret"
                   className="mt-1 w-full rounded-lg border border-ink-200 bg-surface px-2.5 py-1.5 font-mono text-[12px] text-ink-950 outline-none focus:border-accent"
                 />
               </label>
               <button type="button" onClick={async () => {
                 if (await save({ webhookUrl: webhookInput.trim(), webhookSecret: secretInput.trim() })) {
-                  setWebhookInput(webhookInput.trim()); setSecretInput(secretInput.trim()); notify("Webhook 凭据已保存");
+                  setWebhookInput(webhookInput.trim()); setSecretInput(secretInput.trim()); notify("đã lưu thông tin webhook");
                 }
-              }} className="rounded-lg bg-ink-950 px-3 py-1.5 text-[12px] font-medium text-white">保存 Webhook</button>
+              }} className="rounded-lg bg-ink-950 px-3 py-1.5 text-[12px] font-medium text-white">Lưu webhook</button>
             </>
           ) : null}
           {!viaWebhook && <>
@@ -314,24 +314,24 @@ export function UserPushPanel({ boot }: { boot: Bootstrap }) {
               type="password"
               autoComplete="new-password"
               onChange={(e) => setTokenInput(e.target.value)}
-              placeholder={cfg.hasToken ? `已保存：${cfg.botTokenMask}` : "123456789:AA..."}
+              placeholder={cfg.hasToken ? `đã lưu: ${cfg.botTokenMask}` : "123456789:AA..."}
               className="mt-1 w-full rounded-lg border border-ink-200 bg-surface px-2.5 py-1.5 font-mono text-[12px] text-ink-950 outline-none focus:border-accent"
             />
             <span className="mt-1 block text-[11px] text-ink-500">
-              在 @BotFather 建 Bot 拿 Token；服务端加密存储，接口只回显打码值。
+              tạo bot ở @BotFather lấy token; server lưu dạng mã hoá, API chỉ trả giá trị che.
             </span>
           </label>
           <div className="flex flex-wrap gap-2">
             <button
               type="button"
               onClick={async () => {
-                if (!tokenInput.trim()) return notify("先粘贴 Bot Token");
+                if (!tokenInput.trim()) return notify("dán Bot Token trước");
                 setBusy("token");
                 try {
                   const ok = await save({ botToken: tokenInput.trim() });
                   if (ok) {
                     setTokenInput("");
-                    notify("Token 已保存");
+                    notify("đã lưu token");
                   }
                 } finally {
                   setBusy(null);
@@ -341,7 +341,7 @@ export function UserPushPanel({ boot }: { boot: Bootstrap }) {
               className="inline-flex items-center gap-1.5 rounded-lg bg-ink-950 px-3 py-1.5 text-[12px] font-medium text-white hover:bg-brand-hover disabled:opacity-60"
             >
               {busy === "token" ? <Loader2 size={12} className="animate-spin" /> : null}
-              保存 Token
+              lưu token
             </button>
             <button
               type="button"
@@ -354,13 +354,13 @@ export function UserPushPanel({ boot }: { boot: Bootstrap }) {
                     body: JSON.stringify({ botToken: tokenInput.trim() || undefined }),
                   });
                   const data = (await res.json().catch(() => ({}))) as { error?: string; chats?: typeof detected };
-                  if (!res.ok) notify(data.error ?? "探测失败");
+                  if (!res.ok) notify(data.error ?? "Dò thất bại");
                   else {
                     setDetected(data.chats ?? []);
-                    notify((data.chats?.length ?? 0) ? `探测到 ${data.chats!.length} 个会话` : "没探测到会话，先给 Bot 发一句 /start");
+                    notify((data.chats?.length ?? 0) ? `dò được ${data.chats!.length} phiên chat` : "chưa dò được phiên chat, gửi /start cho bot trước");
                   }
                 } catch {
-                  notify("网络异常，探测失败，请重试");
+                  notify("lỗi mạng, dò thất bại, thử lại");
                 } finally {
                   setBusy(null);
                 }
@@ -369,25 +369,25 @@ export function UserPushPanel({ boot }: { boot: Bootstrap }) {
               className="inline-flex items-center gap-1.5 rounded-lg border border-ink-200 bg-surface px-3 py-1.5 text-[12px] font-medium text-ink-700 hover:bg-ink-100 disabled:opacity-60"
             >
               {busy === "detect" ? <Loader2 size={12} className="animate-spin" /> : <Wand2 size={12} />}
-              探测 Chat ID
+              dò Chat ID
             </button>
             {cfg.hasToken && (
               <button
                 type="button"
                 onClick={async () => {
-                  if (!window.confirm("清除 Token 会关闭 Telegram 推送，继续吗？")) return;
-                  if (await save({ clearToken: true, enabled: false })) notify("Token 已清除，推送已关闭");
+                  if (!window.confirm("xoá token sẽ tắt push Telegram, tiếp tục?")) return;
+                  if (await save({ clearToken: true, enabled: false })) notify("đã xoá token, push đã tắt");
                 }}
                 className="rounded-lg border border-ink-200 px-3 py-1.5 text-[12px] font-medium text-alert hover:bg-ink-100"
               >
-                清除 Token
+                xoá token
               </button>
             )}
           </div>
 
           {detected.length > 0 && (
             <div className="rounded-lg border border-ink-200 bg-surface-hover p-2.5">
-              <div className="mb-1.5 text-[11.5px] font-medium text-ink-700">点击填入 Chat ID</div>
+              <div className="mb-1.5 text-[11.5px] font-medium text-ink-700">bấm để điền Chat ID</div>
               <div className="flex flex-wrap gap-1.5">
                 {detected.map((c) => (
                   <button
@@ -409,18 +409,18 @@ export function UserPushPanel({ boot }: { boot: Bootstrap }) {
               <input
                 value={chatInput}
                 onChange={(e) => setChatInput(e.target.value)}
-                placeholder="你的私聊或频道 ID"
+                placeholder="ID chat riêng hoặc kênh của bạn"
                 className="w-full rounded-lg border border-ink-200 bg-surface px-2.5 py-1.5 font-mono text-[12px] text-ink-950 outline-none focus:border-accent"
               />
               <button
                 type="button"
                 onClick={async () => {
                   const ok = await save({ chatId: chatInput.trim() });
-                  if (ok) notify("Chat ID 已保存");
+                  if (ok) notify("đã lưu Chat ID");
                 }}
                 className="shrink-0 rounded-lg border border-ink-200 bg-surface px-3 py-1.5 text-[12px] font-medium text-ink-700 hover:bg-ink-100"
               >
-                保存
+                lưu
               </button>
             </div>
           </label>
@@ -435,11 +435,11 @@ export function UserPushPanel({ boot }: { boot: Bootstrap }) {
                 try {
                   const res = await fetch("/api/me/push/test", { method: "POST" });
                   const data = (await res.json().catch(() => ({}))) as { error?: string };
-                  notify(res.ok ? "测试消息已发出" : (data.error ?? "发送失败"));
+                  notify(res.ok ? "đã gửi tin test" : (data.error ?? "Gửi thất bại"));
                   if (res.ok) setTested(true);
                   void loadLogs();
                 } catch {
-                  notify("网络异常，无法确认发送结果，请查看推送记录");
+                  notify("lỗi mạng, không xác nhận được kết quả gửi, xem lịch sử push");
                 } finally {
                   setBusy(null);
                 }
@@ -447,21 +447,21 @@ export function UserPushPanel({ boot }: { boot: Bootstrap }) {
               disabled={busy !== null || !ready || credentialsDirty}
               className="inline-flex items-center gap-1.5 rounded-lg border border-ink-200 bg-surface px-3 py-1.5 text-[12px] font-medium text-ink-700 hover:bg-ink-100 disabled:opacity-50"
             >
-              {busy === "test" ? <Loader2 size={12} className="animate-spin" /> : <Send size={12} />} 发测试消息
+              {busy === "test" ? <Loader2 size={12} className="animate-spin" /> : <Send size={12} />} gửi tin test
             </button>
             <button
               type="button"
               onClick={async () => {
                 setBusy("flush");
                 try {
-                  if (payload.quiet && !window.confirm("当前是免打扰时段，仍要发送自己的攒批队列吗？")) return;
+                  if (payload.quiet && !window.confirm("đang trong giờ không làm phiền, vẫn muốn gửi hàng đợi gộp tin của mình?")) return;
                   const res = await fetch("/api/me/push/flush", { method: "POST" });
                   const data = (await res.json().catch(() => ({}))) as { sent?: number; queued?: number; error?: string };
-                  notify(res.ok ? `已发 ${data.sent ?? 0} 条，队列剩 ${data.queued ?? 0}` : (data.error ?? "发送失败"));
+                  notify(res.ok ? `đã gửi ${data.sent ?? 0} tin, hàng đợi còn ${data.queued ?? 0}` : (data.error ?? "Gửi thất bại"));
                   await load();
                   void loadLogs();
                 } catch {
-                  notify("网络异常，无法确认发送结果，请查看推送记录");
+                  notify("lỗi mạng, không xác nhận được kết quả gửi, xem lịch sử push");
                 } finally {
                   setBusy(null);
                 }
@@ -469,19 +469,19 @@ export function UserPushPanel({ boot }: { boot: Bootstrap }) {
               disabled={busy !== null || !cfg.enabled || credentialsDirty || !payload.stats.queued}
               className="inline-flex items-center gap-1.5 rounded-lg border border-ink-200 bg-surface px-3 py-1.5 text-[12px] font-medium text-ink-700 hover:bg-ink-100 disabled:opacity-50"
             >
-              {busy === "flush" ? <Loader2 size={12} className="animate-spin" /> : <ListOrdered size={12} />} 立即发攒批
+              {busy === "flush" ? <Loader2 size={12} className="animate-spin" /> : <ListOrdered size={12} />} gửi gộp tin ngay
             </button>
           </div>
         </section>
 
         <section className="panel space-y-4 p-5">
           <div className="settings-section-title">
-            <Clock size={14} className="text-accent" /> 推送节奏
+            <Clock size={14} className="text-accent" /> nhịp push
           </div>
-          <p className="text-[12px] leading-relaxed text-ink-500">达到单发分数立即发送，其余符合攒批分数的内容定时汇总。分数越高，推送越少。</p>
+          <p className="text-[12px] leading-relaxed text-ink-500">đạt điểm gửi riêng thì gửi ngay, phần còn lại đủ điểm gộp tin tổng hợp định kỳ. điểm càng cao push càng ít.</p>
           <div className="grid grid-cols-2 gap-2">
             <label className="block">
-              <span className="text-[12px] text-ink-700">立即单发阈值</span>
+              <span className="text-[12px] text-ink-700">ngưỡng gửi riêng tức thì</span>
               <input
                 type="number"
                 min={0}
@@ -493,7 +493,7 @@ export function UserPushPanel({ boot }: { boot: Bootstrap }) {
               />
             </label>
             <label className="block">
-              <span className="text-[12px] text-ink-700">攒批阈值</span>
+              <span className="text-[12px] text-ink-700">ngưỡng gộp tin</span>
               <input
                 type="number"
                 min={0}
@@ -506,11 +506,11 @@ export function UserPushPanel({ boot }: { boot: Bootstrap }) {
             </label>
           </div>
           <div className="grid grid-cols-2 overflow-hidden rounded-md border border-ink-200 text-[11.5px]">
-            <div className="bg-brand-subtle px-3 py-2 text-accent">≥ {num(s.instantScore, 70)} 分 · 立即单发</div>
-            <div className="bg-surface-hover px-3 py-2 text-ink-600">{num(s.batchScore, 60) < num(s.instantScore, 70) ? `${num(s.batchScore, 60)}–${num(s.instantScore, 70) - 1} 分 · 攒批` : "同分阈值 · 超额转攒批"}</div>
+            <div className="bg-brand-subtle px-3 py-2 text-accent">≥ {num(s.instantScore, 70)} điểm · gửi đơn ngay</div>
+            <div className="bg-surface-hover px-3 py-2 text-ink-600">{num(s.batchScore, 60) < num(s.instantScore, 70) ? `${num(s.batchScore, 60)}–${num(s.instantScore, 70) - 1} điểm · gộp tin` : "ngưỡng cùng điểm · vượt thì chuyển gộp tin"}</div>
           </div>
           <label className="block">
-            <span className="text-[12px] text-ink-700">每小时推送上限</span>
+            <span className="text-[12px] text-ink-700">giới hạn push mỗi giờ</span>
             <input
               type="number"
               min={1}
@@ -520,29 +520,29 @@ export function UserPushPanel({ boot }: { boot: Bootstrap }) {
               onBlur={(e) => void save({ maxPerHour: Number(e.target.value) })}
               className="mt-1 w-full rounded-lg border border-ink-200 bg-surface px-2.5 py-1.5 text-[12.5px] text-ink-950 outline-none focus:border-accent"
             />
-            <span className="mt-1 block text-[11px] text-ink-500">站点上限 {payload.caps.maxPerHour} 条/小时</span>
+            <span className="mt-1 block text-[11px] text-ink-500">giới hạn site {payload.caps.maxPerHour} tin/giờ</span>
           </label>
           <label className="block">
-            <span className="text-[12px] text-ink-700">攒批周期</span>
+            <span className="text-[12px] text-ink-700">chu kỳ gộp tin</span>
             <select
               value={num(s.batchIntervalMin, 30)}
               onChange={(e) => void save({ batchIntervalMin: Number(e.target.value) })}
               className="mt-1 w-full rounded-lg border border-ink-200 bg-surface px-2.5 py-1.5 text-[12.5px] text-ink-950 outline-none focus:border-accent"
             >
-              <option value={0}>关闭攒批</option>
-              <option value={5}>每 5 分钟</option>
-              <option value={10}>每 10 分钟</option>
-              <option value={30}>每 30 分钟</option>
-              <option value={60}>每 1 小时</option>
-              <option value={120}>每 2 小时</option>
+              <option value={0}>tắt gộp tin</option>
+              <option value={5}>mỗi 5 phút</option>
+              <option value={10}>mỗi 10 phút</option>
+              <option value={30}>mỗi 30 phút</option>
+              <option value={60}>mỗi 1 giờ</option>
+              <option value={120}>mỗi 2 giờ</option>
             </select>
           </label>
           <details className="border-t border-ink-100 pt-3">
-          <summary className="cursor-pointer text-[12.5px] font-medium text-ink-700">免打扰与其他偏好 <span className="ml-1 text-[11px] font-normal text-ink-500">{bool(s.quietEnabled, true) ? str(s.quietHours, "23:30-08:00") : "未开启免打扰"}</span></summary>
+          <summary className="cursor-pointer text-[12.5px] font-medium text-ink-700">không làm phiền & tuỳ chọn khác <span className="ml-1 text-[11px] font-normal text-ink-500">{bool(s.quietEnabled, true) ? str(s.quietHours, "23:30-08:00") : "chưa bật không làm phiền"}</span></summary>
           <div className="mt-3 space-y-1.5 rounded-lg border border-ink-200 bg-surface-hover p-3">
             <label className="flex items-center justify-between gap-2 text-[12px] text-ink-700">
               <span className="inline-flex items-center gap-1.5">
-                <Moon size={12} className="text-ink-500" /> 夜间免打扰
+                <Moon size={12} className="text-ink-500" /> không làm phiền ban đêm
               </span>
               <input
                 type="checkbox"
@@ -552,7 +552,7 @@ export function UserPushPanel({ boot }: { boot: Bootstrap }) {
               />
             </label>
             <label className="flex items-center justify-between gap-2 text-[12px] text-ink-700">
-              <span>时段</span>
+              <span>khung giờ</span>
               <input
                 defaultValue={str(s.quietHours, "23:30-08:00")}
                 onBlur={(e) => void save({ quietHours: e.target.value })}
@@ -560,17 +560,17 @@ export function UserPushPanel({ boot }: { boot: Bootstrap }) {
               />
             </label>
             <label className="flex items-center justify-between gap-2 text-[12px] text-ink-700">
-              <span>时区</span>
+              <span>Múi giờ</span>
               <select
                 value={str(s.timezone, "Asia/Shanghai")}
                 onChange={(e) => void save({ timezone: e.target.value })}
                 className="rounded border border-ink-200 bg-surface px-2 py-1 text-[11.5px] text-ink-900 outline-none focus:border-accent"
               >
-                <option value="Asia/Shanghai">北京时间</option>
-                <option value="Asia/Tokyo">东京时间</option>
+                <option value="Asia/Shanghai">giờ Bắc Kinh</option>
+                <option value="Asia/Tokyo">giờ Tokyo</option>
                 <option value="UTC">UTC</option>
-                <option value="America/New_York">美东时间</option>
-                <option value="Europe/London">伦敦时间</option>
+                <option value="America/New_York">giờ miền Đông Mỹ</option>
+                <option value="Europe/London">giờ London</option>
               </select>
             </label>
           </div>
@@ -582,7 +582,7 @@ export function UserPushPanel({ boot }: { boot: Bootstrap }) {
                 onChange={(e) => void save({ useGlobalBlocks: e.target.checked })}
                 className="h-3.5 w-3.5 accent-[#111318]"
               />
-              继承全站噪音屏蔽词
+              kế thừa từ chặn nhiễu toàn site
             </label>
             <label className="inline-flex items-center gap-1.5">
               <input
@@ -591,7 +591,7 @@ export function UserPushPanel({ boot }: { boot: Bootstrap }) {
                 onChange={(e) => void save({ dailyEnabled: e.target.checked })}
                 className="h-3.5 w-3.5 accent-[#111318]"
               />
-              每天发一份个人日报
+              mỗi ngày gửi một bản tin cá nhân
             </label>
           </div>
           </details>
@@ -602,9 +602,9 @@ export function UserPushPanel({ boot }: { boot: Bootstrap }) {
         <div className="flex flex-wrap items-center justify-between gap-2">
           <div>
             <div className="flex items-center gap-2 text-[13.5px] font-semibold text-ink-950">
-              <Sparkles size={14} className="text-accent" /> 实时效果预览（不会真正发出）
+              <Sparkles size={14} className="text-accent" /> xem trước hiệu quả thực tế (không gửi thật)
             </div>
-            <p className="mt-0.5 text-[12px] text-ink-500">用最近 180 条按你的规则试算，看命中和被拦原因分布。</p>
+            <p className="mt-0.5 text-[12px] text-ink-500">dùng 180 tin gần nhất chạy thử theo rule của bạn, xem phân bố trúng và lý do bị chặn.</p>
           </div>
           <button
             type="button"
@@ -613,9 +613,9 @@ export function UserPushPanel({ boot }: { boot: Bootstrap }) {
               try {
                 const res = await fetch("/api/me/push/preview");
                 if (res.ok) setPreview((await res.json()) as Preview);
-                else notify(((await res.json()) as { error?: string }).error ?? "试算失败");
+                else notify(((await res.json()) as { error?: string }).error ?? "Chạy thử thất bại");
               } catch {
-                notify("网络异常，试算失败，请重试");
+                notify("lỗi mạng, chạy thử thất bại, thử lại");
               } finally {
                 setBusy(null);
               }
@@ -623,7 +623,7 @@ export function UserPushPanel({ boot }: { boot: Bootstrap }) {
             disabled={busy !== null || credentialsDirty}
             className="inline-flex items-center gap-1.5 rounded-lg bg-ink-950 px-3.5 py-2 text-[12.5px] font-medium text-white hover:bg-brand-hover disabled:opacity-50"
           >
-            {busy === "preview" ? <Loader2 size={13} className="animate-spin" /> : <Eye size={13} />} 试算
+            {busy === "preview" ? <Loader2 size={13} className="animate-spin" /> : <Eye size={13} />} chạy thử
           </button>
         </div>
 
@@ -631,7 +631,7 @@ export function UserPushPanel({ boot }: { boot: Bootstrap }) {
           <div className="space-y-2.5">
             <div className="flex flex-wrap items-center gap-1.5 rounded-lg border border-ink-200 bg-surface-hover px-3 py-2 text-[11.5px]">
               <span className="font-medium text-ink-700">
-                扫描 {preview.scanned} 条 · 通过 {preview.matched} 条 · 队列中 {preview.queued} 条
+                quét {preview.scanned} tin · qua {preview.matched} tin · trong hàng đợi {preview.queued} tin
               </span>
               {Object.entries(preview.rejectedBy).map(([k, v]) => (
                 <span key={k} className="rounded bg-ink-100 px-2 py-0.5 text-ink-600">
@@ -641,15 +641,15 @@ export function UserPushPanel({ boot }: { boot: Bootstrap }) {
             </div>
             <div className="grid gap-3 lg:grid-cols-2">
               <div className="rounded-lg border border-ink-200 bg-surface-hover p-3">
-                <div className="mb-1.5 text-[12px] font-medium text-deal">⚡ 会立即推送</div>
+                <div className="mb-1.5 text-[12px] font-medium text-deal">⚡ sẽ push ngay</div>
                 <pre className="max-h-[200px] overflow-auto font-mono text-[11px] leading-relaxed whitespace-pre-wrap text-ink-700">
-                  {preview.instant.length ? preview.instant.join("\n") : "（当前条件下没有立即推送的条目）"}
+                  {preview.instant.length ? preview.instant.join("\n") : "（không có mục push ngay theo điều kiện hiện tại）"}
                 </pre>
               </div>
               <div className="rounded-lg border border-ink-200 bg-surface-hover p-3">
-                <div className="mb-1.5 text-[12px] font-medium text-brand">📦 会进攒批</div>
+                <div className="mb-1.5 text-[12px] font-medium text-brand">📦 sẽ vào gộp tin</div>
                 <pre className="max-h-[200px] overflow-auto font-mono text-[11px] leading-relaxed whitespace-pre-wrap text-ink-700">
-                  {preview.batch.length ? preview.batch.join("\n") : "（当前条件下没有攒批条目）"}
+                  {preview.batch.length ? preview.batch.join("\n") : "（không có mục gộp tin theo điều kiện hiện tại）"}
                 </pre>
               </div>
             </div>
@@ -659,30 +659,30 @@ export function UserPushPanel({ boot }: { boot: Bootstrap }) {
 
       <section className="panel overflow-hidden">
         <div className="flex items-center justify-between border-b border-ink-100 px-5 py-3">
-          <span className="text-[13.5px] font-semibold text-ink-950">我的推送记录</span>
+          <span className="text-[13.5px] font-semibold text-ink-950">lịch sử push của tôi</span>
           <div className="flex items-center gap-3 text-[11.5px] text-ink-500">
-            <span>近 24h 已发 {payload.stats.sentLast24h}</span>
-            <span>队列 {payload.stats.queued}</span>
+            <span>đã gửi trong 24h qua {payload.stats.sentLast24h}</span>
+            <span>hàng đợi {payload.stats.queued}</span>
             <button
               type="button"
               onClick={() => void loadLogs()}
               className="font-medium text-accent hover:underline"
             >
-              刷新
+              làm mới
             </button>
           </div>
         </div>
         <div className="max-h-[360px] divide-y divide-ink-100 overflow-auto">
-          {logs.length === 0 && <div className="px-5 py-8 text-center text-[12.5px] text-ink-500">{logsLoading ? "正在加载记录…" : "暂无推送记录"}</div>}
+          {logs.length === 0 && <div className="px-5 py-8 text-center text-[12.5px] text-ink-500">{logsLoading ? "Đang tải bản ghi…" : "chưa có lịch sử push"}</div>}
           {logs.map((l) => (
             <div key={l.id} className="px-5 py-2.5">
               <div className="flex flex-wrap items-center gap-2 text-[11.5px]">
                 <span className="rounded-md bg-ink-100 px-2 py-0.5 font-medium text-ink-700">
-                  {l.kind === "instant" ? "即时" : l.kind === "batch" ? "攒批" : l.kind}
+                  {l.kind === "instant" ? "tức thì" : l.kind === "batch" ? "gộp tin" : l.kind}
                 </span>
                 <span className="font-mono text-ink-500">{l.created_at.replace("T", " ").slice(5, 19)}</span>
-                <span className="text-ink-600">{l.count} 条</span>
-                {l.ok === 0 && <span className="rounded bg-alert-subtle px-1.5 py-0.5 text-alert">失败</span>}
+                <span className="text-ink-600">{l.count} tin</span>
+                {l.ok === 0 && <span className="rounded bg-alert-subtle px-1.5 py-0.5 text-alert">thất bại</span>}
                 {l.reason && <span className="truncate text-ink-500">· {l.reason}</span>}
               </div>
               <pre className="mt-1 max-h-[64px] overflow-hidden font-mono text-[11px] leading-relaxed whitespace-pre-wrap text-ink-600">
@@ -696,9 +696,9 @@ export function UserPushPanel({ boot }: { boot: Bootstrap }) {
 
       {boot.siteMode === "public" && !boot.isAdmin && (
         <div className="flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-ink-200 pt-4 text-[12px]">
-          <span className="text-ink-500">还想细调？</span>
-          <a href="#push" className="inline-flex items-center gap-1 font-medium text-accent hover:underline">分类、价格与路由规则 <ChevronRight size={12} /></a>
-          <a href="#rules" className="inline-flex items-center gap-1 font-medium text-accent hover:underline">关注词与屏蔽词 <ChevronRight size={12} /></a>
+          <span className="text-ink-500">Muốn chỉnh thêm?</span>
+          <a href="#push" className="inline-flex items-center gap-1 font-medium text-accent hover:underline">phân loại, giá & rule route <ChevronRight size={12} /></a>
+          <a href="#rules" className="inline-flex items-center gap-1 font-medium text-accent hover:underline">từ theo dõi & từ chặn <ChevronRight size={12} /></a>
         </div>
       )}
     </fieldset>

@@ -148,36 +148,36 @@ function NumberField({
 }
 
 const PRICE_CAPS: { label: string; value: number | null }[] = [
-  { label: "不限价格", value: null },
-  { label: "只推白嫖", value: 0 },
-  { label: "≤ 5 元", value: 5 },
-  { label: "≤ 10 元", value: 10 },
-  { label: "≤ 30 元", value: 30 },
-  { label: "≤ 100 元", value: 100 },
+  { label: "mọi mức giá", value: null },
+  { label: "chỉ push hàng free", value: 0 },
+  { label: "≤ 5 tệ", value: 5 },
+  { label: "≤ 10 tệ", value: 10 },
+  { label: "≤ 30 tệ", value: 30 },
+  { label: "≤ 100 tệ", value: 100 },
 ];
 
 const AGE_OPTIONS: { label: string; hours: number }[] = [
-  { label: "24 小时内", hours: 24 },
-  { label: "72 小时内（默认）", hours: 72 },
-  { label: "7 天内", hours: 168 },
-  { label: "30 天内", hours: 720 },
-  { label: "不限时间", hours: 0 },
+  { label: "trong 24 giờ", hours: 24 },
+  { label: "trong 72 giờ (mặc định)", hours: 72 },
+  { label: "trong 7 ngày", hours: 168 },
+  { label: "trong 30 ngày", hours: 720 },
+  { label: "mọi thời gian", hours: 0 },
 ];
 
 const REJECT_LABELS: { key: string; label: string }[] = [
-  { key: "hidden", label: "个人已关闭" },
-  { key: "blocked", label: "屏蔽词" },
-  { key: "duplicate", label: "跨源去重" },
-  { key: "stale", label: "超新帖时效" },
-  { key: "source", label: "数据源限制" },
-  { key: "lang", label: "语言不符" },
-  { key: "kind", label: "内容形态" },
-  { key: "category", label: "分类不符" },
-  { key: "price", label: "超价格上限" },
-  { key: "ai", label: "AI 审核拦截" },
-  { key: "obtain", label: "获取方式" },
-  { key: "route", label: "未命中路由" },
-  { key: "lowScore", label: "低于推送分" },
+  { key: "hidden", label: "cá nhân đã đóng" },
+  { key: "blocked", label: "từ chặn" },
+  { key: "duplicate", label: "khử trùng liên nguồn" },
+  { key: "stale", label: "quá hạn bài mới" },
+  { key: "source", label: "giới hạn nguồn dữ liệu" },
+  { key: "lang", label: "sai ngôn ngữ" },
+  { key: "kind", label: "dạng nội dung" },
+  { key: "category", label: "sai phân loại" },
+  { key: "price", label: "vượt giá tối đa" },
+  { key: "ai", label: "AI duyệt chặn" },
+  { key: "obtain", label: "cách lấy" },
+  { key: "route", label: "không khớp route" },
+  { key: "lowScore", label: "dưới điểm push" },
 ];
 
 type PushSubTab = "filters" | "timing" | "logs";
@@ -233,13 +233,13 @@ export function PushPanel({
     try {
       await onSave(patch);
     } catch (error) {
-      setOperationError(error instanceof Error ? error.message : "保存失败，请重试");
+      setOperationError(error instanceof Error ? error.message : "lưu thất bại, thử lại");
     } finally {
       setBusy(null);
     }
   };
 
-  if (!s) return <div className="panel p-6 text-[13px] text-ink-500">正在加载推送规则…</div>;
+  if (!s) return <div className="panel p-6 text-[13px] text-ink-500">Đang tải rule push…</div>;
 
   const toggleCategory = (cat: string) => {
     const exists = s.categories.includes(cat);
@@ -266,13 +266,13 @@ export function PushPanel({
               <BellRing size={18} />
             </div>
             <div>
-              <div className="text-[14px] font-semibold text-ink-950">{s.deliverVia === "webhook" ? "Webhook" : "Telegram"} 自动推送</div>
+              <div className="text-[14px] font-semibold text-ink-950">{s.deliverVia === "webhook" ? "Webhook" : "Telegram"} push tự động</div>
               <div className="text-[12px] text-ink-500">
                 {s.enabled
                   ? payload?.quiet
-                    ? `开启中 · 处于免打扰时段（${s.quietAction === "drop" ? "直接跳过" : "转攒批队列"}）`
-                    : `实时监控中 · ${s.pushTiming === "wait_ai" ? "先过 AI 再推" : "极速抢码先推后审"}`
-                  : "已暂停推送，仅本地收集入库"}
+                    ? `đang bật · trong giờ không làm phiền (${s.quietAction === "drop" ? "bỏ qua hẳn" : "chuyển sang hàng đợi gộp tin"})`
+                    : `đang giám sát thời gian thực · ${s.pushTiming === "wait_ai" ? "qua AI rồi push" : "cướp mã tốc độ push trước duyệt sau"}`
+                  : "đã tạm dừng push, chỉ thu về kho nội bộ"}
               </div>
             </div>
           </div>
@@ -282,26 +282,26 @@ export function PushPanel({
               <span className="block font-mono text-[15px] font-semibold tabular-nums text-ink-950">
                 {stats?.pushedLastHour ?? 0}/{s.maxPerHour}
               </span>
-              <span className="text-ink-500">本小时额度</span>
+              <span className="text-ink-500">hạn mức giờ này</span>
             </div>
             <div>
               <span className="block font-mono text-[15px] font-semibold tabular-nums text-ink-950">
                 {stats?.pushedLast24h ?? 0}
               </span>
-              <span className="text-ink-500">24小时已推</span>
+              <span className="text-ink-500">đã push trong 24h</span>
             </div>
             <div>
               <span className="block font-mono text-[15px] font-semibold tabular-nums text-brand">
                 {stats?.queued ?? 0}
               </span>
-              <span className="text-ink-500">攒批队列</span>
+              <span className="text-ink-500">hàng đợi gộp tin</span>
             </div>
             {(stats?.failures ?? 0) > 0 && (
               <div>
                 <span className="block font-mono text-[15px] font-semibold tabular-nums text-alert">
                   {stats?.failures ?? 0}
                 </span>
-                <span className="text-ink-500">推送失败</span>
+                <span className="text-ink-500">Push thất bại</span>
               </div>
             )}
           </div>
@@ -311,11 +311,11 @@ export function PushPanel({
           {payload?.defaults && (
             <button
               type="button"
-              onClick={() => { if (window.confirm("恢复默认会重置全部推送规则并关闭推送，继续吗？")) void save({ ...payload.defaults, enabled: false }); }}
+              onClick={() => { if (window.confirm("khôi phục mặc định sẽ reset toàn bộ rule push và tắt push, tiếp tục?")) void save({ ...payload.defaults, enabled: false }); }}
               className="inline-flex items-center gap-1 rounded-lg border border-ink-200 bg-surface px-3 py-2 text-[12px] font-medium text-ink-600 hover:bg-ink-100"
-              title="恢复全部推送规则为默认值"
+              title="khôi phục toàn bộ rule push về mặc định"
             >
-              <RotateCcw size={13} /> 恢复默认
+              <RotateCcw size={13} /> khôi phục mặc định
             </button>
           )}
           <button
@@ -328,14 +328,14 @@ export function PushPanel({
                 : "border-ink-200 bg-ink-100 text-ink-600 hover:bg-ink-200")
             }
           >
-            <Settings2 size={14} /> {s.enabled ? "推送已开启（点击暂停）" : "推送已关闭（点击开启）"}
+            <Settings2 size={14} /> {s.enabled ? "push đang bật (bấm để tạm dừng)" : "push đang tắt (bấm để bật)"}
           </button>
         </div>
       </section>
 
       {!payload?.ready && (
         <div className="rounded-lg border border-code-border bg-code-subtle p-3.5 text-[12.5px] text-amber-900">
-          当前渠道尚未就绪。个人用户请先在「我的」保存渠道凭据；自建站请检查服务端推送配置。规则可以先保存，但不会发送消息。
+          kênh hiện tại chưa sẵn sàng. user cá nhân hãy lưu thông tin kênh trong「của tôi」trước; site tự host hãy kiểm tra cấu hình push phía server. rule lưu trước được nhưng sẽ chưa gửi tin.
         </div>
       )}
 
@@ -343,9 +343,9 @@ export function PushPanel({
       <div className="panel flex flex-wrap items-center justify-between gap-2 px-4 py-2.5">
         <div className="flex flex-wrap items-center gap-1.5">
           {[
-            { key: "filters" as PushSubTab, label: "推送时机与筛选", icon: Filter },
-            { key: "timing" as PushSubTab, label: "阈值、格式与免打扰", icon: Clock },
-            { key: "logs" as PushSubTab, label: `试算预览与记录 (${logs.length})`, icon: Sparkles },
+            { key: "filters" as PushSubTab, label: "thời điểm push & lọc", icon: Filter },
+            { key: "timing" as PushSubTab, label: "ngưỡng, định dạng & không làm phiền", icon: Clock },
+            { key: "logs" as PushSubTab, label: `xem trước chạy thử & bản ghi (${logs.length})`, icon: Sparkles },
           ].map((t) => (
             <button
               key={t.key}
@@ -362,7 +362,7 @@ export function PushPanel({
           ))}
         </div>
         <span className="text-[11.5px] text-ink-500">
-          {busy === "save" ? "保存中…" : "改动即时热生效（无需重启服务）"}
+          {busy === "save" ? "Đang lưu…" : "thay đổi áp dụng nóng ngay (không cần restart)"}
         </span>
       </div>
 
@@ -372,52 +372,52 @@ export function PushPanel({
           <section className="panel space-y-4 p-5">
             <div className="flex flex-wrap items-center justify-between gap-2">
               <div className="flex items-center gap-2 text-[14px] font-semibold text-ink-950">
-                <Bot size={15} className="text-brand" /> 推送时机与 AI 协同策略
+                <Bot size={15} className="text-brand" /> thời điểm push & chiến lược phối hợp AI
               </div>
               <span className="text-[11.5px] text-ink-500">
-                模型连接、规则初筛与提示词请在「AI 引擎」页配置
+                kết nối model, lọc sơ bằng rule & prompt cấu hình trong trang「engine AI」
               </span>
             </div>
 
             {/* 当前这套设置下，一条新条目会怎么走：把「阈值 / 上限 / 时间窗 / 兜底」四件事讲清楚 */}
             <div className="rounded-lg border border-ink-200 bg-surface-hover p-3.5">
-              <div className="mb-2 text-[12px] font-medium text-ink-900">按当前设置，一条新条目会这样走</div>
+              <div className="mb-2 text-[12px] font-medium text-ink-900">theo cài đặt hiện tại, một mục mới sẽ đi như sau</div>
               <ol className="space-y-1.5 text-[11.5px] leading-relaxed text-ink-600">
                 <li>
-                  <span className="font-mono text-ink-400">1</span> 采集入库后先过规则初筛（求助/更新公告/自定义噪音词直接丢掉，不送 AI）。
+                  <span className="font-mono text-ink-400">1</span> sau khi thu vào kho qua lọc sơ bằng rule trước (bài cầu cứu/thông báo update/từ nhiễu tuỳ chọn vứt thẳng, không gửi AI).
                 </li>
                 <li>
                   <span className="font-mono text-ink-400">2</span>{" "}
                   {s.pushTiming === "wait_ai"
-                    ? `每轮最多 ${s.syncPrePushLimit} 条当场等 AI 结论，其余进后台队列${s.pushAfterBackfill ? "，审完通过再补推" : "，审完不补推"}。`
-                    : "先按规则立刻判定推送，需要审的进后台队列，AI 结论稍后补齐。"}
+                    ? `mỗi lượt tối đa ${s.syncPrePushLimit} tin chờ kết luận AI tại chỗ, phần còn lại vào hàng đợi nền${s.pushAfterBackfill ? ", duyệt qua thì push bù" : ", duyệt xong không push bù"}.`
+                    : "theo rule quyết push ngay, mục cần duyệt vào hàng đợi nền, kết luận AI bổ sung sau."}
                 </li>
                 <li>
                   <span className="font-mono text-ink-400">3</span>{" "}
-                  <span className="font-medium text-ink-900">质量门槛</span>：分数 ≥ {s.instantScore} 走即时；≥ {s.batchScore} 走攒批。
-                  {s.instantOnCodes ? "含兑换码、" : ""}
-                  {s.instantOnUrgent ? "标题带限量/限时、" : ""}
-                  {s.prioritizeSubscribed ? "命中订阅词" : "无额外直推条件"}可直接即时。
+                  <span className="font-medium text-ink-900">ngưỡng chất lượng</span>: điểm ≥ {s.instantScore} đi tức thì; ≥ {s.batchScore} đi gộp tin.
+                  {s.instantOnCodes ? "có mã đổi quà," : ""}
+                  {s.instantOnUrgent ? "tiêu đề có giới hạn số lượng/thời gian," : ""}
+                  {s.prioritizeSubscribed ? "trúng từ theo dõi" : "không điều kiện push thẳng thêm"}có thể tức thì ngay.
                 </li>
                 <li>
                   <span className="font-mono text-ink-400">4</span>{" "}
-                  <span className="font-medium text-ink-900">数量上限</span>：每小时最多 {s.maxPerHour} 条（即时+攒批共用），
-                  每轮即时最多 {s.maxPerInstant} 条；超出的自动转进攒批队列，不会丢。
+                  <span className="font-medium text-ink-900">giới hạn số lượng</span>: mỗi giờ tối đa {s.maxPerHour} tin (dùng chung tức thì+gộp tin),
+                  mỗi lượt tức thì tối đa {s.maxPerInstant} tin; phần vượt tự chuyển sang hàng đợi gộp tin, không mất.
                 </li>
                 <li>
                   <span className="font-mono text-ink-400">5</span>{" "}
-                  <span className="font-medium text-ink-900">时间窗</span>：
-                  {s.batchIntervalMin === 0 ? "攒批已关闭，队列只在手动「立即发攒批」时发出。" : `攒批每 ${s.batchIntervalMin} 分钟发一次，每批最多 ${s.maxPerBatch} 条。`}
-                  {s.quietEnabled ? ` ${s.quietHours} 免打扰，${s.quietAction === "drop" ? "期间不推也不攒" : "期间只攒不发"}。` : " 未开启免打扰。"}
+                  <span className="font-medium text-ink-900">khung thời gian</span>：
+                  {s.batchIntervalMin === 0 ? "gộp tin đã tắt, hàng đợi chỉ gửi khi bấm「gửi gộp tin ngay」thủ công." : `gộp tin gửi mỗi ${s.batchIntervalMin} phút một lần, mỗi đợt tối đa ${s.maxPerBatch} tin.`}
+                  {s.quietEnabled ? ` ${s.quietHours} không làm phiền, ${s.quietAction === "drop" ? "trong giờ đó không push cũng không gom" : "trong giờ đó chỉ gom không gửi"}.` : " chưa bật không làm phiền."}
                 </li>
                 <li>
                   <span className="font-mono text-ink-400">6</span>{" "}
-                  <span className="font-medium text-ink-900">兜底</span>：
+                  <span className="font-medium text-ink-900">dự phòng</span>：
                   {s.aiFallbackMode === "strict"
-                    ? "必须 AI 明确判真福利才推，AI 没结论就不推。"
+                    ? "chỉ push khi AI chắc chắn đánh giá freebie thật, AI chưa kết luận thì không push."
                     : s.aiFallbackMode === "rule_fallback"
-                      ? "AI 明确拒绝的拦掉；AI 还没结论时，含兑换码或高分信号才放行。"
-                      : "完全忽略 AI 结论，只按屏蔽词/分数/价格/获取方式过滤。"}
+                      ? "AI từ chối rõ thì chặn; AI chưa kết luận thì chỉ cho qua mục có mã đổi hoặc tín hiệu điểm cao."
+                      : "bỏ qua hoàn toàn kết luận AI, chỉ lọc theo từ chặn/điểm/giá/cách lấy."}
                 </li>
               </ol>
             </div>
@@ -433,9 +433,9 @@ export function PushPanel({
                     : "border-ink-200 bg-surface-hover text-ink-700 hover:bg-ink-100")
                 }
               >
-                <div className="text-[13px] font-semibold">推送前先过 AI（推荐）</div>
+                <div className="text-[13px] font-semibold">qua AI trước khi push (khuyên dùng)</div>
                 <div className="mt-0.5 text-[11.5px] font-normal text-ink-500">
-                  新条目先同步等待 AI 验真再发 Telegram，多等 1~3 秒，精准拦掉新闻/更新公告
+                  mục mới chờ đồng bộ AI xác thực rồi mới gửi Telegram, chậm thêm 1~3 giây, chặn chuẩn bài tin/thông báo update
                 </div>
               </button>
               <button
@@ -448,44 +448,44 @@ export function PushPanel({
                     : "border-ink-200 bg-surface-hover text-ink-700 hover:bg-ink-100")
                 }
               >
-                <div className="text-[13px] font-semibold">极速抢码先推后审</div>
+                <div className="text-[13px] font-semibold">cướp mã tốc độ: push trước duyệt sau</div>
                 <div className="mt-0.5 text-[11.5px] font-normal text-ink-500">
-                  高分/兑换码 0 延迟立刻发出，AI 随后在后台异步补齐结论与分类
+                  điểm cao/mã đổi gửi ngay 0 độ trễ, AI sau đó bổ sung kết luận & phân loại trong nền
                 </div>
               </button>
             </div>
 
             {s.pushTiming === "wait_ai" && (
               <NumberField
-                label="推送前同步等待审核条数上限"
-                hint="单轮采集最多同步等多少条过 AI 后立刻判定推送；超出条数转入后台队列，审完后按下方开关决定是否补推"
+                label="giới hạn số tin chờ duyệt đồng bộ trước push"
+                hint="mỗi lượt thu đồng bộ chờ tối đa bao nhiêu tin qua AI rồi quyết push ngay; phần vượt chuyển sang hàng đợi nền, duyệt xong tuỳ công tắc dưới quyết có push bù không"
                 value={s.syncPrePushLimit}
                 min={5}
                 max={60}
                 step={1}
-                suffix=" 条/轮"
+                suffix=" tin/lượt"
                 onCommit={(v) => void save({ syncPrePushLimit: v })}
               />
             )}
 
             <div>
-              <div className="mb-1.5 text-[12px] font-medium text-ink-700">AI 兜底与过滤模式（当某条尚无 AI 结论或被 AI 拒绝时）</div>
+              <div className="mb-1.5 text-[12px] font-medium text-ink-700">chế độ dự phòng & lọc AI (khi một mục chưa có kết luận AI hoặc bị AI từ chối)</div>
               <div className="grid gap-2 sm:grid-cols-3">
                 {[
                   {
                     key: "strict" as AiFallbackMode,
-                    title: "严进模式（宁缺毋滥）",
-                    desc: "启用 AI 时必须明确判为真福利才推；超时/未审到不推（AI 未启用时按规则放行）",
+                    title: "chế độ chặt (thà thiếu còn hơn sai)",
+                    desc: "khi bật AI phải được đánh giá rõ freebie thật mới push; timeout/chưa duyệt tới thì không push (AI chưa bật thì theo rule cho qua)",
                   },
                   {
                     key: "rule_fallback" as AiFallbackMode,
-                    title: "均衡兜底（推荐）",
-                    desc: "AI 明确拒绝的拦掉；未出结果时，含兑换码或高分福利信号才放行",
+                    title: "dự phòng cân bằng (khuyên dùng)",
+                    desc: "AI từ chối rõ thì chặn; chưa có kết quả thì chỉ cho qua mục có mã đổi hoặc tín hiệu freebie điểm cao",
                   },
                   {
                     key: "ignore_ai" as AiFallbackMode,
-                    title: "仅用规则（忽略 AI）",
-                    desc: "不以 AI 结论拦推送，只按屏蔽词、评分、价格与获取方式过滤",
+                    title: "chỉ dùng rule (bỏ qua AI)",
+                    desc: "không chặn push theo kết luận AI, chỉ lọc theo từ chặn, điểm, giá & cách lấy",
                   },
                 ].map((opt) => (
                   <button
@@ -508,20 +508,20 @@ export function PushPanel({
 
             <div className="grid gap-2.5 sm:grid-cols-3">
               <Toggle
-                label="后台补审通过后自动补推"
-                hint="超出同步上限或极速模式补审确认真福利时，自动补入推送管道（不会重复推已发条目）"
+                label="tự push bù sau khi duyệt bổ sung qua"
+                hint="vượt giới hạn đồng bộ hoặc chế độ tốc độ duyệt bổ sung xác nhận freebie thật thì tự bổ sung vào đường push (không push lại mục đã gửi)"
                 value={s.pushAfterBackfill}
                 onChange={(v) => save({ pushAfterBackfill: v })}
               />
               <Toggle
-                label="订阅命中优先直推"
-                hint="命中「我的订阅」关键词立刻单条直发"
+                label="trúng đăng ký ưu tiên push thẳng"
+                hint="trúng từ khoá「đăng ký của tôi」gửi riêng ngay"
                 value={s.prioritizeSubscribed}
                 onChange={(v) => save({ prioritizeSubscribed: v })}
               />
               <Toggle
-                label="同步应用到每日精选"
-                hint="每日早报也遵守价格、分类、源与 AI 条件"
+                label="đồng bộ áp dụng vào tuyển chọn ngày"
+                hint="bản tin sáng cũng theo điều kiện giá, phân loại, nguồn & AI"
                 value={s.applyToDigest}
                 onChange={(v) => save({ applyToDigest: v })}
               />
@@ -531,16 +531,16 @@ export function PushPanel({
           {/* 2. 多维推送筛选条件 */}
           <section className="panel space-y-4 p-5">
             <div className="flex items-center gap-2 text-[14px] font-semibold text-ink-950">
-              <SlidersHorizontal size={15} className="text-brand" /> 推送内容筛选条件
+              <SlidersHorizontal size={15} className="text-brand" /> điều kiện lọc nội dung push
             </div>
 
             <div className="grid gap-4 lg:grid-cols-3">
               {/* 最高价格上限 */}
               <div className="rounded-lg border border-ink-200 bg-surface-hover p-3.5">
                 <div className="mb-2 flex items-center justify-between">
-                  <span className="text-[13px] font-medium text-ink-900">最高推送价格</span>
+                  <span className="text-[13px] font-medium text-ink-900">giá push tối đa</span>
                   <span className="font-mono text-[12px] text-brand">
-                    {s.maxPrice === null ? "不限" : s.maxPrice === 0 ? "完全白嫖" : `≤ ${s.maxPrice} 元`}
+                    {s.maxPrice === null ? "không giới hạn" : s.maxPrice === 0 ? "hoàn toàn free" : `≤ ${s.maxPrice} tệ`}
                   </span>
                 </div>
                 <div className="grid grid-cols-3 gap-1.5">
@@ -571,7 +571,7 @@ export function PushPanel({
                     step={1}
                     value={customPriceDraft}
                     onChange={(e) => setCustomPriceDraft(e.target.value)}
-                    placeholder="自定义金额(元)"
+                    placeholder="số tiền tuỳ chọn (tệ)"
                     className="min-w-0 flex-1 rounded-lg border border-ink-200 bg-surface px-2 py-1 font-mono text-[11.5px] text-ink-900 outline-none focus:border-brand"
                   />
                   <button
@@ -584,7 +584,7 @@ export function PushPanel({
                     }}
                     className="rounded-lg border border-ink-200 bg-surface px-2.5 py-1 text-[11.5px] font-medium text-ink-700 hover:bg-ink-100"
                   >
-                    应用
+                    áp dụng
                   </button>
                 </div>
               </div>
@@ -592,13 +592,13 @@ export function PushPanel({
               {/* 语言过滤 */}
               <div className="rounded-lg border border-ink-200 bg-surface-hover p-3.5">
                 <div className="mb-2 flex items-center gap-1.5 text-[13px] font-medium text-ink-900">
-                  <Languages size={14} className="text-ink-500" /> 语言过滤
+                  <Languages size={14} className="text-ink-500" /> lọc ngôn ngữ
                 </div>
                 <div className="grid grid-cols-3 gap-1.5">
                   {[
-                    { key: "all" as const, label: "中英都推" },
-                    { key: "zh" as const, label: "仅中文源" },
-                    { key: "en" as const, label: "仅英文源" },
+                    { key: "all" as const, label: "push cả Trung lẫn Anh" },
+                    { key: "zh" as const, label: "chỉ nguồn Trung" },
+                    { key: "en" as const, label: "chỉ nguồn Anh" },
                   ].map((o) => (
                     <button
                       key={o.key}
@@ -616,16 +616,16 @@ export function PushPanel({
                   ))}
                 </div>
                 <p className="mt-2 text-[11px] leading-snug text-ink-500">
-                  自动按标题中文占比识别；英文条目可附带 EN 标签并折算人民币价格。
+                  tự nhận diện theo tỉ lệ chữ Trung trong tiêu đề; mục tiếng Anh có thể kèm tag EN và quy đổi giá tệ.
                 </p>
               </div>
 
               {/* 新帖时效上限 */}
               <div className="rounded-lg border border-ink-200 bg-surface-hover p-3.5">
                 <div className="mb-2 flex items-center justify-between">
-                  <span className="text-[13px] font-medium text-ink-900">新帖时效闸门</span>
+                  <span className="text-[13px] font-medium text-ink-900">cổng thời hạn bài mới</span>
                   <span className="font-mono text-[12px] text-brand">
-                    {s.maxAgeHours <= 0 ? "不限" : `${s.maxAgeHours}h`}
+                    {s.maxAgeHours <= 0 ? "không giới hạn" : `${s.maxAgeHours}h`}
                   </span>
                 </div>
                 <select
@@ -642,11 +642,11 @@ export function PushPanel({
                     </option>
                   ))}
                   {!AGE_OPTIONS.some((o) => o.hours === s.maxAgeHours) && (
-                    <option value="custom">自定义：{s.maxAgeHours} 小时内</option>
+                    <option value="custom">tuỳ chọn: trong {s.maxAgeHours} giờ</option>
                   )}
                 </select>
                 <p className="mt-2 text-[11px] leading-snug text-ink-500">
-                  拦截发布时间过久的老帖重复当新羊毛推，避免老论坛顶帖刷屏。
+                  chặn bài cũ đăng quá lâu bị đào lên push như hàng mới, tránh top bài forum cũ spam.
                 </p>
               </div>
             </div>
@@ -654,14 +654,14 @@ export function PushPanel({
             {/* 内容形态白名单 */}
             <div className="rounded-lg border border-ink-200 bg-surface-hover p-3.5">
               <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
-                <span className="text-[13px] font-medium text-ink-900">只推哪些内容形态（不勾选表示全部有效形态）</span>
+                <span className="text-[13px] font-medium text-ink-900">chỉ push các dạng nội dung nào (không tick = mọi dạng hợp lệ)</span>
                 {(s.kinds?.length ?? 0) > 0 && (
                   <button
                     type="button"
                     onClick={() => save({ kinds: [] })}
                     className="text-[12px] font-medium text-brand hover:underline"
                   >
-                    恢复全部形态
+                    khôi phục tất cả dạng
                   </button>
                 )}
               </div>
@@ -695,9 +695,9 @@ export function PushPanel({
             {/* 分类白名单：分组与主页频道一致，可直接套用频道默认集合 */}
             <div className="rounded-lg border border-ink-200 bg-surface-hover p-3.5">
               <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
-                <span className="text-[13px] font-medium text-ink-900">只推哪些分类（不勾选表示全部分类都推）</span>
+                <span className="text-[13px] font-medium text-ink-900">chỉ push các phân loại nào (không tick = push tất cả)</span>
                 <div className="flex flex-wrap items-center gap-1.5">
-                  <span className="text-[11.5px] text-ink-500">套用主页频道：</span>
+                  <span className="text-[11.5px] text-ink-500">Áp dụng kênh trang chủ:</span>
                   {CHANNELS.map((ch) => {
                     const same =
                       s.categories.length === ch.categories.length &&
@@ -724,7 +724,7 @@ export function PushPanel({
                       onClick={() => save({ categories: [] })}
                       className="text-[12px] font-medium text-brand hover:underline"
                     >
-                      恢复全部分类
+                      khôi phục tất cả phân loại
                     </button>
                   )}
                 </div>
@@ -761,14 +761,14 @@ export function PushPanel({
             {/* 获取方式白名单 */}
             <div className="rounded-lg border border-ink-200 bg-surface-hover p-3.5">
               <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
-                <span className="text-[13px] font-medium text-ink-900">只推这些获取方式（都不选表示不限制）</span>
+                <span className="text-[13px] font-medium text-ink-900">chỉ push các cách lấy này (bỏ trống = không giới hạn)</span>
                 {s.obtainModes.length > 0 && (
                   <button
                     type="button"
                     onClick={() => save({ obtainModes: [] })}
                     className="text-[12px] font-medium text-brand hover:underline"
                   >
-                    不限获取方式
+                    mọi cách lấy
                   </button>
                 )}
               </div>
@@ -798,7 +798,7 @@ export function PushPanel({
                 })}
               </div>
               <p className="mt-1.5 text-[11px] text-ink-500">
-                抽奖、试用、推广容易混入营销内容，默认只推「直接白嫖」。
+                quay thưởng, dùng thử, quảng bá dễ lẫn nội dung marketing, mặc định chỉ push「free trực tiếp」.
               </p>
             </div>
 
@@ -806,9 +806,9 @@ export function PushPanel({
             <div className="rounded-lg border border-ink-200 bg-surface-hover p-3.5">
               <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
                 <div>
-                  <span className="text-[13px] font-medium text-ink-900">多频道专题路由（可选）</span>
+                  <span className="text-[13px] font-medium text-ink-900">route chuyên đề đa kênh (tuỳ chọn)</span>
                   <p className="mt-0.5 text-[11px] text-ink-500">
-                    启用任意路由后，将按路由条件分流匹配（可同时推「黑五 VPS」与「开源项目」，未启用路由时走全局筛选）
+                    sau khi bật route bất kỳ sẽ phân luồng khớp theo điều kiện route (có thể đồng thời push「VPS Black Friday」lẫn「dự án mã nguồn mở」, chưa bật route thì theo lọc toàn cục)
                   </p>
                 </div>
                 <div className="flex flex-wrap gap-1.5">
@@ -817,7 +817,7 @@ export function PushPanel({
                     onClick={() => {
                       const next: PushRoute = {
                         id: `free-${Date.now()}`,
-                        name: "真福利直推",
+                        name: "push thẳng freebie thật",
                         enabled: true,
                         kinds: ["freebie"],
                         categories: [],
@@ -826,13 +826,13 @@ export function PushPanel({
                         maxPrice: 0,
                         minScore: 65,
                         instant: true,
-                        header: "🎁 真福利精选",
+                        header: "🎁 Freebie thật tuyển chọn",
                       };
                       void save({ routes: [...(s.routes ?? []), next] });
                     }}
                     className="rounded-lg border border-ink-200 bg-surface px-2.5 py-1 text-[11.5px] font-medium text-ink-700 hover:bg-ink-100"
                   >
-                    + 真福利路由
+                    + route freebie thật
                   </button>
                   <button
                     type="button"
@@ -842,23 +842,23 @@ export function PushPanel({
                           ...(s.routes ?? []),
                           {
                             id: `vps-${Date.now()}`,
-                            name: "黑五/VPS 好价",
+                            name: "Black Friday/VPS giá tốt",
                             enabled: true,
                             kinds: ["deal", "freebie"],
                             categories: ["vps", "cloud", "domain"],
                             obtainModes: ["free", "conditional", "paid"],
-                            keywords: ["黑五", "vps", "kvm", "年付"],
+                            keywords: ["Black Friday", "vps", "kvm", "trả theo năm"],
                             maxPrice: null,
                             minScore: 55,
                             instant: true,
-                            header: "🖥 VPS 好价",
+                            header: "🖥 VPS giá tốt",
                           },
                         ],
                       })
                     }
                     className="rounded-lg border border-ink-200 bg-surface px-2.5 py-1 text-[11.5px] font-medium text-ink-700 hover:bg-ink-100"
                   >
-                    + 黑五/VPS 路由
+                    + route Black Friday/VPS
                   </button>
                   <button
                     type="button"
@@ -868,7 +868,7 @@ export function PushPanel({
                           ...(s.routes ?? []),
                           {
                             id: `os-${Date.now()}`,
-                            name: "开源项目精选",
+                            name: "tuyển chọn dự án mã nguồn mở",
                             enabled: true,
                             kinds: ["opensource"],
                             categories: [],
@@ -877,14 +877,14 @@ export function PushPanel({
                             maxPrice: null,
                             minScore: 60,
                             instant: false,
-                            header: "📦 开源雷达",
+                            header: "📦 Radar mã nguồn mở",
                           },
                         ],
                       })
                     }
                     className="rounded-lg border border-ink-200 bg-surface px-2.5 py-1 text-[11.5px] font-medium text-ink-700 hover:bg-ink-100"
                   >
-                    + 开源项目路由
+                    + route mã nguồn mở
                   </button>
                   <button
                     type="button"
@@ -894,7 +894,7 @@ export function PushPanel({
                           ...(s.routes ?? []),
                           {
                             id: `news-${Date.now()}`,
-                            name: "新闻资讯早报",
+                            name: "bản tin sáng",
                             enabled: true,
                             kinds: ["info"],
                             categories: ["headline", "finance", "ai", "dev", "opensource", "security", "hardware", "news"],
@@ -903,21 +903,21 @@ export function PushPanel({
                             maxPrice: null,
                             minScore: 55,
                             instant: false,
-                            header: "📰 新闻资讯",
+                            header: "📰 Tin tức",
                           },
                         ],
                       })
                     }
                     className="rounded-lg border border-ink-200 bg-surface px-2.5 py-1 text-[11.5px] font-medium text-ink-700 hover:bg-ink-100"
                   >
-                    + 新闻资讯路由
+                    + route tin tức
                   </button>
                   <button
                     type="button"
                     onClick={() => {
                       const next: PushRoute = {
                         id: `custom-${Date.now()}`,
-                        name: "自定义专题路由",
+                        name: "route chuyên đề tuỳ chọn",
                         enabled: true,
                         kinds: [],
                         categories: [],
@@ -937,7 +937,7 @@ export function PushPanel({
                     }}
                     className="rounded-lg border border-brand bg-brand-subtle px-2.5 py-1 text-[11.5px] font-medium text-brand hover:bg-brand/10"
                   >
-                    + 新建自定义路由
+                    + route tuỳ chọn mới
                   </button>
                 </div>
               </div>
@@ -955,24 +955,24 @@ export function PushPanel({
                             <div className="flex flex-wrap items-center gap-1.5 font-medium text-ink-900">
                               <span>{rt.name}</span>
                               <span className="rounded bg-ink-100 px-1.5 py-0.5 text-[10.5px] text-ink-600">
-                                {rt.instant ? "可即时" : "仅攒批"}
+                                {rt.instant ? "có thể tức thì" : "chỉ gộp tin"}
                               </span>
                               <span className="rounded bg-ink-100 px-1.5 py-0.5 font-mono text-[10.5px] text-ink-600">
-                                ≥{rt.minScore}分
+                                ≥{rt.minScore} điểm
                               </span>
                               {rt.kinds.length > 0 && (
                                 <span className="text-[11px] font-normal text-ink-500">
-                                  形态：{rt.kinds.map((k) => KIND_LABEL[k] ?? k).join("/")}
+                                  dạng: {rt.kinds.map((k) => KIND_LABEL[k] ?? k).join("/")}
                                 </span>
                               )}
                               {rt.categories.length > 0 && (
                                 <span className="text-[11px] font-normal text-ink-500">
-                                  分类：{rt.categories.map((c) => categoryLabel(c)).join("/")}
+                                  phân loại: {rt.categories.map((c) => categoryLabel(c)).join("/")}
                                 </span>
                               )}
                               {rt.keywords.length > 0 && (
                                 <span className="text-[11px] font-normal text-ink-500">
-                                  词：{rt.keywords.join("/")}
+                                  từ: {rt.keywords.join("/")}
                                 </span>
                               )}
                             </div>
@@ -993,7 +993,7 @@ export function PushPanel({
                               }}
                               className="rounded border border-ink-200 px-2 py-0.5 text-[11px] text-ink-700 hover:bg-ink-100"
                             >
-                              {isEditing ? "收起" : "编辑"}
+                              {isEditing ? "Thu gọn" : "Sửa"}
                             </button>
                             <button
                               type="button"
@@ -1009,7 +1009,7 @@ export function PushPanel({
                                   : "border-ink-200 bg-ink-100 text-ink-500")
                               }
                             >
-                              {rt.enabled ? "已启用" : "已停用"}
+                              {rt.enabled ? "đã bật" : "đã ngừng"}
                             </button>
                             <button
                               type="button"
@@ -1024,7 +1024,7 @@ export function PushPanel({
                               }}
                               className="rounded border border-ink-200 px-2 py-0.5 text-[11px] text-ink-500 hover:text-alert"
                             >
-                              删除
+                              xoá
                             </button>
                           </div>
                         </div>
@@ -1033,7 +1033,7 @@ export function PushPanel({
                           <div className="mt-3 space-y-2.5 border-t border-ink-100 pt-3">
                             <div className="grid gap-2.5 sm:grid-cols-4">
                               <label className="block">
-                                <span className="text-[11px] text-ink-500">路由名称</span>
+                                <span className="text-[11px] text-ink-500">tên route</span>
                                 <input
                                   value={routeDraft.name}
                                   onChange={(e) => setRouteDraft({ ...routeDraft, name: e.target.value })}
@@ -1041,16 +1041,16 @@ export function PushPanel({
                                 />
                               </label>
                               <label className="block">
-                                <span className="text-[11px] text-ink-500">消息前缀头（可选）</span>
+                                <span className="text-[11px] text-ink-500">tiền tố tin (tuỳ chọn)</span>
                                 <input
                                   value={routeDraft.header ?? ""}
                                   onChange={(e) => setRouteDraft({ ...routeDraft, header: e.target.value })}
-                                  placeholder="如：🖥 VPS 好价"
+                                  placeholder="vd: 🖥 VPS giá tốt"
                                   className="mt-1 w-full rounded border border-ink-200 bg-surface px-2 py-1 text-[12px] outline-none focus:border-brand"
                                 />
                               </label>
                               <label className="block">
-                                <span className="text-[11px] text-ink-500">最低评分 (0-100)</span>
+                                <span className="text-[11px] text-ink-500">điểm tối thiểu (0-100)</span>
                                 <input
                                   type="number"
                                   min={0}
@@ -1063,11 +1063,11 @@ export function PushPanel({
                                 />
                               </label>
                               <label className="block">
-                                <span className="text-[11px] text-ink-500">最高价（元，空=不限，0=仅免费）</span>
+                                <span className="text-[11px] text-ink-500">giá tối đa (tệ, trống=không giới hạn, 0=chỉ free)</span>
                                 <input
                                   value={routePriceInput}
                                   onChange={(e) => setRoutePriceInput(e.target.value)}
-                                  placeholder="留空不限"
+                                  placeholder="để trống = không giới hạn"
                                   className="mt-1 w-full rounded border border-ink-200 bg-surface px-2 py-1 font-mono text-[12px] outline-none focus:border-brand"
                                 />
                               </label>
@@ -1075,11 +1075,11 @@ export function PushPanel({
 
                             <div className="grid gap-2.5 sm:grid-cols-2">
                               <label className="block">
-                                <span className="text-[11px] text-ink-500">主题关键词（逗号分隔，空=不限，命中任意一个即匹配）</span>
+                                <span className="text-[11px] text-ink-500">từ khoá chủ đề (phẩy, trống=không giới hạn, trúng một là khớp)</span>
                                 <input
                                   value={routeKeywordsInput}
                                   onChange={(e) => setRouteKeywordsInput(e.target.value)}
-                                  placeholder="例如：黑五, vps, kvm, claude"
+                                  placeholder="vd: black friday, vps, kvm, claude"
                                   className="mt-1 w-full rounded border border-ink-200 bg-surface px-2 py-1 text-[12px] outline-none focus:border-brand"
                                 />
                               </label>
@@ -1094,13 +1094,13 @@ export function PushPanel({
                                       : "border-ink-200 bg-surface text-ink-700")
                                   }
                                 >
-                                  {routeDraft.instant ? "方式：满足条件可即时推送" : "方式：仅进入定时攒批汇总"}
+                                  {routeDraft.instant ? "cách: đủ điều kiện thì push tức thì" : "cách: chỉ vào tổng hợp gộp tin định kỳ"}
                                 </button>
                               </div>
                             </div>
 
                             <div>
-                              <span className="text-[11px] text-ink-500">允许形态（不选表示全部有效形态）</span>
+                              <span className="text-[11px] text-ink-500">dạng cho phép (bỏ trống = mọi dạng hợp lệ)</span>
                               <div className="mt-1 flex flex-wrap gap-1">
                                 {KIND_ORDER.map((k) => {
                                   const on = routeDraft.kinds.includes(k);
@@ -1131,7 +1131,7 @@ export function PushPanel({
                             </div>
 
                             <div>
-                              <span className="text-[11px] text-ink-500">允许获取方式（不选表示不限）</span>
+                              <span className="text-[11px] text-ink-500">cách lấy cho phép (bỏ trống = không giới hạn)</span>
                               <div className="mt-1 flex flex-wrap gap-1">
                                 {OBTAIN_ORDER.map((o) => {
                                   const on = routeDraft.obtainModes.includes(o);
@@ -1163,9 +1163,9 @@ export function PushPanel({
 
                             <div>
                               <div className="flex flex-wrap items-center justify-between gap-1">
-                                <span className="text-[11px] text-ink-500">允许分类（不选表示全部分类）</span>
+                                <span className="text-[11px] text-ink-500">phân loại cho phép (bỏ trống = tất cả)</span>
                                 <div className="flex flex-wrap items-center gap-1">
-                                  <span className="text-[10.5px] text-ink-400">套用频道：</span>
+                                  <span className="text-[10.5px] text-ink-400">Áp dụng kênh:</span>
                                   {CHANNELS.map((ch) => (
                                     <button
                                       key={ch.key}
@@ -1182,7 +1182,7 @@ export function PushPanel({
                                       onClick={() => setRouteDraft({ ...routeDraft, categories: [] })}
                                       className="text-[10.5px] font-medium text-brand hover:underline"
                                     >
-                                      清空
+                                      xoá hết
                                     </button>
                                   )}
                                 </div>
@@ -1231,7 +1231,7 @@ export function PushPanel({
                                 }}
                                 className="rounded border border-ink-200 px-3 py-1 text-[11.5px] text-ink-600 hover:bg-ink-100"
                               >
-                                取消
+                                huỷ
                               </button>
                               <button
                                 type="button"
@@ -1243,7 +1243,7 @@ export function PushPanel({
                                   const pNum = routePriceInput.trim() === "" ? null : Number(routePriceInput.trim());
                                   const updated: PushRoute = {
                                     ...routeDraft,
-                                    name: routeDraft.name.trim() || "未命名路由",
+                                    name: routeDraft.name.trim() || "route chưa đặt tên",
                                     keywords: kws,
                                     maxPrice: pNum !== null && Number.isFinite(pNum) && pNum >= 0 ? pNum : null,
                                   };
@@ -1256,7 +1256,7 @@ export function PushPanel({
                                 }}
                                 className="rounded bg-brand px-3 py-1 text-[11.5px] font-medium text-white hover:bg-brand-hover"
                               >
-                                保存路由
+                                lưu route
                               </button>
                             </div>
                           </div>
@@ -1271,12 +1271,12 @@ export function PushPanel({
             {/* 数据源范围控制 */}
             <div className="rounded-lg border border-ink-200 bg-surface-hover p-3.5">
               <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
-                <span className="text-[13px] font-medium text-ink-900">数据源推送范围</span>
+                <span className="text-[13px] font-medium text-ink-900">phạm vi nguồn được push</span>
                 <div className="flex items-center gap-1.5">
                   {[
-                    { key: "all" as PushSourceMode, label: "全部启用源" },
-                    { key: "include" as PushSourceMode, label: "仅推指定源" },
-                    { key: "exclude" as PushSourceMode, label: "排除指定源" },
+                    { key: "all" as PushSourceMode, label: "tất cả nguồn đang bật" },
+                    { key: "include" as PushSourceMode, label: "chỉ push nguồn chọn" },
+                    { key: "exclude" as PushSourceMode, label: "loại trừ nguồn chọn" },
                   ].map((m) => (
                     <button
                       key={m.key}
@@ -1299,8 +1299,8 @@ export function PushPanel({
                   <div className="flex items-center justify-between text-[11.5px] text-ink-500">
                     <span>
                       {s.sourceMode === "include"
-                        ? `仅推送已选的 ${s.sourceIds.length} 个数据源`
-                        : `跳过已选的 ${s.sourceIds.length} 个数据源（仍在网页收录）`}
+                        ? `chỉ push ${s.sourceIds.length} nguồn dữ liệu đã chọn`
+                        : `bỏ qua ${s.sourceIds.length} nguồn đã chọn (vẫn thu vào trang web)`}
                     </span>
                     {s.sourceIds.length > 0 && (
                       <button
@@ -1308,7 +1308,7 @@ export function PushPanel({
                         onClick={() => save({ sourceIds: [] })}
                         className="font-medium text-brand hover:underline"
                       >
-                        清空选择
+                        xoá chọn
                       </button>
                     )}
                   </div>
@@ -1345,55 +1345,55 @@ export function PushPanel({
           {/* 评分阈值与消息内容自定义 */}
           <section className="panel space-y-3 p-5">
             <div className="flex items-center gap-2 text-[14px] font-semibold text-ink-950">
-              <Zap size={15} className="text-brand" /> 触发阈值与消息格式
+              <Zap size={15} className="text-brand" /> ngưỡng kích hoạt & format tin
             </div>
             <NumberField
-              label="立即单发阈值 ≥"
-              hint="达到此分数马上单条发出，不等攒批（松手或回车生效）"
+              label="ngưỡng gửi riêng tức thì ≥"
+              hint="đạt điểm này gửi riêng ngay, không chờ gộp tin (thả tay hoặc Enter có hiệu lực)"
               value={s.instantScore}
               min={0}
               max={100}
               step={5}
-              suffix=" 分"
+              suffix=" điểm"
               onCommit={(v) => save({ instantScore: v })}
             />
             <NumberField
-              label="攒批合发阈值 ≥"
-              hint={`低于立即阈值的先入攒批队列定时合并发（自动 ≤ 立即阈值 ${s.instantScore} 分）`}
+              label="ngưỡng gộp gửi chung ≥"
+              hint={`dưới ngưỡng tức thì vào hàng đợi gộp tin gửi chung định kỳ trước (tự động ≤ ngưỡng tức thì ${s.instantScore} điểm)`}
               value={s.batchScore}
               min={0}
               max={s.instantScore}
               step={5}
-              suffix=" 分"
+              suffix=" điểm"
               onCommit={(v) => save({ batchScore: v })}
             />
             <div className="grid grid-cols-2 gap-2">
               <Toggle
-                label="含兑换码直推"
+                label="push thẳng mục có mã đổi"
                 value={s.instantOnCodes}
                 onChange={(v) => save({ instantOnCodes: v })}
               />
               <Toggle
-                label="限量/名额直推"
+                label="push thẳng số lượng/suất giới hạn"
                 value={s.instantOnUrgent}
                 onChange={(v) => save({ instantOnUrgent: v })}
               />
             </div>
 
             <div className="pt-1">
-              <div className="mb-1.5 text-[12px] font-medium text-ink-700">消息元素与去重开关</div>
+              <div className="mb-1.5 text-[12px] font-medium text-ink-700">thành phần tin & công tắc khử trùng</div>
               <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
-                <Toggle label="带价格" value={s.includePrice} onChange={(v) => save({ includePrice: v })} />
-                <Toggle label="带截止日" value={s.includeDeadline} onChange={(v) => save({ includeDeadline: v })} />
-                <Toggle label="带评分" value={s.includeScore} onChange={(v) => save({ includeScore: v })} />
-                <Toggle label="带获取方式" value={s.includeObtain} onChange={(v) => save({ includeObtain: v })} />
-                <Toggle label="带 AI 理由" value={s.includeAiReason} onChange={(v) => save({ includeAiReason: v })} />
-                <Toggle label="跨源去重" value={s.dedupeByTitle} onChange={(v) => save({ dedupeByTitle: v })} />
+                <Toggle label="có giá" value={s.includePrice} onChange={(v) => save({ includePrice: v })} />
+                <Toggle label="có ngày hết hạn" value={s.includeDeadline} onChange={(v) => save({ includeDeadline: v })} />
+                <Toggle label="có điểm" value={s.includeScore} onChange={(v) => save({ includeScore: v })} />
+                <Toggle label="có cách lấy" value={s.includeObtain} onChange={(v) => save({ includeObtain: v })} />
+                <Toggle label="kèm lý do AI" value={s.includeAiReason} onChange={(v) => save({ includeAiReason: v })} />
+                <Toggle label="khử trùng liên nguồn" value={s.dedupeByTitle} onChange={(v) => save({ dedupeByTitle: v })} />
               </div>
             </div>
 
             <label className="block rounded-lg border border-ink-200 bg-surface-hover px-3.5 py-2.5">
-              <span className="text-[12.5px] font-medium text-ink-900">自定义消息头前缀（失焦保存，留空用默认）</span>
+              <span className="text-[12.5px] font-medium text-ink-900">tiền tố đầu tin tuỳ chọn (lưu khi mất focus, trống=mặc định)</span>
               <input
                 value={customHeaderDraft}
                 onChange={(e) => setCustomHeaderDraft(e.target.value)}
@@ -1402,7 +1402,7 @@ export function PushPanel({
                     void save({ customHeader: customHeaderDraft.trim() });
                   }
                 }}
-                placeholder="例如：🛰 资源雷达 · 精选"
+                placeholder="vd: 🛰 Freebie Radar · tuyển chọn"
                 maxLength={60}
                 className="mt-1.5 w-full rounded-lg border border-ink-200 bg-surface px-2.5 py-1.5 text-[12.5px] text-ink-900 outline-none focus:border-brand"
               />
@@ -1412,41 +1412,41 @@ export function PushPanel({
           {/* 频率限制与夜间免打扰 */}
           <section className="panel space-y-3 p-5">
             <div className="flex items-center gap-2 text-[14px] font-semibold text-ink-950">
-              <Clock size={15} className="text-brand" /> 频率控制与夜间免打扰
+              <Clock size={15} className="text-brand" /> kiểm soát tần suất & không làm phiền ban đêm
             </div>
             <NumberField
-              label="每小时推送上限"
-              hint="含单发与攒批条数总和（1~200）"
+              label="giới hạn push mỗi giờ"
+              hint="tổng số tin gửi riêng + gộp tin (1~200)"
               value={s.maxPerHour}
               min={1}
               max={200}
-              suffix=" 条"
+              suffix=" tin"
               onCommit={(v) => save({ maxPerHour: v })}
             />
             <div className="grid grid-cols-2 gap-2">
               <NumberField
-                label="单轮最多即时发"
+                label="tối đa gửi tức thì mỗi lượt"
                 value={s.maxPerInstant}
                 min={1}
                 max={10}
-                suffix=" 条"
+                suffix=" tin"
                 onCommit={(v) => save({ maxPerInstant: v })}
               />
               <NumberField
-                label="单批最多合并发"
+                label="tối đa mỗi đợt gộp"
                 value={s.maxPerBatch}
                 min={1}
                 max={20}
-                suffix=" 条"
+                suffix=" tin"
                 onCommit={(v) => save({ maxPerBatch: v })}
               />
             </div>
 
             <label className="block rounded-lg border border-ink-200 bg-surface-hover px-3.5 py-2.5">
               <div className="flex items-center justify-between">
-                <span className="text-[13px] font-medium text-ink-900">攒批周期（修改后立即重建定时器）</span>
+                <span className="text-[13px] font-medium text-ink-900">chu kỳ gộp tin (sửa xong dựng lại timer ngay)</span>
                 <span className="font-mono text-[12px] text-brand">
-                  {s.batchIntervalMin === 0 ? "已关闭" : `每 ${s.batchIntervalMin} 分钟`}
+                  {s.batchIntervalMin === 0 ? "đã đóng" : `mỗi ${s.batchIntervalMin} phút`}
                 </span>
               </div>
               <select
@@ -1454,24 +1454,24 @@ export function PushPanel({
                 onChange={(e) => save({ batchIntervalMin: Number(e.target.value) })}
                 className="mt-2 w-full rounded-lg border border-ink-200 bg-surface px-2.5 py-1.5 text-[12.5px] text-ink-900 outline-none focus:border-brand"
               >
-                <option value={0}>关闭攒批</option>
-                <option value={5}>每 5 分钟</option>
-                <option value={10}>每 10 分钟</option>
-                <option value={15}>每 15 分钟</option>
-                <option value={30}>每 30 分钟</option>
-                <option value={60}>每 1 小时</option>
-                <option value={120}>每 2 小时</option>
+                <option value={0}>tắt gộp tin</option>
+                <option value={5}>mỗi 5 phút</option>
+                <option value={10}>mỗi 10 phút</option>
+                <option value={15}>mỗi 15 phút</option>
+                <option value={30}>mỗi 30 phút</option>
+                <option value={60}>mỗi 1 giờ</option>
+                <option value={120}>mỗi 2 giờ</option>
               </select>
             </label>
 
             <div className="space-y-2.5 rounded-lg border border-ink-200 bg-surface-hover p-3.5">
               <div className="flex items-center justify-between gap-2">
                 <span className="inline-flex items-center gap-1.5 text-[13px] font-medium text-ink-900">
-                  <Moon size={13} className="text-ink-500" /> 夜间免打扰时段
+                  <Moon size={13} className="text-ink-500" /> khung giờ không làm phiền ban đêm
                 </span>
                 <div className="flex items-center gap-2">
                   <span className={`text-[11.5px] font-medium ${payload?.quiet ? "text-amber-700" : "text-ink-500"}`}>
-                    {!s.quietEnabled ? "未启用" : payload?.quiet ? "免打扰中" : "正常推送时段"}
+                    {!s.quietEnabled ? "chưa bật" : payload?.quiet ? "đang không làm phiền" : "khung giờ push bình thường"}
                   </span>
                   <button
                     type="button"
@@ -1480,7 +1480,7 @@ export function PushPanel({
                       "relative inline-flex h-5 w-9 shrink-0 items-center rounded-full transition-colors " +
                       (s.quietEnabled ? "bg-brand" : "bg-ink-300")
                     }
-                    title={s.quietEnabled ? "点击关闭夜间免打扰" : "点击开启夜间免打扰"}
+                    title={s.quietEnabled ? "bấm để tắt không làm phiền ban đêm" : "bấm để bật không làm phiền ban đêm"}
                   >
                     <span
                       className={
@@ -1505,7 +1505,7 @@ export function PushPanel({
                       }}
                       className="rounded-lg border border-ink-200 bg-surface px-2.5 py-1.5 font-mono text-[12.5px] text-ink-900 outline-none focus:border-brand"
                     />
-                    <span className="text-ink-400">至</span>
+                    <span className="text-ink-400">đến</span>
                     <input
                       type="time"
                       value={quietTo}
@@ -1521,18 +1521,18 @@ export function PushPanel({
                       onChange={(e) => save({ timezone: e.target.value })}
                       className="ml-auto rounded-lg border border-ink-200 bg-surface px-2.5 py-1.5 text-[12px] text-ink-800 outline-none focus:border-brand"
                     >
-                      <option value="Asia/Shanghai">北京时间 (UTC+8)</option>
-                      <option value="Asia/Tokyo">东京时间 (UTC+9)</option>
+                      <option value="Asia/Shanghai">giờ Bắc Kinh (UTC+8)</option>
+                      <option value="Asia/Tokyo">giờ Tokyo (UTC+9)</option>
                       <option value="UTC">UTC</option>
-                      <option value="America/New_York">美东时间</option>
-                      <option value="Europe/London">伦敦时间</option>
+                      <option value="America/New_York">giờ miền Đông Mỹ</option>
+                      <option value="Europe/London">giờ London</option>
                     </select>
                   </div>
 
                   <div className="grid grid-cols-2 gap-2">
                     {[
-                      { key: "batch" as const, label: "转入攒批早上发" },
-                      { key: "drop" as const, label: "静默期直接跳过" },
+                      { key: "batch" as const, label: "chuyển vào gộp tin gửi sáng" },
+                      { key: "drop" as const, label: "bỏ qua trong thời gian im lặng" },
                     ].map((opt) => (
                       <button
                         key={opt.key}
@@ -1563,10 +1563,10 @@ export function PushPanel({
             <div className="flex flex-wrap items-center justify-between gap-2">
               <div>
                 <div className="flex items-center gap-2 text-[14px] font-semibold text-ink-950">
-                  <Sparkles size={15} className="text-brand" /> 实时效果预览（不会真正发出）
+                  <Sparkles size={15} className="text-brand" /> xem trước hiệu quả thực tế (không gửi thật)
                 </div>
                 <p className="mt-0.5 text-[12px] text-ink-500">
-                  用数据库里未推送的最新 180 条按上述全部筛选条件试算，立刻检查命中和被拦截原因分布。
+                  dùng 180 tin mới nhất chưa push trong DB chạy thử theo toàn bộ điều kiện lọc trên, kiểm tra ngay phân bố trúng và lý do bị chặn.
                 </p>
               </div>
               <div className="flex flex-wrap items-center gap-2">
@@ -1577,31 +1577,31 @@ export function PushPanel({
                     try {
                       await onPreview();
                     } catch {
-                      setOperationError("网络异常，试算失败，请重试");
+                      setOperationError("lỗi mạng, chạy thử thất bại, thử lại");
                     } finally {
                       setBusy(null);
                     }
                   }}
                   className="inline-flex items-center gap-1.5 rounded-lg bg-brand px-3.5 py-2 text-[12.5px] font-medium text-white transition-colors hover:bg-brand-hover"
                 >
-                  {busy === "preview" ? <Loader2 size={13} className="animate-spin" /> : <Eye size={13} />} 试算推送预览
+                  {busy === "preview" ? <Loader2 size={13} className="animate-spin" /> : <Eye size={13} />} xem trước chạy thử push
                 </button>
                 <button
                   type="button"
                   onClick={async () => {
                     setBusy("flush");
                     try {
-                      if (payload?.quiet && !window.confirm("当前处于免打扰时段，仍要手动发送攒批吗？")) return;
+                      if (payload?.quiet && !window.confirm("đang trong giờ không làm phiền, vẫn muốn gửi gộp tin thủ công?")) return;
                       await onFlush();
                     } catch {
-                      setOperationError("网络异常，无法确认发送结果，请查看记录");
+                      setOperationError("lỗi mạng, không xác nhận được kết quả gửi, xem bản ghi");
                     } finally {
                       setBusy(null);
                     }
                   }}
                   className="inline-flex items-center gap-1.5 rounded-lg border border-ink-200 bg-surface px-3 py-2 text-[12.5px] font-medium text-ink-700 hover:bg-ink-100"
                 >
-                  {busy === "flush" ? <Loader2 size={13} className="animate-spin" /> : <ListOrdered size={13} />} 立即发攒批
+                  {busy === "flush" ? <Loader2 size={13} className="animate-spin" /> : <ListOrdered size={13} />} gửi gộp tin ngay
                 </button>
                 <button
                   type="button"
@@ -1610,14 +1610,14 @@ export function PushPanel({
                     try {
                       await onTest();
                     } catch {
-                      setOperationError("网络异常，无法确认测试结果，请查看记录");
+                      setOperationError("lỗi mạng, không xác nhận được kết quả test, xem bản ghi");
                     } finally {
                       setBusy(null);
                     }
                   }}
                   className="inline-flex items-center gap-1.5 rounded-lg border border-ink-200 bg-surface px-3 py-2 text-[12.5px] font-medium text-ink-700 hover:bg-ink-100"
                 >
-                  {busy === "test" ? <Loader2 size={13} className="animate-spin" /> : <Send size={13} />} 发测试消息
+                  {busy === "test" ? <Loader2 size={13} className="animate-spin" /> : <Send size={13} />} gửi tin test
                 </button>
               </div>
             </div>
@@ -1627,7 +1627,7 @@ export function PushPanel({
                 {preview.rejectedBy && (
                   <div className="flex flex-wrap items-center gap-1.5 rounded-lg border border-ink-200 bg-surface-hover px-3 py-2 text-[11.5px]">
                     <span className="font-medium text-ink-700">
-                      扫描 {preview.scanned} 条 · 通过筛选 {preview.matched} 条 · 拦截分布：
+                      quét {preview.scanned} tin · qua lọc {preview.matched} tin · phân bố chặn:
                     </span>
                     {REJECT_LABELS.filter((r) => (preview.rejectedBy?.[r.key] ?? 0) > 0).map((r) => (
                       <span key={r.key} className="rounded bg-ink-100 px-2 py-0.5 text-ink-600">
@@ -1640,21 +1640,21 @@ export function PushPanel({
                 <div className="grid gap-3 lg:grid-cols-2">
                   <div className="rounded-lg border border-ink-200 bg-surface-hover p-3">
                     <div className="mb-1.5 flex items-center justify-between text-[12px] font-medium text-deal">
-                      <span>⚡ 立即推送（够格 {preview.instantTotal ?? preview.instant.length}）</span>
+                      <span>⚡ push ngay (đủ điều kiện {preview.instantTotal ?? preview.instant.length})</span>
                       <span className="font-mono text-[11px] text-ink-500">
-                        本轮实发 {preview.sendableInstant ?? preview.instant.length} 条
+                        đợt này gửi thật {preview.sendableInstant ?? preview.instant.length} tin
                       </span>
                     </div>
                     <pre className="max-h-[220px] overflow-auto font-mono text-[11px] leading-relaxed whitespace-pre-wrap text-ink-700">
-                      {preview.instant.length ? preview.instant.join("\n\n") : "（当前条件下没有触发立即推送的条目）"}
+                      {preview.instant.length ? preview.instant.join("\n\n") : "（không có mục nào kích push tức thì theo điều kiện hiện tại）"}
                     </pre>
                   </div>
                   <div className="rounded-lg border border-ink-200 bg-surface-hover p-3">
                     <div className="mb-1.5 text-[12px] font-medium text-brand">
-                      📦 攒批队列（够格 {preview.batchTotal ?? preview.batch.length}，内存中已排队 {preview.queued}）
+                      📦 hàng đợi gộp tin (đủ điều kiện {preview.batchTotal ?? preview.batch.length}, đã xếp trong bộ nhớ {preview.queued})
                     </div>
                     <pre className="max-h-[220px] overflow-auto font-mono text-[11px] leading-relaxed whitespace-pre-wrap text-ink-700">
-                      {preview.batch.length ? preview.batch.join("\n\n") : "（当前条件下没有达到攒批阈值的条目）"}
+                      {preview.batch.length ? preview.batch.join("\n\n") : "（không có mục đạt ngưỡng gộp tin theo điều kiện hiện tại）"}
                     </pre>
                   </div>
                 </div>
@@ -1665,11 +1665,11 @@ export function PushPanel({
           {/* 历史推送记录 */}
           <section className="panel overflow-hidden">
             <div className="border-b border-ink-100 px-5 py-3.5 text-[13.5px] font-semibold text-ink-950">
-              最近推送记录（{logs.length}）
+              lịch sử push gần đây ({logs.length})
             </div>
             <div className="max-h-[420px] divide-y divide-ink-100 overflow-auto">
               {logs.length === 0 && (
-                <div className="px-5 py-10 text-center text-[12.5px] text-ink-500">还没有历史推送记录</div>
+                <div className="px-5 py-10 text-center text-[12.5px] text-ink-500">chưa có lịch sử push</div>
               )}
               {logs.map((l) => (
                 <div key={l.id} className="px-5 py-3">
@@ -1684,12 +1684,12 @@ export function PushPanel({
                             : "bg-ink-100 text-ink-700")
                       }
                     >
-                      {l.kind === "instant" ? "即时推送" : l.kind === "batch" ? "攒批推送" : l.kind}
+                      {l.kind === "instant" ? "push tức thì" : l.kind === "batch" ? "push gộp tin" : l.kind}
                     </span>
                     <span className="font-mono text-ink-500">{l.created_at.replace("T", " ").slice(5, 19)}</span>
-                    <span className="text-ink-600">{l.count} 条</span>
-                    {l.ok === 0 && <span className="rounded bg-alert-subtle px-1.5 py-0.5 text-alert">发送失败</span>}
-                    {l.reason && <span className="truncate text-ink-500">· 因为 {l.reason}</span>}
+                    <span className="text-ink-600">{l.count} tin</span>
+                    {l.ok === 0 && <span className="rounded bg-alert-subtle px-1.5 py-0.5 text-alert">Gửi thất bại</span>}
+                    {l.reason && <span className="truncate text-ink-500">· vì {l.reason}</span>}
                   </div>
                   <pre className="max-h-[72px] overflow-hidden font-mono text-[11px] leading-relaxed whitespace-pre-wrap text-ink-600">
                     {(l.text ?? "").slice(0, 240)}
