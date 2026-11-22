@@ -524,6 +524,21 @@ const MIGRATIONS: string[] = [
   CREATE INDEX IF NOT EXISTS idx_items_status_time
     ON items(status, COALESCE(published_at, first_seen_at) DESC);
   `,
+
+  /* v??：条目级翻译缓存。src_hash 记录原文指纹，正文快照变化后重译并覆盖。 */
+  `
+  CREATE TABLE IF NOT EXISTS item_translations (
+    item_id     INTEGER NOT NULL,
+    lang        TEXT NOT NULL,
+    src_hash    TEXT NOT NULL,
+    title       TEXT NOT NULL DEFAULT '',
+    summary     TEXT NOT NULL DEFAULT '',
+    content     TEXT NOT NULL DEFAULT '',
+    model       TEXT NOT NULL DEFAULT '',
+    created_at  TEXT NOT NULL,
+    PRIMARY KEY (item_id, lang)
+  );
+  `,
 ];
 
 export function dbPath(): string {

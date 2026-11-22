@@ -38,6 +38,7 @@ import {
   resolveUserBotToken,
   sendTelegramToUser,
 } from "./user-push.ts";
+import { translateItem } from "./translate.ts";
 import { buildRssXml, rssEtag, type RssItem } from "./rss.ts";
 import { checkForUpdate, getBuildInfo, getUpdateJob, hostUpdateCommand, runUpdate } from "./updater.ts";
 import { isPublicSite, siteMode } from "./config.ts";
@@ -897,6 +898,19 @@ const fetchLimit = Math.min(Math.max(offset + limit * 3, 240), 600);
     return c.json({ ...applyUserStates([shape(row, subKeywords)], pubUser)[0],
       ...(id.isAdmin ? { manualClassification: getManualClassification(row.id) } : {}),
     });
+  });
+  app.post("/api/items/:id/translate", async (c) => {
+    const id = Number(c.req.param("id"));
+    if (!Number.isSafeInteger(id) || id < 1) return c.json({ error: "ID không hợp lệ" }, 400);
+    const row = get<ItemRow>("SELECT * FROM items WHERE id = ?", id);
+    if (!row) return c.json({ error: "không tìm thấy" }, 404);
+    const ident = identityOf(c);
+    if (ident.siteMode === "public" && !ident.isAdmin && row.status !== "active") return c.json({ error: "không tìm thấy" }, 404);
+    try {
+      return c.json(await translateItem(row));
+    } catch (err) {
+      return c.json({ error: err instanceof Error ? err.message : "dịch thất bại" }, 503);
+    }
   });
   app.patch("/api/admin/items/:id/classification", async (c) => {
     const id = Number(c.req.param("id"));
